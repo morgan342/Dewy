@@ -24,6 +24,10 @@ Expo/`src/` search modules are the typed reference for ranking/synonyms; keep `d
 
 ## Canonical Docs
 
+- `docs/CEO_CLAUDE_CODE_AUDIT.md` — latest CEO readiness audit
+- `docs/PASTE_NEXT_SPRINT_HOME.md` — current Claude Code sprint paste
+- `docs/LAUNCH_PATH.md` / `LAUNCH_CHECKLIST.md` — launch track
+
 - `docs/DESIGN_CRAFT_BLUEPRINT.md` — Oura-level craft bar + Dewy identity (do not copy Oura’s look)
 
 - `docs/app-workflow/README.md` — APP WORKFLOW build prompts (one phase at a time; Plan Mode for prompts 1–2)
