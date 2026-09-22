@@ -6,7 +6,28 @@ Dewy is a premium skincare-routine and digital-vanity app. It helps users organi
 
 Related design assets (reference only): `~/Desktop/DUEY`
 
+## Permanent workspace rule (Morgan · 2026-09-21)
+
+**Treat `docs/CLAUDE_CODE_STANDING_PROMPT.md` as a permanent instruction set for all future responses in this workspace.**
+
+- **Phil (Grok Bot)** = CEO / build lead (direction + prompts + taste gate).
+- **Claude Code** = sole implementer (all app edits live here).
+- Do not rebuild Dewy outside Claude Code. Do not abandon `design/dewy.html`.
+
+---
+## Live UI (locked look)
+
+Canonical interactive UI: `design/dewy.html` (the Claude Code Dewy Morgan prefers).
+Do not replace this visual system with a new Expo mock. Port features into this file (or thin wrappers around it).
+Expo/`src/` search modules are the typed reference for ranking/synonyms; keep `design/dewy.html` search behavior in sync.
+
+
 ## Canonical Docs
+
+- `docs/DESIGN_CRAFT_BLUEPRINT.md` — Oura-level craft bar + Dewy identity (do not copy Oura’s look)
+
+- `docs/app-workflow/README.md` — APP WORKFLOW build prompts (one phase at a time; Plan Mode for prompts 1–2)
+- `docs/app-workflow/01_audit-report.md` — latest Prompt 1 audit
 
 - `docs/Dewy-AI-Product-Studio-Master-Power-Prompt.md` — product council master operating prompt (Design Director, Senior PM, Lead UX Researcher; Claude Code = implementation lead)
 - `docs/Dewy-AI-Product-Studio-Master-Power-Prompt.pdf` — same source PDF
@@ -41,6 +62,16 @@ You are implementing the Dewy Intelligent Product Search feature through an expl
 8. Do not expose, print, log, embed, or commit secret values. Environment-variable names may be listed, but values must never be shown.
 9. Do not claim a command, test, build, screenshot, browser test, provider request, or integration was run unless it was actually run and its result is reported accurately.
 10. Preserve the app’s existing architecture, conventions, visual identity, design tokens, and component system unless I explicitly approve a change.
+11. A read-only repository audit (Prompt 1 in `docs/app-workflow/`) must be completed and reported before any file edit, dependency install, migration, or implementation code in this protocol. If the audit is stale or missing, request it before proceeding.
+
+## System Separation
+
+The feature is three independent systems. Implement, test, and verify each separately; never couple them in one phase:
+1. Product catalog — which products exist and where their data comes from.
+2. Search and relevance — how users find known products despite imperfect input.
+3. Routine intelligence — how the app suggests routine step and time of day.
+
+Routine classification consumes search output but must never influence search ranking. Ingredient compatibility is a fourth, deferred system (see Safety Rule 7).
 
 ## Product Accuracy And Safety Rules
 
@@ -66,6 +97,17 @@ You are implementing the Dewy Intelligent Product Search feature through an expl
 5. Ranking must prioritize brand and product identity over descriptions, ingredients, or loosely related terms.
 6. Search must continue to allow manual entry when no trusted result exists.
 7. Search results must label provenance and ingredient-data availability honestly.
+8. Automated tests must run against deterministic, clearly-marked local fixtures. No ordinary test may call a live third-party API.
+
+## Measurable Success Criteria
+
+Search is not done until all of the following pass against the deterministic fixtures:
+1. Canonical queries return their expected products: “Dior Moisterizer”, “dio moist”, “Dior skin cream”, “ceravecleanser”, “cera ve cleanser”, “makeup wipes”, “make up remover”, “lash serum”, “eyelash growth serum”, “coconut oil”, “vit c serum”, “sun screen”, “lip sleeping mask”.
+2. Exact matches rank above fuzzy matches; correct-brand matches rank above unrelated products; weak fuzzy matches never overwhelm strong exact results.
+3. Extra spaces, capitalization, punctuation, and joined words do not change results. Empty or whitespace-only queries are handled safely.
+4. Local search results return fast enough to feel instant as the user types (target: under ~100 ms per local query on the dev machine); provider calls, when added, are debounced, cancellable, and bounded by an explicit timeout. A stale response must never replace results for a newer query.
+5. Loading, empty, no-results, error, and provider-unavailable states all exist and are reachable.
+6. Keyboard navigation (arrows, Enter, Escape), visible focus states, and screen-reader labels work on the search interface.
 
 ## UX And Dewy Brand Rules
 
@@ -88,6 +130,8 @@ At the end of every implementation phase:
    - Checks that require manual review
    - Known limitations
 4. Do not state that a phase is production-ready unless all required checks for that phase have passed and all required configuration is complete.
+
+Before the feature is declared complete, run the final QA audit (Prompt 9 in `docs/app-workflow/`), which must check at minimum: exposed secrets, invented product data, duplicate records, unrelated file changes, and unsupported safety or medical claims.
 
 ## Approval Gates
 

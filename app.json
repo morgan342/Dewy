@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Dewy",
+    "slug": "dewy",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F6D7"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dewy.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F6D7"
+      }
+    },
+    "plugins": [],
+    "extra": {
+      "founderLock": {
+        "platform": "ios-first",
+        "market": "US-only",
+        "model": "freemium",
+        "category": "cosmetic-routine"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+.DS_Store
+coverage/
+design/_debug-*.png
+design/*.bak-*
+design/dewy.html.bak*
