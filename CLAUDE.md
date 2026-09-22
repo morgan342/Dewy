@@ -24,6 +24,10 @@ Expo/`src/` search modules are the typed reference for ranking/synonyms; keep `d
 
 ## Canonical Docs
 
+- `docs/PHI_CLAUDE_LOOP.md` — how Phil automatically drives Claude Code
+- `docs/STATUS.md` — live status (update every sprint)
+- `docs/CURRENT_SPRINT.md` — active sprint Phil wrote
+
 - `docs/CEO_CLAUDE_CODE_AUDIT.md` — latest CEO readiness audit
 - `docs/PASTE_NEXT_SPRINT_HOME.md` — current Claude Code sprint paste
 - `docs/LAUNCH_PATH.md` / `LAUNCH_CHECKLIST.md` — launch track

@@ -975,7 +975,7 @@ function viewRoutine(){
   /* --- header field --- */
   var todWord=S.tod==='am'?'Morning':'Evening';
   h+='<header class="field" data-tod="'+S.tod+'">'+
-     '<div class="brandbar"><p class="brandname">Dewy</p>'+
+     '<div class="brandbar"><button type="button" class="brandname-btn" data-act="tab" data-v="home" aria-label="Dewy Home"><p class="brandname">Dewy</p></button>'+
      '<button type="button" data-act="tab" data-v="profile" aria-label="Profile">'+ICONS.profile+'</button></div>'+
      '<div class="field-top">'+
        '<p class="t-meta greeting">'+esc(done?day.complete:day.greeting)+'</p>'+
@@ -2551,6 +2551,20 @@ var ACTS={
   'go-add-search':function(){S.tab='cabinet';S.ui.detail=null;S.ui.add={step:'search',q:'',ran:'',searched:false,hits:null,active:-1};render();var n=el('q');if(n)n.focus();},'add-search':function(){S.tab='cabinet';S.ui.detail=null;S.ui.add={step:'search',q:'',ran:'',searched:false,hits:null,active:-1};render();var n=el('q');if(n)n.focus()},
   'add-clearq':function(){var a=S.ui.add;a.q='';a.ran='';a.searched=false;a.hits=null;a.active=-1;a.err=false;render();var n=el('q');if(n)n.focus()},
   'add-retry':function(){S.ui.add.err=false;render();var n=el('q');if(n)n.focus()},
+  'add-runsearch':function(){
+    var a=S.ui.add;if(!a||a.step!=='search')return;
+    var box=el('q');if(box)a.q=box.value;
+    var q=(a.q||'').trim();
+    a.err=false;a.active=-1;
+    if(!q){a.searched=false;a.hits=null;a.ran='';render();var n=el('q');if(n)n.focus();return}
+    try{a.hits=searchCatalog(q);a.ran=q;a.searched=true}
+    catch(e){a.err=true;a.hits=null}
+    render();
+    var f=el('q');if(f)f.focus();
+    say(a.err?'Search is not working right now.':
+        (a.hits&&a.hits.length?a.hits.length+' products found. The list is underneath — tap one to add it.':
+        'No products found for '+q+'. Try just the brand name.'));
+  },
   'add-clear':function(){S.ui.add={step:'search',q:S.ui.add.q||'',ran:'',searched:false,hits:null,active:-1};render();var n=el('q');if(n)n.focus()},
   'add-pick':function(v){
     var i=parseInt(v,10),e=CATALOG[i];if(!e)return;

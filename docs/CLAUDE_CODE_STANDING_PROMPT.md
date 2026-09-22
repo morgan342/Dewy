@@ -88,3 +88,20 @@ If Phil pastes a follow-up prompt, treat it as the current sprint. Still obey th
 3. What’s still open
 4. Exact next sprint title (one line)
 
+## End of every sprint (required — wakes Phil)
+
+There is **no timed schedule**. Phil only continues when you signal done.
+
+1. Update `docs/STATUS.md` honestly.
+2. Commit your work (push if possible).
+3. If `docs/DEWY_SPRINT_DONE_WEBHOOK.url` contains a real `https://` URL, POST to it:
+
+```bash
+URL=$(grep -E '^https://' docs/DEWY_SPRINT_DONE_WEBHOOK.url | head -1 | tr -d ' \n')
+curl -sS -X POST "$URL" -H "Content-Type: application/json" -d '{"source":"claude-code","project":"Dewy","event":"sprint_done"}'
+```
+
+4. If there is no URL yet, tell Morgan: paste the webhook from Grok Bot routine **Dewy Claude sprint finished** into `docs/DEWY_SPRINT_DONE_WEBHOOK.url`, then stop.
+
+Do not start the next sprint yourself unless `docs/CURRENT_SPRINT.md` already contains it and Phil opened you for that.
+
