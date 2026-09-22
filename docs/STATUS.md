@@ -27,7 +27,11 @@ While this sprint ran, **another Claude session on this Mac overwrote `design/de
 ## Blockers
 1. **Webhook not set.** `docs/DEWY_SPRINT_DONE_WEBHOOK.url` still contains only the placeholder comment, so Phil was **not** pinged. Morgan: in Grok Bot open routine **"Dewy Claude sprint finished"**, copy the webhook URL, paste it as the only line in that file. Then Phil can open the next sprint.
 2. Unidentified session writing stale copies of `design/dewy.html` (see Incident). Stop it before lifting the read-only guard.
-3. Uncommitted, untouched work by another session in `src/` (`src/catalog/`, `src/search/parseQuery.ts`, `routineSuggestion.ts`, edits to `rank.ts`, `synonyms.ts`, `normalizeQuery.ts`, `fixtures/products.ts`, `types/product.ts`). Not part of this sprint; left as-is per the standing rule against altering others' uncommitted work.
+3. Uncommitted, untouched work by another session in `src/` and `__tests__/` — still growing while this sprint ran (`src/catalog/`, `src/search/parseQuery.ts`, `productSearchController.ts`, `routineSuggestion.ts`, edits to `rank.ts`, `searchProducts.ts`, `synonyms.ts`, `normalizeQuery.ts`, `fixtures/products.ts`, `types/product.ts`, `AddProductToCabinetScreen.tsx`, plus two new test files). Not part of this sprint; left as-is per the standing rule against altering others' uncommitted work. Someone should commit or discard it deliberately.
+
+## Not done / not verified
+- **A deeper code-level audit of the search/nav/save paths was attempted and did not run** — all three audit agents failed on an API usage limit, so they produced no findings. Absence of reported bugs there means *nothing was checked*, not that the code is clean. The browser click-through above is the only verification behind this sprint's green marks.
+- No formatter, linter, type checker, or unit tests were run this sprint: the sprint was scoped to `design/dewy.html` (a standalone HTML file with no build step) and explicitly said not to start Expo work.
 
 ## What Morgan should click to try
 1. Open `design/dewy.html` in a browser (double-click the file).
