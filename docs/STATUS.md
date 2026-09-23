@@ -37,7 +37,8 @@ Matas decisions (same day, Morgan: "make the decisions as if you were Mike"):
 4. Motion: `flyToTab()` — adding a product to the routine sends its image to the Routine tab, which pulses. Guarded for Reduce Motion and missing Web Animations; never the only feedback.
 5. Bottom nav: ivory, hairline top, no radius or shadow, 11px labels, weight 500 when current.
 Verified: 240 tests, SYNTAX_OK, typecheck clean, screenshots of Home, Cabinet, Routine.
-Not done / open: Cabinet rail with flick physics (visible controls kept as primary, rail not built). Serif wordmark decided against. All screens on the grid.
+Cabinet rail (same day, Morgan: "ok then do that" · "110%" · "make this app extraordinary"): the Gallery view is now `CabRail` — one product at a time on a Buttermilk plinth, flick with momentum, tilt with velocity, rubber-band at the ends, snap to the nearest object, which lifts with the deep shadow; a tick and a live announcement when it lands; the current group name and count pinned above the rail (`#cabgroup`); foot line "4 Of 10 · Prev / Next"; arrow keys on the focused rail; a drag never fires the tap underneath; vertical drags fall through to page scroll; Reduce Motion snaps instantly. List view unchanged. DOM for tests unchanged (`.cabsection h2`, `.gcard .gmain .gname .gbrand`, `.cabfilters`, `.cabtoggle`). Verified with a real pointer drag and Prev / Next in the in-app browser.
+Not done / open: nothing on the visual system. Cabinet rail with flick physics (visible controls kept as primary, rail not built). Serif wordmark decided against. All screens on the grid.
 Next sprint: "Grid pass on Discover, Profile, Add Product; Add To Tonight landing motion".
 
 ## Previous status (2026-09-22 evening)
