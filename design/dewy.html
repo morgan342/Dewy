@@ -10,15 +10,15 @@
   color-scheme: light;
 
   /* palette: the nine approved colors, and nothing else */
-  --powder-blue:#A5BDE1;
-  --porcelain-ivory:#F7F3EC;
-  --buttermilk:#FFF1B5;
-  --dried-plum:#6E1E3B;
-  --cherry-licorice:#A10808;
-  --milkshake-pink:#EDCCCC;
-  --old-burgundy:#43302E;
-  --olive-note:#B9B560;
-  --soft-silver:#C8C5C1;
+  --powder-blue:#BCC7D4;   /* muted slate */
+  --porcelain-ivory:#F5F1EA;
+  --buttermilk:#EFE7D4;    /* warm stone */
+  --dried-plum:#4A2E3A;    /* deep, quiet plum */
+  --cherry-licorice:#8A4A4E; /* dusty wine */
+  --milkshake-pink:#E9D5D1; /* dusty rose */
+  --old-burgundy:#3A2C30;
+  --olive-note:#B3B08E;
+  --soft-silver:#DAD3CA;
 
   /* semantic roles */
   --surface-primary:var(--porcelain-ivory);
@@ -63,8 +63,8 @@
   --radius-chip:10px;
   --radius-card:20px;
   --radius-pill:999px;
-  --surface-raised:#FCFAF5;   /* porcelain ivory lifted toward white */
-  --plinth:#F3E9C9;           /* buttermilk softened for product plinths */
+  --surface-raised:#FBF9F5;   /* porcelain ivory lifted toward white */
+  --plinth:#ECE5D8;           /* warm stone for product plinths */           /* buttermilk softened for product plinths */
   --shadow-card:0 2px 14px rgba(67,48,46,.10);
   --shadow-soft:0 1px 6px rgba(67,48,46,.08);
   --touch-min:44px;
@@ -131,7 +131,7 @@ h1,h2,h3{margin:0}
 .field[data-tod="am"]::before{background:var(--state-morning)}
 .brandbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s16)}
 .topbrand{padding:var(--s16) var(--s16) 0;margin-bottom:0}
-#opening{position:fixed;inset:0;z-index:50;background:var(--state-morning);color:var(--ink-primary);
+#opening{position:fixed;inset:0;z-index:50;background:var(--surface-primary);color:var(--ink-primary);
   display:flex;align-items:center;justify-content:center;pointer-events:none;
   opacity:1;transition:opacity 400ms var(--e-out)}
 #opening[data-tod="pm"]{background:var(--state-evening);color:var(--porcelain-ivory)}
@@ -551,7 +551,7 @@ footer p{opacity:.65;max-width:38em}
 .topnav .navlink.r{justify-self:end}
 /* Home hero: one product, the greeting split across the image's lower edge */
 .hero{position:relative;height:296px;background:var(--state-personal);overflow:visible;margin-bottom:var(--s64)}
-.hero .hero-wash{position:absolute;inset:0;background:#E4BFC2;clip-path:polygon(0 0,100% 0,100% 58%,0 72%)}
+.hero .hero-wash{position:absolute;inset:0;background:#DEC4C0;clip-path:polygon(0 0,100% 0,100% 58%,0 72%)}
 .hero .hero-photo{position:absolute;left:0;right:0;top:88px;bottom:48px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
 .hero .hero-photo svg,.hero .hero-photo img{max-height:160px;width:auto}
 .hero .hero-kicker{position:absolute;left:var(--margin);top:32px;color:var(--dried-plum)}
@@ -701,10 +701,10 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 /* the ledge: one continuous shelf under every object, lit from above */
 .cabrail-wrap{position:relative;padding-top:var(--s8)}
 .cabrail-wrap::before{content:"";position:absolute;left:0;right:0;top:calc(var(--s8) + 240px);height:16px;z-index:0;
-  background:linear-gradient(180deg,#FFFDF8 0%,#EFE3C6 40%,#D6C6A3 100%);
+  background:linear-gradient(180deg,#FCFAF6 0%,#E6DDD0 40%,#CDC1B1 100%);
   box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 18px 30px -10px rgba(67,48,46,.35)}
 .cabrail-wrap::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--s8) + 240px);z-index:0;
-  background:linear-gradient(180deg,rgba(243,233,201,0) 0%,rgba(243,233,201,.7) 100%)}
+  background:linear-gradient(180deg,rgba(236,229,216,0) 0%,rgba(236,229,216,.8) 100%)}
 .cabrail{position:relative;z-index:1}
 .gallery.rail .gname{font-size:12px;line-height:16px;-webkit-line-clamp:2;text-align:center}
 .gallery.rail .gbrand,.gallery.rail .gstate .tchip{font-size:12px}
