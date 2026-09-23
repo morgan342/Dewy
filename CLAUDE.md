@@ -21,6 +21,43 @@ Canonical interactive UI: `design/dewy.html` (the Claude Code Dewy Morgan prefer
 Do not replace this visual system with a new Expo mock. Port features into this file (or thin wrappers around it).
 Expo/`src/` search modules are the typed reference for ranking/synonyms; keep `design/dewy.html` search behavior in sync.
 
+---
+## Non-Negotiable Product Rules (Morgan · 2026-09-22)
+
+Dewy helps people use skincare products they already own in an appropriate, editable order. These rules apply to every surface in this repository — `design/dewy.html`, `src/`, docs, and anything generated for Dewy.
+
+- “Cabinet” is a named feature. Always capitalize it: “Your Cabinet.”
+- All visible titles, labels, headings, and buttons must use intentional Title Capitalization.
+- Never use “Pamore” font.
+- Do not copy Delicious Library, Apple, or any other product’s visual assets, wood shelves, layouts, icons, branded language, or illustrations.
+- Use original product-gallery visuals and original empty-state illustrations.
+- Do not create a clinical dashboard, a generic AI chat screen, or a multi-recommendation feed.
+- Show one intelligent recommendation at a time.
+- Use editorial asymmetry only on discovery surfaces. Routine execution screens must be calm, structured, and highly legible.
+- Motion must make product objects feel physical and explain state change. Respect Reduce Motion and never make motion the only way to communicate a result.
+- Core actions must not require dragging, swiping, tilt, or any custom gesture. Provide visible controls and accessible alternatives.
+- Do not make medical diagnoses, treatment claims, or definitive safety claims. Describe product information as educational guidance, preserve user control, and provide an appropriate clinician/escalation boundary.
+- AI-generated or inferred product information must be visibly labeled, editable, reviewable, and reversible.
+- Do not add external APIs, paid services, analytics, authentication providers, or product databases without asking for approval first.
+
+## Visual Direction
+
+- Primary background: Porcelain Ivory.
+- Use Dried Plum / Old Burgundy for identity and selected states.
+- Use Powder Blue only as a small supporting accent, never as a dominant screen block.
+- Supporting colors: Buttermilk, Milkshake Pink, Soft Silver, Cherry Licorice, and very limited Olive Note.
+- Maintain a feminine, elevated, non-clinical interface.
+- Use the existing approved fonts or comparable clean non-Canva fonts. Approved today: IBM Plex Sans (interface) and IBM Plex Mono (small metadata), as declared in the `--sans` / `--mono` tokens of `design/dewy.html`.
+
+## Engineering Rules
+
+- First inspect the repository and identify the actual stack, navigation structure, data layer, and test commands.
+- Preserve existing working behavior unless the task explicitly changes it.
+- Prefer reusable components, typed models, small focused files, and deterministic local data for MVP work.
+- For every implementation task: run formatter/linter, relevant unit tests, and the build. Fix errors before reporting completion.
+- At completion, report: files changed, user-visible behavior, tests/build run, and any decisions that need approval.
+
+---
 
 ## Canonical Docs
 

@@ -1,191 +1,206 @@
 import type { Product, RankedProduct } from '../types/product';
-import { normalizeForMatch } from './normalizeQuery';
-import { expandSynonyms, canonicalTypeForQuery } from './synonyms';
+import { normalizeForMatch, joinedForm, tokenVariants } from './normalizeQuery';
+import { parseQuery, fuzzyClose, levenshtein, type ParsedQuery } from './parseQuery';
+import { expandSynonyms } from './synonyms';
 
-/** Simple Levenshtein for typo tolerance on short strings */
-export function levenshtein(a: string, b: string): number {
-  if (a === b) return 0;
-  if (!a.length) return b.length;
-  if (!b.length) return a.length;
-  const rows = a.length + 1;
-  const cols = b.length + 1;
-  const matrix: number[][] = Array.from({ length: rows }, () => Array(cols).fill(0));
-  for (let i = 0; i < rows; i++) matrix[i][0] = i;
-  for (let j = 0; j < cols; j++) matrix[0][j] = j;
-  for (let i = 1; i < rows; i++) {
-    for (let j = 1; j < cols; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost,
-      );
-    }
-  }
-  return matrix[a.length][b.length];
-}
+/**
+ * Deterministic ranking.
+ *
+ * Brand and product identity outweigh descriptions and loose term overlap.
+ * Tiers, highest first:
+ *
+ *   1000  exact brand + exact product name
+ *    900  exact brand + product type
+ *    800  exact product name
+ *    700  brand + prefix / partial
+ *    600  alias / synonym
+ *    500  typo-tolerant / fuzzy
+ *    300  weak token overlap (last resort)
+ */
 
-function fuzzyClose(a: string, b: string): boolean {
-  if (!a || !b) return false;
-  const dist = levenshtein(a, b);
-  const maxLen = Math.max(a.length, b.length);
-  if (maxLen <= 4) return dist <= 1;
-  if (maxLen <= 8) return dist <= 2;
-  return dist <= 3;
-}
+export const TIER = {
+  BRAND_AND_NAME: 1000,
+  BRAND_AND_TYPE: 900,
+  NAME: 800,
+  BRAND_PARTIAL: 700,
+  SYNONYM: 600,
+  FUZZY: 500,
+  OVERLAP: 300,
+} as const;
 
-function productSearchBlob(product: Product): {
+interface ProductIndex {
   brand: string;
+  brandJoined: string;
   name: string;
+  nameJoined: string;
   typeLabel: string;
+  aliases: string[];
   full: string;
-  joined: string;
-} {
+  fullJoined: string;
+  nameTokens: string[];
+}
+
+function indexProduct(product: Product): ProductIndex {
   const brand = normalizeForMatch(product.brand);
   const name = normalizeForMatch(product.name);
   const typeLabel = normalizeForMatch(product.typeLabel);
+  const aliases = (product.aliases ?? []).map(normalizeForMatch);
   const full = `${brand} ${name} ${typeLabel}`.trim();
-  const joined = full.replace(/\s+/g, '');
-  return { brand, name, typeLabel, full, joined };
+  return {
+    brand,
+    brandJoined: joinedForm(brand),
+    name,
+    nameJoined: joinedForm(name),
+    typeLabel,
+    aliases,
+    full,
+    fullJoined: joinedForm(full),
+    nameTokens: name.split(' ').filter(Boolean),
+  };
 }
 
-/**
- * Deterministic ranking (Prompt 3 priority):
- * 1. Exact brand + exact product name
- * 2. Exact brand + exact product type
- * 3. Exact product name
- * 4. Brand + prefix/partial
- * 5. Controlled alias/synonym
- * 6. Typo-tolerant
- */
-export function scoreProduct(queryNormalized: string, product: Product): RankedProduct | null {
-  if (!queryNormalized) return null;
+/** Does this product belong to the product-type family the query asked for? */
+function matchesType(parsed: ParsedQuery, product: Product, idx: ProductIndex): boolean {
+  if (!parsed.type) return false;
+  if (parsed.type.productType && product.type === parsed.type.productType) return true;
 
-  const q = queryNormalized;
-  const qJoined = q.replace(/\s+/g, '');
-  const expansions = expandSynonyms(q);
-  const typeHint = canonicalTypeForQuery(q);
-  const p = productSearchBlob(product);
+  const canonical = parsed.type.canonical;
+  if (idx.typeLabel.includes(canonical) || canonical.includes(idx.typeLabel)) return true;
+
+  // Alias terms from the same family appearing in the product's own labels.
+  for (const expansion of expandSynonyms(canonical)) {
+    if (!expansion) continue;
+    if (idx.typeLabel.includes(expansion) || idx.aliases.some((a) => a.includes(expansion))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/** Fraction of residual query tokens that appear in the product name. */
+function residualCoverage(parsed: ParsedQuery, idx: ProductIndex): number {
+  if (!parsed.residualTokens.length) return 1;
+  let hits = 0;
+  for (const token of parsed.residualTokens) {
+    const variants = tokenVariants(token);
+    const hit = variants.some(
+      (v) =>
+        idx.name.includes(v) ||
+        idx.typeLabel.includes(v) ||
+        idx.aliases.some((a) => a.includes(v)) ||
+        idx.nameTokens.some((nt) => nt.startsWith(v) || fuzzyClose(v, nt)),
+    );
+    if (hit) hits += 1;
+  }
+  return hits / parsed.residualTokens.length;
+}
+
+export function scoreProduct(parsed: ParsedQuery, product: Product): RankedProduct | null {
+  if (!parsed.normalized) return null;
+
+  const idx = indexProduct(product);
+  const q = parsed.normalized;
+  const qJoined = parsed.joined;
+
+  const brandMatched = parsed.brand !== null && parsed.brand.brand.normalized === idx.brand;
+  const brandConfidence = brandMatched ? parsed.brand!.confidence : null;
+  const typeMatched = matchesType(parsed, product, idx);
+
+  // A product name the user actually typed, in full.
+  const nameExact =
+    idx.name.length > 0 && (q === idx.name || q.includes(idx.name) || qJoined.includes(idx.nameJoined));
+
+  const coverage = residualCoverage(parsed, idx);
 
   let score = 0;
   let matchReason = '';
 
-  const brandExact = q.includes(p.brand) || qJoined.includes(p.brand.replace(/\s+/g, ''));
-  const nameExact = q === p.name || q.includes(p.name);
-  const typeExact =
-    q.includes(p.typeLabel) ||
-    (typeHint !== null &&
-      (p.typeLabel.includes(typeHint) || typeHint.includes(p.typeLabel.split(' ')[0])));
-
-  // 1. Exact brand + exact product name
-  if (brandExact && nameExact) {
-    score = 1000;
+  if (brandMatched && nameExact) {
+    score = TIER.BRAND_AND_NAME;
     matchReason = 'exact_brand_and_name';
-  }
-  // 2. Exact brand + exact product type
-  else if (brandExact && typeExact) {
-    score = 900;
+  } else if (brandMatched && typeMatched) {
+    score = TIER.BRAND_AND_TYPE;
     matchReason = 'exact_brand_and_type';
-  }
-  // 3. Exact product name
-  else if (nameExact || q === p.full) {
-    score = 800;
+  } else if (nameExact) {
+    score = TIER.NAME;
     matchReason = 'exact_name';
-  }
-  // 4. Brand + prefix / partial
-  else if (
-    brandExact &&
-    (p.name.startsWith(q.replace(p.brand, '').trim()) ||
-      p.name.includes(q.replace(p.brand, '').trim()) ||
-      qJoined.includes(p.joined.slice(0, Math.min(qJoined.length, p.joined.length))) ||
-      p.joined.includes(qJoined))
-  ) {
-    score = 700;
+  } else if (brandMatched && coverage > 0) {
+    // Brand is right and the rest of the query points at this product.
+    score = TIER.BRAND_PARTIAL + Math.round(coverage * 50);
+    matchReason = parsed.type ? 'brand_prefix_type' : 'brand_partial';
+  } else if (typeMatched) {
+    // Right family, no brand named. Broad terms score lower so a generic word
+    // cannot outrank a specific result.
+    score = parsed.type?.weak ? TIER.SYNONYM - 150 : TIER.SYNONYM;
+    matchReason = 'synonym';
+    if (coverage < 1) score -= Math.round((1 - coverage) * 100);
+  } else if (brandMatched) {
+    // Brand named but nothing else lines up — keep it, ranked low.
+    score = TIER.FUZZY - 100;
     matchReason = 'brand_partial';
-  } else if (brandExact && qJoined.includes(p.brand.replace(/\s+/g, ''))) {
-    // brand present with some leftover tokens that partially hit name/type
-    const rest = q.replace(p.brand, '').trim();
-    if (!rest || p.name.includes(rest) || p.typeLabel.includes(rest) || fuzzyClose(rest, p.name.split(' ')[0] ?? '')) {
-      score = 680;
-      matchReason = 'brand_partial';
+  }
+
+  // Run-together input matched against the product's own joined form.
+  if (score < TIER.BRAND_PARTIAL && qJoined.length >= 6) {
+    if (idx.fullJoined.includes(qJoined) || qJoined.includes(idx.nameJoined)) {
+      score = Math.max(score, brandMatched ? TIER.BRAND_PARTIAL : TIER.SYNONYM);
+      matchReason = matchReason || 'joined';
     }
   }
 
-  // 5. Synonym / alias
-  if (score < 600) {
-    for (const exp of expansions) {
-      if (
-        p.typeLabel.includes(exp) ||
-        exp.includes(p.typeLabel) ||
-        p.full.includes(exp) ||
-        p.joined.includes(exp.replace(/\s+/g, ''))
-      ) {
-        const synonymScore = brandExact ? 650 : 550;
-        if (synonymScore > score) {
-          score = synonymScore;
-          matchReason = 'synonym';
-        }
-        break;
-      }
-    }
-  }
-
-  // Joined forms (ceravecleanser)
-  if (score < 500 && (p.joined.includes(qJoined) || qJoined.includes(p.joined) || qJoined.includes((p.brand + p.typeLabel).replace(/\s+/g, '')))) {
-    score = Math.max(score, brandExact ? 720 : 520);
-    matchReason = matchReason || 'joined';
-  }
-
-  // 6. Typo-tolerant
-  if (score < 400) {
-    const qTokens = q.split(' ').filter(Boolean);
-    const nameTokens = p.name.split(' ').filter(Boolean);
+  // Typo tolerance against brand and name tokens.
+  //
+  // A fuzzy hit on a single token of a longer query is not enough — that is how
+  // "Zzzz Labs Recovery" ends up matching "Makeup Remover". Require the fuzzy
+  // match to account for a real share of what the user typed.
+  if (score < TIER.FUZZY) {
     let typoHits = 0;
-    for (const qt of qTokens) {
-      if (fuzzyClose(qt, p.brand) || nameTokens.some((nt) => fuzzyClose(qt, nt)) || fuzzyClose(qt, p.typeLabel)) {
+    for (const token of parsed.tokens) {
+      if (token.length < 4) continue;
+      if (
+        fuzzyClose(token, idx.brandJoined) ||
+        idx.nameTokens.some((nt) => fuzzyClose(token, nt))
+      ) {
         typoHits += 1;
       }
-      // moisturizer / moisterizer
-      if (fuzzyClose(qt, 'moisturizer') && p.typeLabel.includes('moistur')) typoHits += 1;
     }
-    if (typoHits > 0) {
-      score = Math.max(score, 300 + typoHits * 50 + (brandExact ? 100 : 0));
+    // Count only tokens long enough to be fuzzy-matched at all, so that
+    // "make up wipes" and "makeup wipes" face the same threshold.
+    const significantTokens = parsed.tokens.filter((t) => t.length >= 4).length;
+    const requiredHits = Math.max(1, Math.ceil(significantTokens / 2));
+    if (typoHits >= requiredHits) {
+      score = Math.max(score, TIER.FUZZY - 100 + typoHits * 40);
       matchReason = matchReason || 'typo';
     }
   }
 
-  // Special: "dio moist" style prefix brand + type fragment
-  if (score < 700) {
-    const qTokens = q.split(' ').filter(Boolean);
-    if (qTokens.length >= 1) {
-      const brandPrefix = p.brand.startsWith(qTokens[0]) || fuzzyClose(qTokens[0], p.brand.slice(0, Math.max(3, qTokens[0].length)));
-      const typeFrag = qTokens.slice(1).join(' ');
-      if (
-        brandPrefix &&
-        typeFrag &&
-        (p.typeLabel.includes(typeFrag) ||
-          p.name.includes(typeFrag) ||
-          fuzzyClose(typeFrag, 'moist') ||
-          p.typeLabel.startsWith(typeFrag) ||
-          'moisturizer'.startsWith(typeFrag))
-      ) {
-        if (p.typeLabel.includes('moistur') || p.name.includes('moist') || typeFrag.length >= 3) {
-          score = Math.max(score, 750);
-          matchReason = 'brand_prefix_type';
-        }
-      }
-    }
-  }
-
   if (score <= 0) return null;
-  return { product, score, matchReason };
+
+  // Small tie-breakers: prefer records with an image and with real provenance,
+  // so an equally-relevant richer record surfaces first. Never large enough to
+  // reorder tiers.
+  if (product.imageUrl) score += 2;
+  if (product.provenance === 'provider') score += 1;
+
+  return { product, score, matchReason: matchReason || 'token_overlap' };
 }
 
 export function rankProducts(queryNormalized: string, products: Product[]): RankedProduct[] {
+  if (!queryNormalized) return [];
+  const parsed = parseQuery(queryNormalized, products);
+
   const ranked: RankedProduct[] = [];
   for (const product of products) {
-    const result = scoreProduct(queryNormalized, product);
+    const result = scoreProduct(parsed, product);
     if (result) ranked.push(result);
   }
-  return ranked.sort((a, b) => b.score - a.score || a.product.name.localeCompare(b.product.name));
+
+  return ranked.sort(
+    (a, b) =>
+      b.score - a.score ||
+      a.product.brand.localeCompare(b.product.brand) ||
+      a.product.name.localeCompare(b.product.name),
+  );
 }
+
+export { levenshtein, fuzzyClose, parseQuery };

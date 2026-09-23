@@ -9,7 +9,8 @@
     "android": "expo start --android",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "test:search": "jest __tests__/searchProducts.test.ts"
+    "test:search": "jest __tests__/searchProducts.test.ts",
+    "test:ui": "jest __tests__/ui"
   },
   "dependencies": {
     "expo": "~52.0.0",
@@ -21,6 +22,7 @@
     "@types/jest": "^29.5.14",
     "@types/react": "~18.3.12",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.2.5",
     "typescript": "~5.3.3"
   }
