@@ -148,7 +148,8 @@ export function loadDewy(opts: LoadOptions = {}): DewyApp {
       node.dispatchEvent(new win.MouseEvent('click', { bubbles: true, cancelable: true }));
     },
     tab(name) {
-      app.click(`#nav [data-tab="${name}"]`);
+      if (document.querySelector(`#nav [data-tab="${name}"]`)) app.click(`#nav [data-tab="${name}"]`);
+      else { api.S.tab = name; api.render(); }
     },
     type(id, value) {
       const node = el(id) as HTMLInputElement | null;

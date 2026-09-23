@@ -7,10 +7,10 @@ afterEach(() => { if (app) { app.destroy(); app = null; } });
 const TITLE_CASE = /^([A-Z][^\s]*)(\s[A-Z][^\s]*)*$/;
 
 describe('information architecture', () => {
-  test('the five destinations are the tabs, in Title Case', () => {
+  test('the four destinations are the tabs, in Title Case', () => {
     app = loadDewy();
     const labels = app.all('#nav button').map((b) => (b.textContent || '').trim());
-    expect(labels).toEqual(['Home', 'Cabinet', 'Routine', 'Discover', 'Profile']);
+    expect(labels).toEqual(['Home', 'Cabinet', 'Routine', 'Profile']);
     for (const l of labels) expect(l).toMatch(TITLE_CASE);
   });
 
@@ -20,7 +20,6 @@ describe('information architecture', () => {
       ['home', 'Home'],
       ['cabinet', 'Your Cabinet'],
       ['routine', 'Routine'],
-      ['discover', 'Discover'],
       ['profile', 'Profile'],
     ];
     for (const [tab, heading] of expectations) {
@@ -31,24 +30,26 @@ describe('information architecture', () => {
     }
   });
 
-  test('review and journal live under Discover and keep it lit', () => {
+  test('review, journal, and why-steps live under Profile and keep it lit', () => {
     app = loadDewy();
-    app.tab('discover');
+    expect(app.find('#nav [data-tab="discover"]')).toBeNull();
+    app.tab('profile');
     app.click({ act: 'tab', v: 'ask' });
     expect(app.text()).toContain('Review Your Products');
     expect(app.text()).toContain('Back To Discover');
-    expect(app.find('#nav [data-tab="discover"]')!.getAttribute('aria-current')).toBe('page');
+    expect(app.find('#nav [data-tab="profile"]')!.getAttribute('aria-current')).toBe('page');
     app.click({ act: 'tab', v: 'discover' });
+    expect(app.find('#nav [data-tab="profile"]')!.getAttribute('aria-current')).toBe('page');
     app.click({ act: 'tab', v: 'journal' });
     expect(app.api.S.tab).toBe('journal');
-    expect(app.find('#nav [data-tab="discover"]')!.getAttribute('aria-current')).toBe('page');
+    expect(app.find('#nav [data-tab="profile"]')!.getAttribute('aria-current')).toBe('page');
   });
 
-  test('no view is unreachable from the tabs, Home, Discover, or Profile', () => {
+  test('no view is unreachable from the tabs, Home, or Profile', () => {
     app = loadDewy();
     const reachable = new Set<string>();
     app.all('#nav button').forEach((b) => reachable.add(b.getAttribute('data-tab') || ''));
-    for (const tab of ['home', 'discover', 'profile']) {
+    for (const tab of ['home', 'profile']) {
       app.tab(tab);
       app.all('[data-act="tab"]').forEach((b) => reachable.add(b.getAttribute('data-v') || ''));
     }

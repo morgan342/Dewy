@@ -5,11 +5,11 @@ let app: DewyApp | null = null;
 afterEach(() => { if (app) { app.destroy(); app = null; } });
 
 describe('design/dewy.html boots in jsdom', () => {
-  test('home renders with the five navigation destinations', () => {
+  test('home renders with the four navigation destinations', () => {
     app = loadDewy();
     expect(app.text()).toContain('Home');
     const labels = app.all('#nav button').map((b) => (b.textContent || '').trim());
-    expect(labels).toEqual(['Home', 'Cabinet', 'Routine', 'Discover', 'Profile']);
+    expect(labels).toEqual(['Home', 'Cabinet', 'Routine', 'Profile']);
   });
 
   test('tabs switch the view', () => {
@@ -17,8 +17,8 @@ describe('design/dewy.html boots in jsdom', () => {
     app.tab('cabinet');
     expect(app.text()).toContain('Your Cabinet');
     expect(app.find('#nav [data-tab="cabinet"]')!.getAttribute('aria-current')).toBe('page');
-    app.tab('discover');
-    expect(app.text()).toContain('Discover');
+    app.tab('profile');
+    expect(app.text()).toContain('Profile');
   });
 
   test('the test seam exposes state without changing production behaviour', () => {

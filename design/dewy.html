@@ -675,41 +675,100 @@ footer p{font-size:12px;line-height:16px}
 .input:focus-visible{outline:none;border-bottom-color:var(--ink-primary)}
 textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)}
 .btn-done{border-width:1px;box-shadow:none;font-weight:500;font-size:14px;height:48px}
-/* the Cabinet rail */
-.cabrail-wrap{overflow:hidden;margin-top:var(--s16);padding-bottom:var(--s24);cursor:grab;touch-action:pan-y;outline:none}
+/* ============================================================
+   THE CABINET
+   A lit cupboard, drawn from Morgan's reference: two doors that swing
+   open, a strip of light along the top, a glass shelf with towels and
+   small bottles, and below it an acrylic turntable carrying her products.
+   Prev / Next, the arrow keys, and a plain tap do everything a flick does.
+   Every surface is mixed from the palette; nothing is a photograph.
+   ============================================================ */
+.cab-scene{position:relative;margin:var(--s16) 0 0;
+  --wall:#B8B0A4;--wall-deep:#9E958A;--wall-lit:#CFC8BC;
+  --inner:#FFFDF8;--inner-warm:#F8F2E6;--glow:255,249,232}
+.cab-scene,.cab-scene *{box-sizing:border-box}
+.cab-box{position:relative;margin:0 var(--s16);background:linear-gradient(90deg,var(--wall-deep) 0%,var(--wall) 6%,var(--wall) 94%,var(--wall-deep) 100%);
+  padding:14px 18px 0;perspective:1100px;border-radius:2px;
+  box-shadow:0 30px 50px -30px rgba(67,48,46,.55),0 2px 0 rgba(255,255,255,.25) inset}
+.cab-int{position:relative;overflow:hidden;background:
+  radial-gradient(120% 60% at 50% 0%,rgba(var(--glow),.95) 0%,rgba(var(--glow),0) 60%),
+  linear-gradient(180deg,#F1ECE2 0%,var(--inner) 22%,var(--inner) 70%,var(--inner-warm) 100%);
+  box-shadow:inset 0 22px 30px -18px rgba(67,48,46,.35),inset 26px 0 40px -30px rgba(67,48,46,.28),inset -26px 0 40px -30px rgba(67,48,46,.28),inset 0 -14px 24px -18px rgba(67,48,46,.18)}
+/* a strip of light: a bright bar and the bloom it throws on the wall */
+.cab-led{position:absolute;left:8%;right:8%;height:5px;border-radius:3px;background:#FFFEF9;z-index:2;
+  box-shadow:0 0 8px 3px rgba(var(--glow),.95),0 0 34px 12px rgba(var(--glow),.75),0 6px 60px 24px rgba(var(--glow),.45)}
+.cab-led.top{top:6px}
+.cab-led.mid{top:-3px;left:5%;right:5%}
+/* upper bay: the glass shelf and what lives on it */
+.cab-upper{position:relative;height:124px}
+.cab-upper svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:112px;display:block}
+.cab-glass{position:relative;height:9px;z-index:3;
+  background:linear-gradient(180deg,rgba(255,255,255,.95) 0%,rgba(214,232,226,.85) 45%,rgba(150,190,180,.7) 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 3px 0 rgba(130,170,160,.35),0 10px 18px -6px rgba(67,48,46,.35)}
+.cab-glass::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:rgba(255,255,255,.9)}
+/* lower bay: the turntable */
+.cab-lower{position:relative;padding-top:8px}
+.cab-group{display:flex;justify-content:space-between;align-items:baseline;margin:var(--s8) var(--s16) 0;min-height:16px;position:relative;z-index:5}
+.cab-group .cabcount{opacity:.55}
+.cabrail-wrap{position:relative;height:300px;overflow:hidden;cursor:grab;touch-action:pan-y;outline:none}
 .cabrail-wrap.dragging{cursor:grabbing}
 .cabrail-wrap:focus-visible{box-shadow:inset 0 0 0 2px var(--ink-primary)}
-.cabrail{display:flex;gap:var(--gutter);padding:0 var(--margin);will-change:transform;align-items:flex-start}
-.cabsection.rail{flex:0 0 auto;padding:0;display:flex;flex-direction:column}
+.cab-tray{position:absolute;left:0;right:0;bottom:0;height:130px;pointer-events:none;z-index:0}
+.cab-tray svg{width:100%;height:100%;display:block}
+.cab-tray.front{z-index:3;opacity:.55}
+.cabrail{position:absolute;inset:0;z-index:1}
+.cabsection.rail{display:contents}
 .cabsection.rail .cabhead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
-.cab-group{display:flex;justify-content:space-between;align-items:baseline;margin:var(--s24) var(--margin) 0;min-height:16px}
-.cab-group .cabcount{opacity:.55}
-.gallery.rail{display:flex;gap:var(--gutter)}
-.gallery.rail .gcard{flex:0 0 auto;width:150px;position:relative;z-index:1;transform-origin:50% 100%;will-change:transform,opacity;transition:none;align-items:center;text-align:center}
-.gallery.rail .gvisual{height:240px;padding-bottom:0;background:none;position:relative;transition:transform var(--t-enlarge) var(--e-out)}
-.gallery.rail .gvisual svg,.gallery.rail .gvisual img{max-height:200px;position:relative;z-index:1}
-.gallery.rail .gvisual::after{content:"";position:absolute;left:22%;right:22%;bottom:-3px;height:9px;border-radius:50%;background:rgba(67,48,46,.20);filter:blur(4px);transition:all var(--t-enlarge) var(--e-out)}
-.gallery.rail .gcard.lift .gvisual{transform:translateY(-14px)}
-.gallery.rail .gcard.lift .gvisual::after{left:10%;right:10%;bottom:-17px;height:12px;background:rgba(67,48,46,.14);filter:blur(7px)}
-.gallery.rail .gmain{align-items:center;gap:var(--s16)}
-.gallery.rail .gmain>span:last-child{display:flex;flex-direction:column;align-items:center;padding:0 4px}
+.gallery.rail{display:contents}
+.gallery.rail .gcard{position:absolute;left:0;top:0;width:110px;margin-left:-55px;background:none;border-radius:0;box-shadow:none;
+  transform-origin:50% 100%;will-change:transform;transition:none;align-items:center;text-align:center}
+.gallery.rail .gvisual{height:160px;padding-bottom:0;background:none;position:relative;transition:transform var(--t-enlarge) var(--e-out);display:flex;align-items:flex-end;justify-content:center}
+.gallery.rail .gvisual svg,.gallery.rail .gvisual img{max-height:150px;width:auto;position:relative;z-index:1;
+  -webkit-box-reflect:below -3px linear-gradient(rgba(255,255,255,0) 72%,rgba(255,255,255,.28));
+  filter:drop-shadow(0 2px 3px rgba(67,48,46,.18))}
+.gallery.rail .gvisual::after{content:"";position:absolute;left:18%;right:18%;bottom:-4px;height:8px;border-radius:50%;background:rgba(67,48,46,.22);filter:blur(4px);transition:all var(--t-enlarge) var(--e-out)}
+.gallery.rail .gcard.lift .gvisual{transform:translateY(-16px)}
+.gallery.rail .gcard.lift .gvisual::after{left:8%;right:8%;bottom:-20px;height:11px;background:rgba(67,48,46,.14);filter:blur(7px)}
+.gallery.rail .gmain{align-items:center;gap:var(--s8);padding:0}
+.gallery.rail .gmain>span:last-child{display:flex;flex-direction:column;align-items:center;padding:0 2px;visibility:hidden}
+.gallery.rail .gcard.lift .gmain>span:last-child{visibility:visible}
 .gallery.rail .gbrand{display:none}
+.gallery.rail .gname{font-size:12px;line-height:16px;-webkit-line-clamp:2;text-align:center;width:150px}
 .gallery.rail .gstate{display:none}
 .gallery.rail .gcard.lift .gstate{display:block}
-.gallery.rail .gmore{visibility:hidden}
+.gallery.rail .gstate .tchip{font-size:12px}
+.gallery.rail .gmore{visibility:hidden;min-height:24px;line-height:24px}
 .gallery.rail .gcard.lift .gmore{visibility:visible}
-/* the ledge: one continuous shelf under every object, lit from above */
-.cabrail-wrap{position:relative;padding-top:var(--s8)}
-.cabrail-wrap::before{content:"";position:absolute;left:0;right:0;top:calc(var(--s8) + 240px);height:16px;z-index:0;
-  background:linear-gradient(180deg,#FCFAF6 0%,#E6DDD0 40%,#CDC1B1 100%);
-  box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 18px 30px -10px rgba(67,48,46,.35)}
-.cabrail-wrap::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--s8) + 240px);z-index:0;
-  background:linear-gradient(180deg,rgba(236,229,216,0) 0%,rgba(236,229,216,.8) 100%)}
-.cabrail{position:relative;z-index:1}
-.gallery.rail .gname{font-size:12px;line-height:16px;-webkit-line-clamp:2;text-align:center}
-.gallery.rail .gbrand,.gallery.rail .gstate .tchip{font-size:12px}
-.gallery.rail .gmenu{position:absolute;left:0;right:0;top:100%;z-index:4;margin-top:var(--s8)}
-@media (prefers-reduced-motion:reduce){.gallery.rail .gvisual{transition:none}.cabsection.rail .cabhead{transition:none}}
+.gallery.rail .gmenu{position:absolute;left:0;right:0;top:100%;z-index:4;margin-top:var(--s8);width:220px;margin-left:-55px}
+/* the drawer below, and the doors */
+.cab-drawer{position:relative;margin:0 var(--s16);height:64px;background:linear-gradient(180deg,var(--wall-lit) 0%,var(--wall) 30%,var(--wall) 85%,var(--wall-deep) 100%);
+  border-top:1px solid rgba(255,255,255,.35);box-shadow:inset 0 -2px 0 rgba(67,48,46,.18),0 30px 50px -30px rgba(67,48,46,.55);border-radius:0 0 2px 2px}
+.cab-drawer::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;background:linear-gradient(180deg,rgba(67,48,46,.28),rgba(67,48,46,0))}
+.cab-knob{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#F3E6C6 0%,#C8A867 35%,#8A6B34 75%,#5E4620 100%);
+  box-shadow:0 2px 4px rgba(67,48,46,.45),0 0 0 2px rgba(67,48,46,.12)}
+.cab-doors{position:absolute;left:18px;right:18px;top:14px;bottom:0;pointer-events:none;z-index:6;perspective:900px}
+.cab-door{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(90deg,var(--wall-lit),var(--wall) 40%,var(--wall-deep));
+  box-shadow:0 0 30px rgba(67,48,46,.35);backface-visibility:visible}
+.cab-door.l{left:0;transform-origin:0 50%;transform:rotateY(-112deg)}
+.cab-door.r{right:0;transform-origin:100% 50%;transform:rotateY(112deg)}
+.cab-door::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(67,48,46,.35),rgba(67,48,46,0) 30%,rgba(67,48,46,0) 70%,rgba(67,48,46,.35))}
+.cab-dim{position:absolute;inset:0;background:rgba(40,30,26,.55);z-index:5;pointer-events:none;opacity:0}
+/* opening: only the first time the Cabinet is shown this session */
+.cab-scene.opening .cab-door.l{animation:cabdoor-l 1100ms cubic-bezier(.2,.7,.2,1) both}
+.cab-scene.opening .cab-door.r{animation:cabdoor-r 1100ms cubic-bezier(.2,.7,.2,1) both}
+.cab-scene.opening .cab-dim{animation:cabdim 1300ms 200ms ease-out both}
+.cab-scene.opening .cab-led{animation:cabled 900ms 350ms ease-out both}
+.cab-scene.opening .gcard{animation:cabsettle 700ms 500ms var(--e-out) both}
+@keyframes cabdoor-l{from{transform:rotateY(0)}to{transform:rotateY(-112deg)}}
+@keyframes cabdoor-r{from{transform:rotateY(0)}to{transform:rotateY(112deg)}}
+@keyframes cabdim{from{opacity:1}to{opacity:0}}
+@keyframes cabled{from{opacity:.15;box-shadow:none}to{opacity:1}}
+@keyframes cabsettle{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .cab-scene.opening .cab-door,.cab-scene.opening .cab-dim,.cab-scene.opening .cab-led,.cab-scene.opening .gcard{animation:none}
+  .gallery.rail .gvisual,.gallery.rail .gvisual::after{transition:none}
+}
 /* Product photos shot on white sink into the plinth instead of sitting on a white box */
 .plinth .pv img,.gcard .gvisual img,.steprow .sw img,.lifted img,.hero-photo img,.glyphbox img,.stack-hero img{mix-blend-mode:multiply}
 /* Bottom nav: ivory, hairline, no shadow. It belongs to the same page now. */
@@ -813,7 +872,6 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
   <button type="button" data-tab="home"><span class="nicon" data-icon="home"></span>Home</button>
   <button type="button" data-tab="cabinet"><span class="nicon" data-icon="cabinet"></span>Cabinet</button>
   <button type="button" data-tab="routine"><span class="nicon" data-icon="routine"></span>Routine</button>
-  <button type="button" data-tab="discover"><span class="nicon" data-icon="discover"></span>Discover</button>
   <button type="button" data-tab="profile"><span class="nicon" data-icon="profile"></span>Profile</button>
 </nav>
 
@@ -1732,7 +1790,9 @@ function viewRoutine(){
     if(r.mode!=='recovery')alt+='<button type="button" class="t-body linkish" data-act="mode" data-v="recovery">'+(S.tod==='am'?'Keep This Morning Soft':'Keep Tonight Soft')+'</button>';
     h+='<div class="rowlist"><button type="button" class="textrow t-meta" data-act="toggle" data-key="routineMore" aria-expanded="'+(S.ui.routineMore?'true':'false')+'">'+
        (S.ui.routineMore?'Less':'More')+'</button></div>';
-    if(S.ui.routineMore)h+=lateHTML+(alt?'<div class="actions" style="padding-top:var(--s8)"><div class="quiet-row">'+alt+'</div></div>':'');
+    if(S.ui.routineMore)h+=lateHTML+(alt?'<div class="actions" style="padding-top:var(--s8)"><div class="quiet-row">'+alt+'</div></div>':'')+
+      '<div class="rowlist"><button type="button" class="textrow t-meta" data-act="tab" data-v="discover">Why Steps Are Ordered</button>'+
+      '<button type="button" class="textrow t-meta" data-act="tab" data-v="journal">Journal</button></div>';
   } else if(S.routineState!=='COMPLETED'){
     h+=lateHTML;
   }
@@ -2218,7 +2278,7 @@ function advisorHTML(){
 function viewDiscover(){
   var ids=Object.keys(PRODUCTS).filter(function(id){return PRODUCTS[id].status!=='ARCHIVED'});
   var jn=S.journal.length;
-  var h=brandBar('Journal','journal');
+  var h=brandBar('Profile','profile');
   h+='<div class="disc-hero">'+
      '<p class="t-eyebrow">Discover</p>'+
      '<h1 class="t-screen-title">From Your Shelf.</h1></div>';
@@ -2239,6 +2299,82 @@ function viewDiscover(){
   });
   h+='</div>'+footWord('Discover');
   return h;
+}
+
+/* The cabinet around the turntable. The doors, light strips, glass shelf,
+   towels, and small jars are drawn here; none of them is a product record. */
+function cabinetSceneOpen(){
+  var opening=!CabRail.opened&&!prefersReduced();
+  return '<div class="cab-scene'+(opening?' opening':'')+'" id="cabscene">'+
+    '<div class="cab-box"><div class="cab-int">'+
+      '<div class="cab-led top" aria-hidden="true"></div>'+
+      '<div class="cab-upper" aria-hidden="true">'+upperShelfSvg()+'</div>'+
+      '<div class="cab-glass" aria-hidden="true"></div>'+
+      '<div class="cab-lower"><div class="cab-led mid" aria-hidden="true"></div>';
+}
+function cabinetSceneClose(){
+  return '</div>'+
+    '<div class="cab-dim" aria-hidden="true"></div></div>'+
+    '<div class="cab-doors" aria-hidden="true"><div class="cab-door l"></div><div class="cab-door r"></div></div></div>'+
+    '<div class="cab-drawer" aria-hidden="true"><span class="cab-knob"></span></div></div>';
+}
+function upperShelfSvg(){
+  return '<svg viewBox="0 0 360 112" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">'+
+   '<defs>'+
+    '<linearGradient id="cgTowel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#F1EDE6"/><stop offset="1" stop-color="#D9D3CA"/></linearGradient>'+
+    '<linearGradient id="cgWhite" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E4E0D8"/><stop offset=".3" stop-color="#FFFFFF"/><stop offset=".75" stop-color="#F5F2EC"/><stop offset="1" stop-color="#CFCAC1"/></linearGradient>'+
+    '<linearGradient id="cgCream" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D9D0B6"/><stop offset=".3" stop-color="#FBF6E6"/><stop offset=".75" stop-color="#F3ECD7"/><stop offset="1" stop-color="#C9BFA4"/></linearGradient>'+
+    '<linearGradient id="cgBronze" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6E4A2E"/><stop offset=".3" stop-color="#B8865B"/><stop offset=".7" stop-color="#9C6E45"/><stop offset="1" stop-color="#5A3B22"/></linearGradient>'+
+    '<linearGradient id="cgAmber" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8A5E1E"/><stop offset=".3" stop-color="#E4B24E"/><stop offset=".7" stop-color="#D19A32"/><stop offset="1" stop-color="#6E4712"/></linearGradient>'+
+    '<linearGradient id="cgSteel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E8B85"/><stop offset=".4" stop-color="#F2F1EE"/><stop offset="1" stop-color="#77746E"/></linearGradient>'+
+    '<radialGradient id="cgShadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#43302E" stop-opacity=".28"/><stop offset="1" stop-color="#43302E" stop-opacity="0"/></radialGradient>'+
+   '</defs>'+
+   /* shadows on the glass */
+   '<ellipse cx="86" cy="108" rx="62" ry="6" fill="url(#cgShadow)"/>'+
+   '<ellipse cx="190" cy="108" rx="26" ry="5" fill="url(#cgShadow)"/>'+
+   '<ellipse cx="262" cy="108" rx="34" ry="5" fill="url(#cgShadow)"/>'+
+   '<ellipse cx="322" cy="108" rx="18" ry="5" fill="url(#cgShadow)"/>'+
+   /* folded towels */
+   '<rect x="36" y="86" width="104" height="20" rx="9" fill="url(#cgTowel)"/><path d="M40 92 H136" stroke="#FFFFFF" stroke-opacity=".7"/>'+
+   '<rect x="40" y="68" width="96" height="20" rx="9" fill="url(#cgTowel)"/><path d="M44 74 H132" stroke="#FFFFFF" stroke-opacity=".7"/>'+
+   '<rect x="44" y="50" width="88" height="20" rx="9" fill="url(#cgTowel)"/><path d="M48 56 H128" stroke="#FFFFFF" stroke-opacity=".7"/>'+
+   '<rect x="48" y="33" width="80" height="19" rx="9" fill="url(#cgTowel)"/><path d="M52 39 H124" stroke="#FFFFFF" stroke-opacity=".7"/>'+
+   '<path d="M36 96 q-6 8 2 10 h100 q8 -2 2 -10" fill="none" stroke="#D9D3CA" stroke-opacity=".8"/>'+
+   /* a jar */
+   '<rect x="168" y="76" width="46" height="30" rx="4" fill="url(#cgWhite)"/><rect x="166" y="64" width="50" height="14" rx="3" fill="url(#cgWhite)"/>'+
+   '<rect x="166" y="76" width="50" height="2" fill="#B9B4AA" opacity=".6"/><rect x="176" y="88" width="30" height="10" rx="1" fill="#F7F5F1"/>'+
+   /* two small spray bottles */
+   '<rect x="236" y="54" width="20" height="52" rx="4" fill="url(#cgCream)"/><rect x="240" y="44" width="12" height="12" rx="2" fill="url(#cgSteel)"/><rect x="243" y="38" width="6" height="7" rx="1.5" fill="url(#cgSteel)"/><rect x="239" y="72" width="14" height="22" rx="1" fill="#FFFFFF" opacity=".9"/>'+
+   '<rect x="262" y="54" width="20" height="52" rx="4" fill="url(#cgCream)"/><rect x="266" y="44" width="12" height="12" rx="2" fill="url(#cgSteel)"/><rect x="269" y="38" width="6" height="7" rx="1.5" fill="url(#cgSteel)"/><rect x="265" y="72" width="14" height="22" rx="1" fill="#FFFFFF" opacity=".9"/>'+
+   /* a bronze tube standing on its cap */
+   '<rect x="290" y="96" width="24" height="10" rx="2" fill="#2E2420"/><path d="M291 96 L296 40 q6 -4 12 0 L313 96 Z" fill="url(#cgBronze)"/><rect x="297" y="60" width="10" height="20" rx="1" fill="#FFFFFF" opacity=".55"/>'+
+   /* an amber pump bottle */
+   '<rect x="320" y="46" width="22" height="60" rx="3" fill="url(#cgAmber)"/><rect x="326" y="34" width="10" height="13" rx="2" fill="#2E2420"/><path d="M331 30 v6" stroke="#2E2420" stroke-width="3"/><path d="M331 31 h9 q3 0 3 3" fill="none" stroke="#2E2420" stroke-width="3"/><rect x="324" y="64" width="14" height="24" rx="1" fill="#FFFFFF" opacity=".5"/>'+
+   '<rect x="322" y="48" width="3" height="56" rx="1.5" fill="#FFFFFF" opacity=".35"/>'+
+  '</svg>';
+}
+/* The acrylic turntable: a thick clear disc with a bright rim. The back
+   half sits behind the products, the front rim in front of their bases. */
+function traySvg(front){
+  var d='<defs>'+
+    '<radialGradient id="ctTop" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset=".55" stop-color="#F6F3EC" stop-opacity=".85"/><stop offset="1" stop-color="#E4DFD4" stop-opacity=".9"/></radialGradient>'+
+    '<linearGradient id="ctEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".9"/><stop offset=".5" stop-color="#D3E2DE" stop-opacity=".75"/><stop offset="1" stop-color="#A9BEB8" stop-opacity=".7"/></linearGradient>'+
+    '<radialGradient id="ctShadow" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#43302E" stop-opacity=".22"/><stop offset="1" stop-color="#43302E" stop-opacity="0"/></radialGradient>'+
+    '</defs>';
+  if(front){
+    return '<svg viewBox="0 0 360 130" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+d+
+      '<path d="M22 84 A158 46 0 0 0 338 84 L338 96 A158 46 0 0 1 22 96 Z" fill="url(#ctEdge)"/>'+
+      '<path d="M22 84 A158 46 0 0 0 338 84" fill="none" stroke="#FFFFFF" stroke-opacity=".85" stroke-width="1.5"/></svg>';
+  }
+  return '<svg viewBox="0 0 360 130" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+d+
+    '<ellipse cx="180" cy="100" rx="176" ry="30" fill="url(#ctShadow)"/>'+
+    '<path d="M22 84 A158 46 0 0 1 338 84 L338 96 A158 46 0 0 0 22 96 Z" fill="url(#ctEdge)" opacity=".9"/>'+
+    '<ellipse cx="180" cy="84" rx="158" ry="46" fill="url(#ctTop)"/>'+
+    '<ellipse cx="180" cy="84" rx="158" ry="46" fill="none" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="1.5"/>'+
+    '<ellipse cx="180" cy="80" rx="120" ry="22" fill="#FFFFFF" opacity=".35"/>'+
+    '<ellipse cx="180" cy="84" rx="30" ry="9" fill="#FFFFFF" opacity=".5"/>'+
+    '<circle cx="180" cy="84" r="5" fill="#E8E3D9"/><circle cx="180" cy="84" r="3" fill="#FFFFFF"/>'+
+    '</svg>';
 }
 
 function viewCabinet(){
@@ -2305,8 +2441,10 @@ function viewCabinet(){
   if(view==='gallery'){
     /* The rail: one object at a time, its group riding above it. Flick it,
        or use Prev / Next and the arrow keys. Tap the object to lift it. */
-    h+='<div class="cab-group"><p class="t-eyebrow" id="cabgroup" aria-live="polite"></p><span class="t-caption cabcount" id="cabgroupn"></span></div>'+
-       '<div class="cabrail-wrap" id="cabrail-wrap" tabindex="0" role="group" aria-label="Your products, one at a time. Left and right arrows move between them.">'+
+    h+=cabinetSceneOpen()+
+       '<div class="cab-group"><p class="t-eyebrow" id="cabgroup" aria-live="polite"></p><span class="t-caption cabcount" id="cabgroupn"></span></div>'+
+       '<div class="cabrail-wrap" id="cabrail-wrap" tabindex="0" role="group" aria-label="Your products on a turntable, one at a time. Left and right arrows turn it.">'+
+       '<div class="cab-tray" aria-hidden="true">'+traySvg(false)+'</div>'+
        '<div class="cabrail" id="cabrail">';
   }
   ORDER.forEach(function(k){
@@ -2334,7 +2472,7 @@ function viewCabinet(){
   });
   if(view==='gallery'){
     var ci=Math.min(Math.max(0,S.ui.cabIndex||0),ids.length-1);
-    h+='</div></div>'+
+    h+='</div><div class="cab-tray front" aria-hidden="true">'+traySvg(true)+'</div></div>'+cabinetSceneClose()+
        '<div class="foot-line"><span id="cabpos">'+(ci+1)+' Of '+ids.length+'</span><span class="pn2">'+
        '<button type="button" data-act="cab-prev">Prev</button> / <button type="button" data-act="cab-next">Next</button></span></div>';
   }
@@ -3210,7 +3348,7 @@ function answerFor(qi){
           src:c.brand+' '+c.productName+(c.why?'':' · General Guidance · Not Medical Advice'),completeness:completenessFor([cur]),action:openAct(cur)};
 }
 function viewAsk(){
-  var h=brandBar('Discover','discover')+'<div class="page-head"><button type="button" class="t-meta linkish" data-act="tab" data-v="discover">Back To Discover</button>'+
+  var h=brandBar('Profile','profile')+'<div class="page-head"><button type="button" class="t-meta linkish" data-act="tab" data-v="discover">Back To Discover</button>'+
     '<h1 class="t-screen-title">Review Your Products</h1></div>';
   /* Pill-shaped prompt chips are a chatbot costume. A quiet list of the four
      things Dewy can actually answer is more honest and easier to read. */
@@ -3258,7 +3396,7 @@ function viewAsk(){
 var OBS=['TEXTURE','COMFORT','DRYNESS','REDNESS','BREAKOUTS','NOTHING NOTABLE'];
 function viewJournal(){
   var d=S.ui.jDate||stamp(now());
-  var h=brandBar('Discover','discover')+'<div class="page-head"><h1 class="t-screen-title">Journal</h1></div>';
+  var h=brandBar('Profile','profile')+'<div class="page-head"><h1 class="t-screen-title">Journal</h1></div>';
   if(S.ui.recorded){
     h+='<section class="notice" style="border-top:none"><p class="t-meta">Saved</p></section>';
   }
@@ -3326,6 +3464,10 @@ function viewProfile(){
      '<button type="button" class="selrow t-body" data-act="pref-arch" aria-pressed="'+(!!S.ui.showArchived)+'">'+
      '<span>Show Archived Products</span><span class="box"></span></button>'+
      '<button type="button" class="textrow t-meta" data-act="history">Routine History</button></div>';
+  h+='<div class="page-head"><p class="t-meta">More</p></div><div class="rowlist">'+
+     '<button type="button" class="textrow t-meta" data-act="tab" data-v="ask">Review Your Products</button>'+
+     '<button type="button" class="textrow t-meta" data-act="tab" data-v="journal">Journal</button>'+
+     '<button type="button" class="textrow t-meta" data-act="tab" data-v="discover">Why Steps Are Ordered</button></div>';
   h+='<div class="page"><p class="t-caption" style="opacity:.6">Everything stays on this phone.</p></div>'+footWord('Profile');
   return h;
 }
@@ -3385,7 +3527,7 @@ function render(){
   var NAVICONS={home:ICONS.home,routine:S.tod==='am'?ICONS.sun:ICONS.moon,cabinet:ICONS.cabinet,discover:ICONS.discover,
     ask:ICONS.ask,journal:ICONS.journal,profile:ICONS.profile};
   /* Screens that live under a tab keep that tab lit, so nothing feels lost. */
-  var TAB_OF={ask:'discover',journal:'discover'};
+  var TAB_OF={ask:'profile',journal:'profile',discover:'profile'};
   var litTab=TAB_OF[S.tab]||S.tab;
   var nb=el('nav').querySelectorAll('button');
   for(var i=0;i<nb.length;i++){
@@ -3661,7 +3803,7 @@ var _stacks=[],undoT;
    does, so nothing depends on the gesture.
    ================================================================ */
 var CabRail={
-  wrap:null,rail:null,cards:[],x:0,v:0,target:null,drag:null,raf:0,idx:0,cur:-1,
+  wrap:null,rail:null,cards:[],x:0,v:0,target:null,drag:null,raf:0,idx:0,cur:-1,opened:false,
   mount:function(){
     var wrap=el('cabrail-wrap'),rail=el('cabrail');
     this.wrap=wrap;this.rail=rail;this.cards=[];this.drag=null;this.target=null;this.v=0;
@@ -3671,6 +3813,9 @@ var CabRail={
     if(!this.cards.length)return;
     this.idx=Math.min(Math.max(0,S.ui.cabIndex||0),this.cards.length-1);
     this.x=-this.offsetOf(this.idx);this.settle(this.idx,true);this.render();
+    var scene=el('cabscene');
+    if(scene){var sw=window.setTimeout(function(){CabRail.opened=true},50);if(prefersReduced())CabRail.opened=true;
+      window.addEventListener('resize',function(){self.render()},{passive:true});}
     wrap.addEventListener('pointerdown',function(e){self.down(e)});
     wrap.addEventListener('pointermove',function(e){self.move(e)});
     wrap.addEventListener('pointerup',function(e){self.up(e)});
@@ -3681,7 +3826,10 @@ var CabRail={
       else if(e.key==='ArrowLeft'){e.preventDefault();self.step(-1)}
     });
   },
-  offsetOf:function(i){var c=this.cards[i];if(!c)return 0;var ww=this.wrap?this.wrap.clientWidth:0;return c.offsetLeft-(ww-c.offsetWidth)/2},
+  /* One card is one STEP of travel; the rail keeps that as pixels so a
+     flick, a drag, and a settle all share the same arithmetic. */
+  STEP:96,
+  offsetOf:function(i){return i*this.STEP},
   maxX:function(){return -this.offsetOf(0)},
   minX:function(){return -this.offsetOf(this.cards.length-1)},
   nearest:function(x){
@@ -3691,13 +3839,22 @@ var CabRail={
   },
   render:function(){
     if(!this.rail)return;
-    var rot=Math.max(-6,Math.min(6,this.v*.05));
-    this.rail.style.transform='translate3d('+this.x+'px,0,0)';
-    for(var i=0;i<this.cards.length;i++){
-      var c=this.cards[i],d=(-this.offsetOf(i)-this.x)/Math.max(1,c.offsetWidth);
-      var a=Math.min(Math.abs(d),1);
-      c.style.transform='rotate('+(rot*(1-a*.5))+'deg) scale('+(1-a*.08)+')';
-      c.style.opacity=String(1-a*.45);
+    var n=this.cards.length;if(!n)return;
+    var ww=this.wrap?this.wrap.clientWidth:0,wh=this.wrap?this.wrap.clientHeight:0;
+    if(!ww)ww=360;if(!wh)wh=300;
+    /* the disc: front of it a little above the bottom, radius to fit */
+    var rx=Math.min(158,ww*.44),ry=rx*.29,cx=ww/2,cy=wh-46;
+    var stepA=Math.PI*2/Math.max(n,8);
+    var prog=-this.x/this.STEP;
+    for(var i=0;i<n;i++){
+      var c=this.cards[i],th=(i-prog)*stepA;
+      var cs=Math.cos(th),sn=Math.sin(th);
+      var depth=(cs+1)/2;                     /* 1 in front, 0 at the back */
+      var sc=.68+.32*depth;
+      var tx=cx+rx*sn,ty=cy+ry*cs;
+      c.style.transform='translate3d('+tx.toFixed(1)+'px,'+(ty-160).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
+      c.style.zIndex=String(10+Math.round(depth*100));
+      c.style.opacity=String(.62+.38*depth);
     }
   },
   settle:function(i,quiet){
