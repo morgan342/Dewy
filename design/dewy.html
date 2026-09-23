@@ -622,6 +622,12 @@ footer p{opacity:.65;max-width:38em}
 @media (prefers-reduced-motion:reduce){.lifted,.tag{animation:none}}
 /* every screen: lists, notices, and states hang from the margin; no cards */
 .rowlist{margin:0 var(--margin)}
+/* Product photos shot on white sink into the plinth instead of sitting on a white box */
+.plinth .pv img,.gcard .gvisual img,.steprow .sw img,.lifted img,.hero-photo img,.glyphbox img,.stack-hero img{mix-blend-mode:multiply}
+/* Bottom nav: ivory, hairline, no shadow. It belongs to the same page now. */
+.nav{background:var(--surface-primary);border-radius:0;box-shadow:none;border-top:var(--rule) solid var(--structure-quiet)}
+.nav button{opacity:.5;font-size:11px;line-height:14px;font-weight:500;letter-spacing:.02em}
+.nav button[aria-current="page"]{opacity:1;font-weight:500}
 /* Cabinet top: one eyebrow row, one search line, text filters */
 .cab-top{display:flex;justify-content:space-between;align-items:center;margin:var(--s24) var(--margin) 0;min-height:32px}
 .cab-search{margin:var(--s8) var(--margin) 0}
@@ -1550,7 +1556,7 @@ function viewRoutine(){
       '<span class="t-caption" style="opacity:.7">'+esc(w)+'</span></span>'+
       '<span class="chk none" aria-hidden="true"></span></button></li>';
   });
-  h+='<main><ol class="steprows" aria-label="Products in routine order">'+rows+'</ol>'+focusHTML+lateHTML;
+  h+='<main><ol class="steprows" aria-label="Products in routine order">'+rows+'</ol>'+focusHTML;
   /* The order is Dewy's suggestion, and it says so. Product directions and
      anything a clinician prescribed come first, and every step is editable. */
   h+='<p class="t-caption" style="padding:var(--s16) var(--margin) 0;opacity:.7">'+
@@ -1608,13 +1614,10 @@ function viewRoutine(){
   }
   if(S.routineState==='NOT_STARTED'){
     h+=steps.length?(
-        '<button type="button" class="btn btn-begin" data-act="begin">Begin Routine '+ICONS.arrow+'</button>'+
-        '<div class="quiet-row" style="margin-top:var(--s16)"><button type="button" class="t-body linkish" data-act="routine-edit">Edit Routine</button>'+
-        '<button type="button" class="t-body linkish" data-act="go-add-search">Add A Product</button></div>'+
-        '<p class="t-meta" style="opacity:.65;margin-top:var(--s8)">Saved to your Cabinet too.</p>'
+        '<button type="button" class="btn btn-begin" data-act="begin">Begin Routine '+ICONS.arrow+'</button>'
        ):
        ('<section class="notice" style="margin:0"><p class="t-meta">No Routine Yet</p>'+
-       '<p class="t-body line">Add a product from your Cabinet, or search for what you use, like Dior. It lands in your Cabinet too.</p>'+
+       '<p class="t-body line">Add a product to begin.</p>'+
        '<p><button type="button" class="btn btn-done" data-act="routine-edit">Add From Cabinet</button></p>'+
        '<p><button type="button" class="t-body linkish" data-act="go-add-search">Add A Product</button></p></section>');
   } else if(S.routineState==='IN_PROGRESS'){
@@ -1628,16 +1631,20 @@ function viewRoutine(){
        '<div class="quiet-row">'+
        (ci>0?'<button type="button" class="t-body linkish" data-act="back-step">Back</button>':'')+
        '<button type="button" class="t-body linkish" data-act="skip">Skip</button>'+
-       '<button type="button" class="t-body linkish" data-act="pause">Pause</button>'+
-       '<button type="button" class="t-body linkish" data-act="routine-edit">Edit Routine</button></div>';
+       '<button type="button" class="t-body linkish" data-act="pause">Pause</button></div>';
   }
-  if(S.routineState!=='COMPLETED'){
+  h+='</div>';
+  /* everything that is not the routine itself waits behind one word */
+  if(S.routineState!=='COMPLETED'&&steps.length){
     var alt='';
     if(r.mode!=='thirty')alt+='<button type="button" class="t-body linkish" data-act="mode" data-v="thirty">Make It Thirty Seconds</button>';
     if(r.mode!=='recovery')alt+='<button type="button" class="t-body linkish" data-act="mode" data-v="recovery">'+(S.tod==='am'?'Keep This Morning Soft':'Keep Tonight Soft')+'</button>';
-    if(alt)h+='<div class="quiet-row">'+alt+'</div>';
+    h+='<div class="rowlist"><button type="button" class="textrow t-meta" data-act="toggle" data-key="routineMore" aria-expanded="'+(S.ui.routineMore?'true':'false')+'">'+
+       (S.ui.routineMore?'Less':'More')+'</button></div>';
+    if(S.ui.routineMore)h+=lateHTML+(alt?'<div class="actions" style="padding-top:var(--s8)"><div class="quiet-row">'+alt+'</div></div>':'');
+  } else if(S.routineState!=='COMPLETED'){
+    h+=lateHTML;
   }
-  h+='</div>';
 
   /* --- every step, on request: completed and skipped steps stay inspectable
          without the whole routine turning into a checklist --- */
@@ -1708,7 +1715,7 @@ function viewRoutine(){
   }
 
   /* --- routine-level reason --- */
-  if(S.routineState!=='COMPLETED'){
+  if(S.routineState!=='COMPLETED'&&S.ui.routineMore){
     h+='<div class="page">'+reasonLine(r.reasons)+whyBlock(null,r.reasons,'routinewhy')+'</div>';
   }
 
@@ -1829,6 +1836,8 @@ function brandBar(rightLabel,rightTab){
 }
 /* the closing wordmark every screen ends on */
 function footWord(word){
+  /* Sign once. The name closes Home; every other screen ends on its foot line. */
+  if(word!=='Dewy')return '';
   return '<p class="t-foot foot-word" aria-hidden="true">'+esc(word)+'</p>';
 }
 /* one product standing on a Buttermilk plinth, on the grid */
@@ -4024,6 +4033,27 @@ var ACTS={
   }
 };
 
+/* The object goes somewhere you can see: when a product joins the routine it
+   flies to the Routine tab, and the tab answers. Never the only feedback. */
+function flyToTab(src,tab){
+  try{
+    if(!src||prefersReduced()||!src.animate)return;
+    var dst=el('nav').querySelector('[data-tab="'+tab+'"]');if(!dst)return;
+    var a=src.getBoundingClientRect(),b=dst.getBoundingClientRect();
+    var f=src.cloneNode(true);f.className='flyer';
+    f.style.cssText='position:fixed;left:'+a.left+'px;top:'+a.top+'px;width:'+a.width+'px;height:'+a.height+'px;z-index:60;pointer-events:none;mix-blend-mode:multiply';
+    document.body.appendChild(f);
+    var tx=(b.left+b.width/2)-(a.left+a.width/2),ty=(b.top+b.height/2)-(a.top+a.height/2);
+    var an=f.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+(tx*.5)+'px,'+(ty*.5-40)+'px) scale(.5)',opacity:1,offset:.55},{transform:'translate('+tx+'px,'+ty+'px) scale(.12)',opacity:.2}],{duration:640,easing:'cubic-bezier(.3,.8,.3,1)'});
+    an.onfinish=function(){f.remove();if(dst.animate)dst.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:300,easing:'ease-out'})};
+  }catch(err){}
+}
+var _routineAdd=ACTS['routine-add'];
+ACTS['routine-add']=function(v,id){
+  var src=document.querySelector('.lifted .pphoto,.lifted svg')||document.querySelector('.gmain[data-id="'+id+'"] .gvisual img,.gmain[data-id="'+id+'"] .gvisual svg');
+  flyToTab(src,'routine');
+  return _routineAdd(v,id);
+};
 document.addEventListener('click',function(e){
   if(e.target.id==='zoom'){ACTS['zoom-close']();return}
   var b=e.target.closest('[data-act],[data-tab]');

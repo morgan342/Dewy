@@ -30,7 +30,14 @@ Final three (same day, Morgan: "all three"):
 - Step card in hand is a flat lifted plinth (no radius, deep soft shadow, eyebrow "Step 1 Of 4 · Cleanse"); the card beneath is a Buttermilk plinth. Card-stack behaviour unchanged.
 - Silhouettes draw from the palette: Milkshake Pink bodies, Dried Plum caps, raised ivory for frosted glass, plum for dark bottles (`FILL` / `CAPT` / `kindGlyph`). No grey anywhere.
 Verified: 240 tests, SYNTAX_OK, typecheck clean, screenshots of Cabinet, Routine in progress, Add A Photo.
-Not done / open: serif wordmark (needs font approval, Plex used); Cabinet rail with flick physics (visible controls kept as primary, rail not built); "lands in Tonight" motion on Add To Tonight; Discover/Ask/Profile/Add screens not yet moved onto the grid beyond shared `.page` margins.
+Matas decisions (same day, Morgan: "make the decisions as if you were Mike"):
+1. Wordmark: no serif. Own the type. Sign once: the "Dewy" wordmark closes Home only; every other screen ends on its foot line (`footWord` returns '' otherwise).
+2. Photography: product photos shot on white now `mix-blend-mode:multiply` on plinths, the hero, the step rows, and the step card, so the white box disappears into the Buttermilk or pink ground.
+3. Tonight: four steps, one suggestion, one button. Modes, skin check, reason, and the extra links sit behind a single "More" row (`S.ui.routineMore`). Foot line keeps Add A Product / Edit Routine. "Saved to your Cabinet too." removed.
+4. Motion: `flyToTab()` — adding a product to the routine sends its image to the Routine tab, which pulses. Guarded for Reduce Motion and missing Web Animations; never the only feedback.
+5. Bottom nav: ivory, hairline top, no radius or shadow, 11px labels, weight 500 when current.
+Verified: 240 tests, SYNTAX_OK, typecheck clean, screenshots of Home, Cabinet, Routine.
+Not done / open: Cabinet rail with flick physics (visible controls kept as primary, rail not built). Serif wordmark decided against. All screens on the grid.
 Next sprint: "Grid pass on Discover, Profile, Add Product; Add To Tonight landing motion".
 
 ## Previous status (2026-09-22 evening)
