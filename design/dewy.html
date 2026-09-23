@@ -623,6 +623,33 @@ footer p{opacity:.65;max-width:38em}
 @media (prefers-reduced-motion:reduce){.lifted,.tag{animation:none}}
 /* every screen: lists, notices, and states hang from the margin; no cards */
 .rowlist{margin:0 var(--margin)}
+.searchrow .btn-search{background:var(--ink-primary);color:var(--porcelain-ivory);border-radius:var(--radius-pill);font-weight:500}
+/* Routine: title like every other screen, product on a plinth, one plum action */
+.routine-title{margin:var(--s8) 0 var(--s8)}
+.field .field-top{margin-top:var(--s16)}
+.tod button{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.4;border-bottom-width:1px}
+.tod button[aria-pressed="true"]{opacity:1}
+.steprows{margin-top:var(--s16)}
+.steprow{grid-template-columns:64px minmax(0,1fr) 22px;min-height:88px}
+.steprow .sw{width:64px;height:64px;padding-bottom:8px}
+.steprow .sw svg,.steprow .sw img{max-height:48px}
+.steprow .nm{font-size:15px;line-height:20px}
+.btn-begin{background:var(--ink-primary);color:var(--porcelain-ivory);box-shadow:none;height:56px;font-size:16px;font-weight:500}
+.actions{padding-top:var(--s32)}
+.actions .nextup{margin-top:var(--s16)!important;opacity:.6!important}
+.actions .quiet-row{margin-top:var(--s8)}
+.focus{padding-top:var(--s32)}
+.stack{margin-top:var(--s24)}
+.stack-hero{padding-top:0}
+.stack-hero .hero-pv{height:200px;background:var(--plinth);display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px;margin:0 calc(-1*var(--s16)) var(--s16)}
+.stack-hero .hero-pv img{mix-blend-mode:multiply}
+.stack-hero .pname{font-size:22px;line-height:26px;letter-spacing:-.01em}
+.stack-hero .dsource{font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+footer{padding-top:var(--s32);padding-bottom:var(--s16)}
+footer p{font-size:12px;line-height:16px}
+.air-line{margin:var(--s24) var(--margin) 0;opacity:.7}
+.home-start{margin:var(--s24) var(--margin) 0}
+.btn-start{background:var(--ink-primary);color:var(--porcelain-ivory);box-shadow:none;height:56px;font-size:16px;font-weight:500}
 /* Editorial rows: one height, one hairline, quiet links, a small arrow where a row leads somewhere */
 .textrow,.selrow{min-height:56px;padding-top:0;padding-bottom:0;border-bottom-color:var(--structure-quiet);text-decoration:none}
 .textrow.t-body,.textrow.t-meta{font-size:15px;line-height:20px;font-weight:400}
@@ -999,7 +1026,8 @@ var S={
   journal:[],
   ask:{sel:[],answer:null},
   ui:{},                  /* transient screen state: dialogs, flows, disclosures */
-  prefs:{defaultMode:'balanced',travel:false,reminders:false,confirmSkip:true,cabinetView:'gallery'}
+  prefs:{defaultMode:'balanced',travel:false,reminders:false,confirmSkip:true,cabinetView:'gallery'},
+  weather:null   /* {place,lat,lon,humidity,temp,at} once a location is set */
 };
 
 var el=function(i){return document.getElementById(i)};
@@ -1026,7 +1054,7 @@ function save(){
       tod:S.tod,mode:S.mode,skin:S.skin,routineState:S.routineState,steps:S.steps,
       current:S.current,sequenceKey:S.sequenceKey,overrides:S.overrides,history:S.history,
       journal:S.journal,prefs:S.prefs,routine:S.routine,completedKey:S.completedKey,
-      dismissed:S.dismissed,replenish:S.replenish,products:prod
+      dismissed:S.dismissed,replenish:S.replenish,weather:S.weather,products:prod
     }));
     STORAGE_OK=true;
   }catch(e){STORAGE_OK=false;/* storage unavailable; the app runs from memory */}
@@ -1059,6 +1087,7 @@ function load(){
     if(d.completedKey)S.completedKey=d.completedKey;
     if(d.dismissed)S.dismissed=d.dismissed;
     if(d.replenish)S.replenish=d.replenish;
+    if(d.weather)S.weather=d.weather;
     if(d.products)Object.keys(d.products).forEach(function(id){
       if(PRODUCTS[id]){
         SAVED_PRODUCT_FIELDS.forEach(function(f){
@@ -1454,12 +1483,12 @@ function viewRoutine(){
   h+='<header class="field" data-tod="'+S.tod+'">'+
      brandBar('Cabinet','cabinet')+
      '<div class="field-top">'+
-       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+'</p>'+
+       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+(r.minutes==='30 SECONDS'?' · 30 Seconds':' · About '+r.minutes+(r.minutes===1?' Minute':' Minutes'))+'</p>'+
        '<nav class="tod t-meta" aria-label="Time of day">'+
          '<button type="button" data-act="tod" data-v="am" aria-pressed="'+(S.tod==='am')+'">Morning</button>'+
          '<button type="button" data-act="tod" data-v="pm" aria-pressed="'+(S.tod==='pm')+'">Evening</button>'+
        '</nav></div>'+
-     '<h1 class="sr-only">'+esc(day.when)+'</h1>'+
+     '<h1 class="t-screen-title routine-title">'+(S.tod==='am'?'This Morning':'Tonight')+'</h1><p class="sr-only">'+esc(day.when)+'</p>'+
      '<p class="sr-only">'+esc(done?day.complete:day.greeting)+' '+esc(r.mode==='thirty'?'Thirty seconds.':r.mode==='recovery'?(S.tod==='am'?'Soft. Cleanse, moisturize, and protect.':'Soft. Cleanse, moisturize, and stop there.'):(S.tod==='pm'&&steps.some(function(x){return PRODUCTS[x].kind==='Retinoid'})?'A retinoid night.':day.type))+' '+
        Word(steps.length)+(steps.length===1?' step. ':' steps. ')+
        (r.minutes==='30 SECONDS'?'About thirty seconds.':'About '+word(r.minutes)+(r.minutes===1?' minute.':' minutes.'))+' '+esc(todWord)+' routine.</p></header>';
@@ -1600,11 +1629,11 @@ function viewRoutine(){
       '<span class="t-caption" style="opacity:.7">'+esc(w)+'</span></span>'+
       '<span class="chk none" aria-hidden="true"></span></button></li>';
   });
-  h+='<main><ol class="steprows" aria-label="Products in routine order">'+rows+'</ol>'+focusHTML;
+  var listHTML='<ol class="steprows" aria-label="Products in routine order">'+rows+'</ol>';
+  h+='<main>'+(S.routineState==='IN_PROGRESS'?'':listHTML);
   /* The order is Dewy's suggestion, and it says so. Product directions and
      anything a clinician prescribed come first, and every step is editable. */
-  h+='<p class="t-caption" style="padding:var(--s16) var(--margin) 0;opacity:.7">'+
-     'Guidance, not a rule.</p>';
+
 
   /* --- instruction panel --- */
   if(S.routineState==='IN_PROGRESS'&&(S.current||S.ui.peek)){
@@ -1622,6 +1651,7 @@ function viewRoutine(){
          '<section class="panel stack-hero enter" tabindex="0" role="group" aria-label="'+
            esc((isPeek?'Viewing step ':'Current step ')+idx+' of '+steps.length+': '+c.brand+' '+c.productName+'. '+
            (isPeek?'Down arrow returns to the current step.':'Right arrow or S marks it complete, left arrow or N sets it aside, up and down look at other steps. The buttons below do the same.'))+'">'+
+         '<div class="hero-pv" aria-hidden="true">'+productVisual(heroId,Math.min(1.6,150/Math.max(1,c.h)),c.confidence==='UNKNOWN')+'</div>'+
          '<p class="t-meta eyebrow" style="opacity:.6">'+(isPeek?'Viewing ':'')+'Step '+idx+' Of '+steps.length+' &middot; '+esc(cat(c.category))+'</p>'+
          '<h2 class="t-section-heading pname">'+esc(c.brand+' '+c.productName)+'</h2>'+
          directionsHTML(c,true)+
@@ -1670,14 +1700,14 @@ function viewRoutine(){
     var ci=steps.indexOf(S.current),nx=null,nxName='';
     for(var k=ci+1;k<steps.length;k++){if(S.steps[steps[k]]==='PENDING'){nx=steps[k];break}}
     if(nx)nxName=PRODUCTS[nx].brand+' '+PRODUCTS[nx].productName;
-    h+='<button type="button" class="btn btn-done" data-act="done">Mark Complete</button>'+
+    h+='<button type="button" class="btn btn-begin" data-act="done">Mark Complete</button>'+
        '<p class="t-caption nextup" style="margin-top:var(--s8);opacity:.7">'+(nxName?'Next: '+esc(nxName):'Last Step')+'</p>'+
        '<div class="quiet-row">'+
        (ci>0?'<button type="button" class="t-body linkish" data-act="back-step">Back</button>':'')+
        '<button type="button" class="t-body linkish" data-act="skip">Skip</button>'+
        '<button type="button" class="t-body linkish" data-act="pause">Pause</button></div>';
   }
-  h+='</div>';
+  h+='</div>'+focusHTML;
   /* everything that is not the routine itself waits behind one word */
   if(S.routineState!=='COMPLETED'&&steps.length){
     var alt='';
@@ -1766,7 +1796,7 @@ function viewRoutine(){
   /* --- dialogs --- */
   if(S.ui.dialog)h+=dialogHTML();
 
-  h+='<footer><p class="t-caption">Cosmetic guidance, not medical advice.</p>'+
+  h+='<footer><p class="t-caption">Guidance, not a rule. Not medical advice.</p>'+
      '<p class="t-caption">If skin reacts, stop and see a clinician.</p></footer>'+
      footWord(S.tod==='am'?'Morning':'Tonight')+
      '<div class="foot-line"><button type="button" data-act="go-add-search">Add A Product</button>'+
@@ -2002,8 +2032,10 @@ function viewHome(){
   h+='<div class="plinths quiet">'+steps.slice(0,3).map(function(id){return plinthHTML(id,cat(PRODUCTS[id].category))}).join('');
   for(var b=steps.length;b<3;b++)h+='<div class="plinth blank" aria-hidden="true"><span class="pv"></span></div>';
   h+='</div>';
-  h+='<div class="foot-line"><span>'+esc(steps.slice(0,3).map(function(id){return PRODUCTS[id].kind}).join(' · ')||'')+'</span>'+
-     '<button type="button" data-act="tab" data-v="routine">Start</button></div>';
+  var wl=WEATHER.line();
+  if(wl)h+='<p class="t-eyebrow air-line">'+esc(wl)+'</p>';
+  var startLabel=S.routineState==='IN_PROGRESS'||S.routineState==='PAUSED'?'Continue':S.routineState==='COMPLETED'&&S.completedKey===S.tod+'|'+stamp(now())?'Done For Now':(S.tod==='am'?'Start This Morning':'Start Tonight');
+  h+='<div class="home-start"><button type="button" class="btn btn-start" data-act="home-start">'+startLabel+'</button></div>';
   h+='<div class="page" style="padding:var(--s24) var(--margin) 0">'+advisorHTML()+'</div>';
   h+='<div class="home-actions">';
   h+='<button type="button" class="homecard" data-act="go-add-search">'+
@@ -2047,6 +2079,18 @@ var LocalRulesProvider={
         state:'Routine Essential',
         action:{label:'Add To Replenish List',act:'replenish-add',id:low},dismissLabel:'Not Now'};
     }
+    /* 1b. the air outside, when a location is set */
+    var air=WEATHER.air();
+    if(air==='dry'&&ids.length)return {id:'air:dry:'+stamp(now()),title:'Dry Air Today',
+      rationale:Math.round(S.weather.humidity)+'% humidity in '+S.weather.place+'.',
+      why:'Because the air is dry where you are. A hydrating step may feel better. General guidance, not medical advice.',
+      state:'Best For Evening',
+      action:{label:'See Your Routine',act:'tab',v:'routine'},dismissLabel:'Not Now'};
+    if(air==='humid'&&ids.length)return {id:'air:humid:'+stamp(now()),title:'Humid Today',
+      rationale:Math.round(S.weather.humidity)+'% humidity in '+S.weather.place+'.',
+      why:'Because the air is humid where you are. Lighter textures may feel better. General guidance, not medical advice.',
+      state:'Best For Morning',
+      action:{label:'See Your Routine',act:'tab',v:'routine'},dismissLabel:'Not Now'};
     /* 2. the morning routine has no sun protection step */
     if(ids.length){
       var am=ctx.morning,hasProtect=am.some(function(id){return P[id].category==='PROTECT'});
@@ -2065,6 +2109,52 @@ var LocalRulesProvider={
       action:{label:'Add Product',act:'go-add-search'},dismissLabel:'Not Now'};
     return null;
   }
+};
+/* ================================================================
+   WEATHER
+   A place, and the air there. Off until Morgan approves the source.
+   Provider: Open-Meteo (free, no key). Nothing is sent but a city name
+   and coordinates; nothing is stored beyond the last reading.
+   ================================================================ */
+var WEATHER={
+  enabled:false,
+  geocode:'https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=',
+  forecast:'https://api.open-meteo.com/v1/forecast?current=temperature_2m,relative_humidity_2m&temperature_unit=fahrenheit&latitude=',
+  stale:3*60*60*1000,
+  line:function(){
+    var w=S.weather;if(!w||!w.place)return '';
+    var parts=[w.place];
+    if(w.humidity!=null)parts.push(Math.round(w.humidity)+'% Humidity');
+    if(w.temp!=null)parts.push(Math.round(w.temp)+'°');
+    return parts.join(' · ');
+  },
+  air:function(){
+    var w=S.weather;if(!w||w.humidity==null)return null;
+    if(w.humidity<35)return 'dry';if(w.humidity>70)return 'humid';return 'mild';
+  },
+  set:function(place){
+    var self=this;
+    if(!this.enabled){S.ui.weatherNote='Location is off in this build.';render();return}
+    if(!place){S.ui.weatherNote='Type a city.';render();return}
+    S.ui.weatherNote='Looking up '+place+'…';render();
+    fetch(this.geocode+encodeURIComponent(place)).then(function(r){return r.json()}).then(function(g){
+      var hit=g&&g.results&&g.results[0];
+      if(!hit)throw new Error('nf');
+      S.weather={place:hit.name+(hit.admin1?', '+hit.admin1:''),lat:hit.latitude,lon:hit.longitude,humidity:null,temp:null,at:0};
+      return self.refresh(true);
+    }).catch(function(){S.ui.weatherNote='No place by that name.';render()});
+  },
+  refresh:function(force){
+    var w=S.weather,self=this;
+    if(!this.enabled||!w||w.lat==null)return Promise.resolve();
+    if(!force&&w.at&&Date.now()-w.at<this.stale)return Promise.resolve();
+    return fetch(this.forecast+w.lat+'&longitude='+w.lon).then(function(r){return r.json()}).then(function(f){
+      var c=f&&f.current;if(!c)throw new Error('nf');
+      w.humidity=c.relative_humidity_2m;w.temp=c.temperature_2m;w.at=Date.now();
+      S.ui.weatherNote=null;save();render();
+    }).catch(function(){S.ui.weatherNote='Could not reach the weather.';render()});
+  },
+  clear:function(){S.weather=null;S.ui.weatherNote=null;save();render()}
 };
 var Advisor={
   provider:LocalRulesProvider,
@@ -3200,6 +3290,16 @@ function viewProfile(){
      '<span>Travel</span><span class="box"></span></button>'+
      '<button type="button" class="selrow t-body" data-act="pref-skip" aria-pressed="'+S.prefs.confirmSkip+'">'+
      '<span>Confirm Before Skipping A Step</span><span class="box"></span></button></div>';
+  h+='<div class="page-head"><p class="t-meta">Location</p></div>'+
+     '<div class="page" style="padding-top:0">'+
+     (S.weather&&S.weather.place?
+       '<p class="t-body">'+esc(WEATHER.line())+'</p>'+
+       '<p style="margin-top:var(--s8)"><button type="button" class="t-caption linkish" data-act="weather-clear">Remove</button></p>':
+       '<div class="searchrow"><div class="searchwrap"><label class="sr-only" for="wplace">City</label>'+
+       '<input class="input t-body" id="wplace" placeholder="City" autocomplete="off"></div>'+
+       '<button type="button" class="btn-search t-meta" data-act="weather-set">Set</button></div>')+
+     (S.ui.weatherNote?'<p class="t-caption" style="opacity:.7;margin-top:var(--s8)" role="status">'+esc(S.ui.weatherNote)+'</p>':'')+
+     '</div>';
   h+='<div class="page-head"><p class="t-meta">Accessibility</p></div>'+
      '<div class="page" style="padding-top:0"><p class="t-body">Uses your system settings.</p></div>';
   h+='<div class="page-head"><p class="t-meta">Notifications</p></div><div class="rowlist">'+
@@ -4152,6 +4252,9 @@ var ACTS={
     logEvent('event','Moved To '+cat(v),p.brand+' '+p.productName+' moved from '+cat(was)+' to '+cat(v)+'.',true,{type:'cat',id:id,was:was});
     render();say(p.productName+' moved to '+cat(v)+'.');
   },
+  'home-start':function(){S.tab='routine';if(S.routineState==='NOT_STARTED'&&resolve().steps.length){begin()}else{render()}window.scrollTo(0,0)},
+  'weather-set':function(){var i=el('wplace');WEATHER.set(i?i.value.trim():'')},
+  'weather-clear':function(){WEATHER.clear()},
   'cab-prev':function(){CabRail.step(-1)},
   'cab-next':function(){CabRail.step(1)},
   'cab-view':function(v){S.prefs.cabinetView=(v==='list'?'list':'gallery');render();

@@ -38,7 +38,12 @@ Matas decisions (same day, Morgan: "make the decisions as if you were Mike"):
 5. Bottom nav: ivory, hairline top, no radius or shadow, 11px labels, weight 500 when current.
 Verified: 240 tests, SYNTAX_OK, typecheck clean, screenshots of Home, Cabinet, Routine.
 Cabinet rail (same day, Morgan: "ok then do that" · "110%" · "make this app extraordinary"): the Gallery view is now `CabRail` — one product at a time on a Buttermilk plinth, flick with momentum, tilt with velocity, rubber-band at the ends, snap to the nearest object, which lifts with the deep shadow; a tick and a live announcement when it lands; the current group name and count pinned above the rail (`#cabgroup`); foot line "4 Of 10 · Prev / Next"; arrow keys on the focused rail; a drag never fires the tap underneath; vertical drags fall through to page scroll; Reduce Motion snaps instantly. List view unchanged. DOM for tests unchanged (`.cabsection h2`, `.gcard .gmain .gname .gbrand`, `.cabfilters`, `.cabtoggle`). Verified with a real pointer drag and Prev / Next in the in-app browser.
-Not done / open: nothing on the visual system. Cabinet rail with flick physics (visible controls kept as primary, rail not built). Serif wordmark decided against. All screens on the grid.
+Later the same day (Morgan: "don't have to think", "location / humidity", "routine page is horrible", "half the words"):
+- Home: one plum Start This Morning / Start Tonight / Continue button (`home-start` begins the routine in one tap); the four nav rows removed; kicker removed.
+- Routine rebuilt: eyebrow "4 Steps · About 3 Minutes" with a small caps Morning / Evening switch, the display title "This Morning" / "Tonight", larger plinth rows, one plum Begin Routine; suggestion sits after the action; in progress, the step card carries the product on a plinth (`.hero-pv`), Mark Complete is plum, Skip / Pause quiet, More and Show All Steps as rows, two-line footer.
+- Copy halved everywhere (kickers, subtitles, reasons, reassurance, legal).
+- Weather: `WEATHER` provider seam (Open-Meteo geocode + current humidity / temperature), `S.weather` persisted, Profile → Location (city, Set / Remove), Home air line "Place · 62% Humidity · 71°", Advisor rules Dry Air Today / Humid Today (general guidance). **`WEATHER.enabled=false` until Morgan approves the external source**; the artifact sandbox blocks outside fetches, so it needs real hosting to work.
+Not done / open: weather switch-on (approval); hosting for the live app. Cabinet rail with flick physics (visible controls kept as primary, rail not built). Serif wordmark decided against. All screens on the grid.
 Next sprint: "Grid pass on Discover, Profile, Add Product; Add To Tonight landing motion".
 
 ## Previous status (2026-09-22 evening)
