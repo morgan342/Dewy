@@ -92,7 +92,7 @@
 .t-body{font-family:var(--sans);font-size:16px;line-height:24px;font-weight:400;margin:0}
 .t-caption{font-family:var(--sans);font-size:13px;line-height:18px;font-weight:400;margin:0}
 .t-meta{font-family:var(--sans);font-size:13px;line-height:18px;font-weight:500;letter-spacing:0;margin:0}
-.t-screen-title{font-family:var(--sans);font-size:26px;line-height:32px;font-weight:500;margin:0;letter-spacing:-.01em}
+.t-screen-title{font-family:var(--sans);font-size:48px;line-height:44px;font-weight:500;margin:0;letter-spacing:-.02em;text-wrap:balance}
 .t-button{font-family:var(--sans);font-size:16px;line-height:20px;font-weight:600;letter-spacing:.01em}
 
 /* ============================================================
@@ -596,6 +596,7 @@ footer p{opacity:.65;max-width:38em}
 .gmenu{border-radius:0;box-shadow:none;background:var(--finish-clear);padding:var(--s16)}
 .cabfilters,.cabtoggle{padding-left:var(--margin);padding-right:var(--margin)}
 .page-head{padding:var(--s16) var(--margin) var(--s8)}
+.page-head .t-screen-title{margin-top:var(--s8);margin-bottom:var(--s8)}
 .cabinet-eyebrow{margin:var(--s24) var(--margin) 0}
 /* the lifted product and its label card */
 .lifted{margin:var(--s16) var(--margin) 0;height:240px;background:var(--surface-raised);display:flex;align-items:flex-end;justify-content:center;
@@ -2107,7 +2108,7 @@ function viewDiscover(){
   var h=brandBar('Journal','journal');
   h+='<div class="disc-hero">'+
      '<p class="t-eyebrow">Discover</p>'+
-     '<h1 class="t-display" style="white-space:normal">From Your Shelf.</h1></div>';
+     '<h1 class="t-screen-title">From Your Shelf.</h1></div>';
   h+='<div class="home-actions">';
   h+='<button type="button" class="homecard" data-act="tab" data-v="ask">'+
     '<span><span class="hc-label">Review</span>'+
@@ -3211,7 +3212,7 @@ function viewProfile(){
 }
 function viewHistory(){
   var h=brandBar('Cabinet','cabinet')+'<div class="page-head"><button type="button" class="t-meta linkish" data-act="history-close">Back To Profile</button></div>'+
-        '<div class="page-head"><h1 class="t-meta">Routine History</h1></div>';
+        '<div class="page-head"><h1 class="t-screen-title">History</h1><p class="sr-only">Routine History</p></div>';
   if(!S.history.length){
     return h+'<section class="notice" style="border-top:none"><p class="t-meta">No History Yet</p></section>'+footWord('History');
   }
