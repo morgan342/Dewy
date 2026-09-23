@@ -623,6 +623,31 @@ footer p{opacity:.65;max-width:38em}
 @media (prefers-reduced-motion:reduce){.lifted,.tag{animation:none}}
 /* every screen: lists, notices, and states hang from the margin; no cards */
 .rowlist{margin:0 var(--margin)}
+/* Editorial rows: one height, one hairline, quiet links, a small arrow where a row leads somewhere */
+.textrow,.selrow{min-height:56px;padding-top:0;padding-bottom:0;border-bottom-color:var(--structure-quiet);text-decoration:none}
+.textrow.t-body,.textrow.t-meta{font-size:15px;line-height:20px;font-weight:400}
+.textrow:not(.optrow)::after{content:"\2192";margin-left:auto;padding-left:var(--s16);opacity:.45;font-size:14px}
+.textrow.optrow{min-height:64px}
+.selrow{font-size:15px;line-height:20px}
+.selrow .needs{font-size:12px;line-height:16px;opacity:.55;margin-top:2px}
+.selrow .box{width:18px;height:18px;border-width:1px}
+.selrow[aria-pressed="true"]{font-weight:500}
+.linkish{text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:var(--structure-quiet)}
+.page-head{padding-top:var(--s32)}
+.page-head .t-screen-title+*{margin-top:var(--s8)}
+.page-head>.linkish{font-size:12px;line-height:16px;min-height:32px;opacity:.7}
+.page-head+.rowlist,.page-head+.page{margin-top:0}
+.page .t-caption,.page-head .t-caption{opacity:.6}
+.foot-line{margin-top:var(--s32)}
+.answer{margin-top:var(--s24)}
+.answer .verdict-state{font-size:11px;line-height:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--dried-plum)}
+.entry .t-meta{font-size:11px;line-height:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--dried-plum)}
+.entry .obs{margin-top:var(--s8);font-size:15px;line-height:22px}
+.field-label.t-meta{font-size:11px;line-height:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--dried-plum)}
+.input{border:none;border-bottom:var(--rule) solid var(--structure-quiet);padding:var(--s8) 0;background:none;font-size:15px}
+.input:focus-visible{outline:none;border-bottom-color:var(--ink-primary)}
+textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)}
+.btn-done{border-width:1px;box-shadow:none;font-weight:500;font-size:14px;height:48px}
 /* the Cabinet rail */
 .cabrail-wrap{overflow:hidden;margin-top:var(--s16);padding-bottom:var(--s24);cursor:grab;touch-action:pan-y;outline:none}
 .cabrail-wrap.dragging{cursor:grabbing}
@@ -2111,12 +2136,10 @@ function viewDiscover(){
      '<h1 class="t-screen-title">From Your Shelf.</h1></div>';
   h+='<div class="home-actions">';
   h+='<button type="button" class="homecard" data-act="tab" data-v="ask">'+
-    '<span><span class="hc-label">Review</span>'+
-    '<span class="hc-title">Review Your Products</span>'+
+    '<span><span class="hc-title">Review Your Products</span>'+
     '<span class="hc-sub">'+(ids.length?'Order and overlap':'Add a product first')+'</span></span>'+ICONS.chev+'</button>';
   h+='<button type="button" class="homecard" data-act="tab" data-v="journal">'+
-    '<span><span class="hc-label">Journal</span>'+
-    '<span class="hc-title">Journal</span>'+
+    '<span><span class="hc-title">Journal</span>'+
     '<span class="hc-sub">'+(jn?(jn+(jn===1?' Note':' Notes')):'No notes yet')+'</span></span>'+ICONS.chev+'</button>';
   h+='</div>';
   h+='<div class="page-head disc-guide"><p class="t-meta">Why Steps Are Ordered</p>'+
@@ -3189,10 +3212,10 @@ function viewJournal(){
 function viewProfile(){
   if(S.ui.history)return viewHistory();
   var h=brandBar('Cabinet','cabinet')+'<div class="page-head"><h1 class="t-screen-title">Profile</h1></div>';
-  h+='<div class="page-head"><p class="t-meta">Routine</p></div><div class="rowlist">';
+  h+='<div class="page-head"><p class="t-meta">Routine Length</p></div><div class="rowlist">';
   ['essential','balanced','full'].forEach(function(m){
     h+='<button type="button" class="selrow t-body" data-act="pref-mode" data-v="'+m+'" aria-pressed="'+(S.prefs.defaultMode===m)+'">'+
-       '<span>Default: '+esc(MODE_SHORT[m])+'</span><span class="box"></span></button>';
+       '<span>'+esc(MODE_SHORT[m])+'</span><span class="box"></span></button>';
   });
   h+='<button type="button" class="selrow t-body" data-act="pref-travel" aria-pressed="'+S.prefs.travel+'">'+
      '<span>Travel</span><span class="box"></span></button>'+
