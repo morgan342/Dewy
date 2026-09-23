@@ -838,7 +838,7 @@ function directionsHTML(p,compact){
   if(d.state==='known'){
     h+='<p class="t-caption dsource" style="opacity:.75;margin-bottom:4px">'+esc(d.source)+' · '+d.word+'</p>'+
        p.lines.map(function(l){return '<p class="t-body line">'+esc(l)+'</p>'}).join('');
-    if(!compact)h+='<p class="t-caption" style="opacity:.75;margin-top:var(--s8)">Follow the product directions on the label.</p>';
+
   }else if(d.state==='conflicting'){
     h+='<p class="t-body dstate">Needs More Information</p>'+
        '<p class="t-caption" style="opacity:.75;margin-top:4px">Two directions on record disagree. Check the label before use.</p>'+
@@ -848,7 +848,7 @@ function directionsHTML(p,compact){
          p.directionsConflict.map(function(l){return '<p class="t-body line">'+esc(l)+'</p>'}).join(''));
   }else{
     h+='<p class="t-body dstate">Check Product Directions</p>'+
-       '<p class="t-caption" style="opacity:.75;margin-top:4px">Dewy has no directions on record for this product. The label is the source.</p>';
+       '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p>';
   }
   return h;
 }
@@ -1454,7 +1454,7 @@ function viewRoutine(){
   h+='<header class="field" data-tod="'+S.tod+'">'+
      brandBar('Cabinet','cabinet')+
      '<div class="field-top">'+
-       '<p class="t-eyebrow">'+esc(S.tod==='am'?'This Morning':'Tonight')+' / '+steps.length+(steps.length===1?' Step':' Steps')+' / In Order</p>'+
+       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+'</p>'+
        '<nav class="tod t-meta" aria-label="Time of day">'+
          '<button type="button" data-act="tod" data-v="am" aria-pressed="'+(S.tod==='am')+'">Morning</button>'+
          '<button type="button" data-act="tod" data-v="pm" aria-pressed="'+(S.tod==='pm')+'">Evening</button>'+
@@ -1506,7 +1506,7 @@ function viewRoutine(){
        'aria-expanded="'+(S.ui.focusOpen?'true':'false')+'">'+
        '<span class="fbody"><span class="t-eyebrow line">One Suggestion</span>'+
        '<span class="t-body line fl">'+esc(focusLine)+'</span>'+
-       '<span class="t-caption line" style="opacity:.75">'+esc(focusLine2||focusTitle)+'. Educational guidance. Tap for options.</span>'+
+       '<span class="t-caption line" style="opacity:.75">'+esc(focusLine2||'Tap for options.')+'</span>'+
        '</span></button>';
     if(S.ui.focusOpen){
       var whyRows=r.reasons.slice(0,2).map(function(t){var rr=REASONS[t];
@@ -1604,7 +1604,7 @@ function viewRoutine(){
   /* The order is Dewy's suggestion, and it says so. Product directions and
      anything a clinician prescribed come first, and every step is editable. */
   h+='<p class="t-caption" style="padding:var(--s16) var(--margin) 0;opacity:.7">'+
-     'Guidance, not a rule. Directions come first.</p>';
+     'Guidance, not a rule.</p>';
 
   /* --- instruction panel --- */
   if(S.routineState==='IN_PROGRESS'&&(S.current||S.ui.peek)){
@@ -1661,7 +1661,7 @@ function viewRoutine(){
         '<button type="button" class="btn btn-begin" data-act="begin">Begin Routine '+ICONS.arrow+'</button>'
        ):
        ('<section class="notice" style="margin:0"><p class="t-meta">No Routine Yet</p>'+
-       '<p class="t-body line">Add a product to begin.</p>'+
+       
        '<p><button type="button" class="btn btn-done" data-act="routine-edit">Add From Cabinet</button></p>'+
        '<p><button type="button" class="t-body linkish" data-act="go-add-search">Add A Product</button></p></section>');
   } else if(S.routineState==='IN_PROGRESS'){
@@ -1766,9 +1766,8 @@ function viewRoutine(){
   /* --- dialogs --- */
   if(S.ui.dialog)h+=dialogHTML();
 
-  h+='<footer><p class="t-caption">General cosmetic guidance, not medical advice. Follow the label.</p>'+
-     '<p class="t-caption">If skin burns, swells, or blisters, stop and seek medical advice.</p>'+
-     '<p class="t-caption">Preview build. Placeholder silhouettes.</p></footer>'+
+  h+='<footer><p class="t-caption">Cosmetic guidance, not medical advice.</p>'+
+     '<p class="t-caption">If skin reacts, stop and see a clinician.</p></footer>'+
      footWord(S.tod==='am'?'Morning':'Tonight')+
      '<div class="foot-line"><button type="button" data-act="go-add-search">Add A Product</button>'+
      '<button type="button" data-act="routine-edit">Edit Routine</button></div></main>';
@@ -1958,7 +1957,7 @@ function cabinetCard(id){
     '<span class="t-body gname">'+esc(p.productName)+'</span>'+
     '<span class="t-caption gcat">'+esc(cat(p.category))+'</span>'+
     '<span class="gstate">'+statusTag(id)+'</span></span></button>'+
-    '<button type="button" class="t-caption gmore" data-act="card-menu" data-id="'+esc(id)+'" aria-expanded="'+open+'" aria-controls="gmenu-'+esc(id)+'" aria-label="More Actions For '+esc(name)+'">More Actions</button>'+
+    '<button type="button" class="t-caption gmore" data-act="card-menu" data-id="'+esc(id)+'" aria-expanded="'+open+'" aria-controls="gmenu-'+esc(id)+'" aria-label="More Actions For '+esc(name)+'">More</button>'+
     '</div>';
   if(open)h+=cardMenu(id);
   return h;
@@ -1995,38 +1994,20 @@ function viewHome(){
     var fp=PRODUCTS[first];
     h+='<div class="hero-photo">'+productVisual(first,Math.min(2.2,160/Math.max(1,fp.h)),fp.confidence==='UNKNOWN')+'</div>';
   }
-  h+='<p class="t-eyebrow hero-kicker">'+esc(todWord)+',<br>in one product.</p>';
+  
   h+='<h1 class="sr-only">Home</h1>';
   h+='<p class="t-display hero-l1" aria-hidden="true">'+esc(l1)+'</p><p class="t-display hero-l2" aria-hidden="true">'+esc(l2)+'</p>';
   h+='</section>';
-  h+='<p class="t-eyebrow hero-eyebrow">'+esc(todWord)+' · '+steps.length+(steps.length===1?' Step':' Steps')+'</p>';
+  h+='<p class="t-eyebrow hero-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+'</p>';
   h+='<div class="plinths quiet">'+steps.slice(0,3).map(function(id){return plinthHTML(id,cat(PRODUCTS[id].category))}).join('');
   for(var b=steps.length;b<3;b++)h+='<div class="plinth blank" aria-hidden="true"><span class="pv"></span></div>';
   h+='</div>';
-  h+='<div class="foot-line"><span>'+esc(steps.slice(0,3).map(function(id){return PRODUCTS[id].kind}).join(' · ')||'No steps yet')+'</span>'+
-     '<button type="button" data-act="tab" data-v="routine">'+(S.tod==='am'?'Start This Morning':'Start Tonight')+'</button></div>';
+  h+='<div class="foot-line"><span>'+esc(steps.slice(0,3).map(function(id){return PRODUCTS[id].kind}).join(' · ')||'')+'</span>'+
+     '<button type="button" data-act="tab" data-v="routine">Start</button></div>';
   h+='<div class="page" style="padding:var(--s24) var(--margin) 0">'+advisorHTML()+'</div>';
   h+='<div class="home-actions">';
-  h+='<button type="button" class="homecard primary" data-act="tab" data-v="routine">'+
-    '<span><span class="hc-label">'+(S.tod==='am'?'This Morning':'Tonight')+'</span>'+
-    '<span class="hc-title">'+esc(plan.when)+'</span>'+
-    '<span class="hc-sub">'+esc(plan.type)+'</span></span>'+ICONS.chev+'</button>';
   h+='<button type="button" class="homecard" data-act="go-add-search">'+
-    '<span><span class="hc-label">Add</span>'+
-    '<span class="hc-title">Add A Product</span>'+
-    '<span class="hc-sub">Search by brand, like Dior.</span></span>'+ICONS.chev+'</button>';
-  h+='<button type="button" class="homecard" data-act="tab" data-v="cabinet">'+
-    '<span><span class="hc-label">Cabinet</span>'+
-    '<span class="hc-title">Your Cabinet</span>'+
-    '<span class="hc-sub">'+(nProd? (nProd+(nProd===1?' Product':' Products')):'Empty')+'</span></span>'+ICONS.chev+'</button>';
-  h+='<button type="button" class="homecard" data-act="tab" data-v="discover">'+
-    '<span><span class="hc-label">Discover</span>'+
-    '<span class="hc-title">Discover</span>'+
-    '<span class="hc-sub">Reviews and your Journal</span></span>'+ICONS.chev+'</button>';
-  h+='<button type="button" class="homecard" data-act="tab" data-v="profile">'+
-    '<span><span class="hc-label">You</span>'+
-    '<span class="hc-title">Profile</span>'+
-    '<span class="hc-sub">Defaults and history</span></span>'+ICONS.chev+'</button>';
+    '<span><span class="hc-title">Add A Product</span></span>'+ICONS.chev+'</button>';
   h+='</div>';
   h+=footWord('Dewy');
   return h;
@@ -2035,11 +2016,11 @@ function viewHome(){
 /* General, non-medical reasons a step sits where it does. Shown as guidance
    and labelled as such; product directions and a clinician come first. */
 var CATEGORY_WHY={
-  CLEANSE:'Cleansing comes first so every later step reaches clean skin.',
-  TREAT:'Treatments go on early, before heavier textures can block them.',
-  SEAL:'Moisturizer seals in what came before it.',
-  PROTECT:'Sunscreen is the last skincare step of the morning.',
-  FINISH:'Makeup prep sits on top, once skincare has settled.'
+  CLEANSE:'First, so every step reaches clean skin.',
+  TREAT:'Early, before heavier textures block it.',
+  SEAL:'Seals in what came before.',
+  PROTECT:'Last step of the morning.',
+  FINISH:'On top, once skincare has settled.'
 };
 /* ================================================================
    STRUCTURED ASSISTANCE
@@ -2117,7 +2098,7 @@ function advisorHTML(){
      '<p class="t-caption" style="margin-top:2px;opacity:.75">'+esc(rec.rationale)+'</p>'+
      '<p style="margin-top:var(--s16)"><button type="button" class="btn btn-done" data-act="'+esc(rec.action.act)+'"'+(rec.action.id?' data-id="'+esc(rec.action.id)+'"':'')+(rec.action.v?' data-v="'+esc(rec.action.v)+'"':'')+'>'+esc(rec.action.label)+'</button></p>'+
      '<div class="quiet-row" style="justify-content:flex-start;margin-top:var(--s8)">'+
-     '<button type="button" class="t-caption linkish" data-act="toggle" data-key="advWhy" aria-expanded="'+(S.ui.advWhy?'true':'false')+'" id="why-advWhy">Why This Appeared</button>'+
+     '<button type="button" class="t-caption linkish" data-act="toggle" data-key="advWhy" aria-expanded="'+(S.ui.advWhy?'true':'false')+'" id="why-advWhy">Why</button>'+
      '<button type="button" class="t-caption linkish" data-act="advisor-dismiss" data-v="'+esc(rec.id)+'">'+esc(rec.dismissLabel)+'</button></div>'+
      (S.ui.advWhy?'<div class="disclosure"><p class="t-body">'+esc(rec.why)+'</p>'+
        '<p class="t-caption" style="opacity:.7;margin-top:var(--s8)">From your Cabinet records. '+(Advisor.provider.generated?'':'Not generated by AI.')+'</p>'+
@@ -2137,10 +2118,10 @@ function viewDiscover(){
   h+='<div class="home-actions">';
   h+='<button type="button" class="homecard" data-act="tab" data-v="ask">'+
     '<span><span class="hc-title">Review Your Products</span>'+
-    '<span class="hc-sub">'+(ids.length?'Order and overlap':'Add a product first')+'</span></span>'+ICONS.chev+'</button>';
+    '</span>'+ICONS.chev+'</button>';
   h+='<button type="button" class="homecard" data-act="tab" data-v="journal">'+
     '<span><span class="hc-title">Journal</span>'+
-    '<span class="hc-sub">'+(jn?(jn+(jn===1?' Note':' Notes')):'No notes yet')+'</span></span>'+ICONS.chev+'</button>';
+    '</span>'+ICONS.chev+'</button>';
   h+='</div>';
   h+='<div class="page-head disc-guide"><p class="t-meta">Why Steps Are Ordered</p>'+
      '<p class="t-caption" style="opacity:.7;margin-top:4px">General Guidance · Not Medical Advice</p></div>';
@@ -2158,7 +2139,7 @@ function viewCabinet(){
   if(S.ui.add)return viewAdd();
   var ids=cabinetIds(),h=brandBar(S.tod==='am'?'Morning':'Tonight','routine'),f=S.ui.cabFilter||'all',q=S.ui.find||'';
   var owned=Object.keys(PRODUCTS).filter(function(k){return PRODUCTS[k].status!=='ARCHIVED'}).length;
-  h+='<div class="cab-top"><p class="t-eyebrow">Your Cabinet / '+owned+(owned===1?' Product':' Products')+'</p>'+
+  h+='<div class="cab-top"><p class="t-eyebrow">'+owned+(owned===1?' Product':' Products')+'</p>'+
      '<button type="button" class="t-caption linkish" data-act="add-search">Add Product</button></div>';
   h+='<div class="page-head" style="padding-top:var(--s8)"><h1 class="t-screen-title">Your Cabinet</h1></div>';
   if(!STORAGE_OK){
@@ -2274,19 +2255,18 @@ function viewProduct(id){
   var inToday=resolve().steps.indexOf(id)>-1,todayWord=S.tod==='am'?'This Morning':'Tonight';
   var canAdd=!inToday&&ELIGIBLE_LIFE[p.status]&&ELIGIBLE_CONF[p.confidence];
   var cabAll=cabinetIds(),pos=cabAll.indexOf(id),prevId=pos>0?cabAll[pos-1]:null,nextId=pos>-1&&pos<cabAll.length-1?cabAll[pos+1]:null;
-  h+='<p class="t-eyebrow" style="margin:var(--s8) var(--margin) 0">Your Cabinet / '+esc(cat(p.category))+(pos>-1?' / '+(pos+1)+' Of '+cabAll.length:'')+'</p>';
+  h+='<p class="t-eyebrow" style="margin:var(--s8) var(--margin) 0">'+esc(cat(p.category))+(pos>-1?' · '+(pos+1)+' Of '+cabAll.length:'')+'</p>';
   h+='<div class="lifted"><button type="button" class="detailthumb" id="detailthumb-btn" data-act="zoom" data-id="'+esc(id)+'" aria-label="See it larger">'+productVisual(id,Math.min(2,200/Math.max(1,p.h)),p.confidence==='UNKNOWN')+'</button></div>';
   h+='<h1 class="t-section-heading lifted-name">'+esc(p.brand+' '+p.productName)+'</h1>';
   h+='<p class="t-caption lifted-fact">'+esc(CONF[p.confidence].label)+' · Added '+esc(monthYear(p.dateAdded))+' · '+statusWord(id)+'</p>';
   h+='<div class="thread" aria-hidden="true"></div>';
   h+='<div class="tag" role="group" aria-label="Label card">'+
-     '<p class="tb">Your Cabinet</p>'+
      '<a class="tr" href="#step-editor" aria-label="Step: '+esc(cat(p.category))+'. Edit."><span class="k">STEP</span><span class="v">'+esc(cat(p.category))+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<a class="tr" href="#when-editor" aria-label="Time: '+esc(WHEN_LABEL[whenKey(p)])+'. Edit."><span class="k">TIME</span><span class="v">'+esc(WHEN_LABEL[whenKey(p)])+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<div class="tr"><span class="k">SOURCE</span><span class="v">'+esc(CONF[p.confidence].label)+'</span></div>'+
      (canAdd?'<button type="button" class="btn btn-done" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>':
-      inToday?'<p class="tnote t-caption">In '+esc(todayWord)+'’s Routine</p>':'')+'</div>';
-  h+='<div class="foot-line"><span>Suggested, editable</span><span class="pn2">'+
+      inToday?'<p class="tnote t-caption">In Routine</p>':'')+'</div>';
+  h+='<div class="foot-line"><span></span><span class="pn2">'+
      (prevId?'<button type="button" data-act="detail" data-id="'+esc(prevId)+'">Prev</button>':'<span class="dim">Prev</span>')+' / '+
      (nextId?'<button type="button" data-act="detail" data-id="'+esc(nextId)+'">Next</button>':'<span class="dim">Next</span>')+'</span></div>';
   h+='<div class="page stack" style="padding:var(--s32) var(--margin) var(--s16)">'+
@@ -2298,7 +2278,7 @@ function viewProduct(id){
 
      '<div><p class="t-meta" style="opacity:.7">Routine Placement</p>'+
      '<p class="t-body">'+esc(placementLine(id))+'</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">This is guidance, not a rule. Directions come first.</p>'+
+     '<p class="t-caption" style="opacity:.75;margin-top:4px">This is guidance, not a rule.</p>'+
      '<p class="t-meta" id="step-editor" style="margin-top:var(--s8);opacity:.7">Step</p><div class="catrow">'+
      ['CLEANSE','TREAT','SEAL','PROTECT','FINISH','UNASSIGNED'].map(function(c){
        return '<button type="button" class="t-caption" data-act="set-cat" data-id="'+esc(id)+'" data-v="'+c+'" aria-pressed="'+(p.category===c)+'">'+esc(cat(c))+'</button>'}).join('')+
@@ -2309,15 +2289,14 @@ function viewProduct(id){
 
      '<div><p class="t-meta" style="opacity:.7">Identification</p>'+
      '<p class="t-body">'+esc(CONF[p.confidence].label)+'</p>'+
-     '<p class="t-body" style="opacity:.8">'+esc(p.confidenceReason)+'</p></div>'+
+     (p.confidence==='CONFIRMED'||p.confidence==='MANUAL'?'':'<p class="t-body" style="opacity:.8">'+esc(p.confidenceReason)+'</p>')+'</div>'+
 
      '<div><p class="t-meta" style="opacity:.7">Availability</p>'+
-     '<p class="t-body">'+esc(LIFE[p.status].label)+'</p>'+
-     '<p class="t-body" style="opacity:.8">'+esc(LIFE[p.status].text)+'</p></div>'+
+     '<p class="t-body">'+esc(LIFE[p.status].label)+'</p></div>'+
 
      '<div><p class="t-meta" style="opacity:.7">Ingredient Review</p>'+
      '<p class="t-body">Needs More Information</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">No verified ingredient data. The label is the source.</p></div>'+
+     '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p></div>'+
 
      '<div><p class="t-meta" style="opacity:.7">How To Use</p>'+directionsHTML(p,false)+'</div>'+
 
@@ -2967,7 +2946,7 @@ function viewAdd(){
 function photoStepHTML(a){
   return '<div class="page stack">'+
     '<div><h1 class="t-eyebrow" style="margin:0 0 var(--s8)">Add A Photo</h1>'+
-    '<p class="t-caption" style="opacity:.75">Optional. Only used as the picture.</p></div>'+
+    '<p class="t-caption" style="opacity:.75">Optional.</p></div>'+
     (a.photo?'<div class="glyphbox"><img class="pphoto" src="'+a.photo.src+'" alt="Your photo of this product" style="max-height:200px;width:auto"></div>':
       '<div class="glyphbox" style="opacity:.8">'+kindGlyph(a.kind||KIND_BY_CATEGORY[a.cat]||'Moisturizer',120,84)+'</div>')+
     '<input type="file" id="photo-in" accept="image/*" capture="environment" class="sr-only">'+
@@ -3039,9 +3018,9 @@ function searchRows(a){
     return '<p class="t-body" style="padding:var(--s8) 0">Search is not working right now. You can add the product by hand below.</p>'+
       '<p><button type="button" class="t-body linkish" data-act="add-retry">Try Again</button></p>';
   if(!a.searched)
-    return '<p class="t-body" style="opacity:.7;padding:var(--s16) 0">Type a brand, like Dior, then Search.</p>';
+    return '<p class="t-body" style="opacity:.7;padding:var(--s16) 0">Try Dior.</p>';
   if(!a.hits || !a.hits.length)
-    return '<p class="t-body" style="padding:var(--s8) 0">No products found for “'+esc(a.ran||a.q||'')+'”. Try just the brand name.</p>';
+    return '<p class="t-body" style="padding:var(--s8) 0">Nothing for “'+esc(a.ran||a.q||'')+'”. Try the brand alone.</p>';
   return a.hits.map(function(r,ri){
     return '<button type="button" role="option" id="opt-'+ri+'" aria-selected="'+(a.active===ri)+'"'+
       ' class="textrow optrow'+(a.active===ri?' isactive':'')+'" data-act="add-pick" data-v="'+r.i+'">'+
@@ -3159,10 +3138,10 @@ function viewAsk(){
        (a.src?'<p class="t-caption src">Context: '+esc(a.src)+'</p>':'')+
        (a.completeness?'<p class="t-caption src">Information Completeness: '+esc(a.completeness)+'</p>':'')+
        (a.action?'<p style="margin-top:var(--s16)"><button type="button" class="btn btn-done" data-act="'+esc(a.action.act)+'"'+(a.action.id?' data-id="'+esc(a.action.id)+'"':'')+'>'+esc(a.action.label)+'</button></p>':'')+
-       '<p class="t-caption src" style="margin-top:var(--s8)">From your Cabinet records. Not generated by AI.</p>'+
+       '<p class="t-caption src" style="margin-top:var(--s8)">Not generated by AI.</p>'+
        '</div></section>';
   }
-  h+='<div class="page"><p class="t-caption" style="opacity:.6">Guidance, not diagnosis.</p></div>'+footWord('Review');
+  h+=footWord('Review');
   return h;
 }
 
@@ -3222,7 +3201,7 @@ function viewProfile(){
      '<button type="button" class="selrow t-body" data-act="pref-skip" aria-pressed="'+S.prefs.confirmSkip+'">'+
      '<span>Confirm Before Skipping A Step</span><span class="box"></span></button></div>';
   h+='<div class="page-head"><p class="t-meta">Accessibility</p></div>'+
-     '<div class="page" style="padding-top:0"><p class="t-body">Follows your system settings.</p></div>';
+     '<div class="page" style="padding-top:0"><p class="t-body">Uses your system settings.</p></div>';
   h+='<div class="page-head"><p class="t-meta">Notifications</p></div><div class="rowlist">'+
      '<button type="button" class="selrow t-body" data-act="pref-rem" aria-pressed="'+S.prefs.reminders+'">'+
      '<span>Routine Reminders</span><span class="box"></span></button></div>';
@@ -3230,7 +3209,7 @@ function viewProfile(){
      '<button type="button" class="selrow t-body" data-act="pref-arch" aria-pressed="'+(!!S.ui.showArchived)+'">'+
      '<span>Show Archived Products</span><span class="box"></span></button>'+
      '<button type="button" class="textrow t-meta" data-act="history">Routine History</button></div>';
-  h+='<div class="page"><p class="t-caption" style="opacity:.6">Photos and notes stay on this phone.</p></div>'+footWord('Profile');
+  h+='<div class="page"><p class="t-caption" style="opacity:.6">Everything stays on this phone.</p></div>'+footWord('Profile');
   return h;
 }
 function viewHistory(){
