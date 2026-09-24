@@ -599,10 +599,12 @@ footer p{opacity:.65;max-width:38em}
 .page-head .t-screen-title{margin-top:var(--s8);margin-bottom:var(--s8)}
 .cabinet-eyebrow{margin:var(--s24) var(--margin) 0}
 /* the lifted product and its label card */
-.lifted{margin:var(--s16) var(--margin) 0;height:240px;background:var(--surface-raised);display:flex;align-items:flex-end;justify-content:center;
+.lifted{margin:var(--s16) var(--margin) 0;height:300px;background:var(--surface-raised);display:flex;align-items:flex-end;justify-content:center;
   padding-bottom:var(--s16);box-sizing:border-box;box-shadow:0 26px 48px -16px rgba(67,48,46,.40);animation:liftin var(--t-enlarge) var(--e-out)}
 @keyframes liftin{from{transform:translateY(12px);box-shadow:none}to{transform:none}}
-.lifted .detailthumb svg,.lifted .detailthumb img{max-height:200px;width:auto}
+.lifted .detailthumb svg,.lifted .detailthumb img{max-height:250px;width:auto}
+.lifted-hint{position:absolute;right:var(--s16);bottom:var(--s8);font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;pointer-events:none}
+.lifted{position:relative}
 .lifted-name{margin:var(--s24) var(--margin) 0}
 .lifted-fact{margin:0 var(--margin);opacity:.7}
 .thread{width:2px;height:16px;background:var(--structure-quiet);margin:var(--s16) 0 0 calc(var(--margin) + (100% - 2*var(--margin) - var(--col) - var(--gutter))/2 - 1px)}
@@ -740,6 +742,49 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 .gallery.rail .gmore{visibility:hidden;min-height:24px;line-height:24px}
 .gallery.rail .gcard.lift .gmore{visibility:visible}
 .gallery.rail .gmenu{position:absolute;left:0;right:0;top:100%;z-index:4;margin-top:var(--s8);width:220px;margin-left:-55px}
+/* ---- Display choice: which room her products stand in ---- */
+.cab-scenes{display:flex;gap:var(--s16);margin:var(--s8) var(--margin) 0;min-height:32px;align-items:center}
+.cab-scenes .t-eyebrow{margin-right:auto}
+.cab-scenes button{font-size:12px;line-height:16px;opacity:.5;min-height:32px;padding:0;border-bottom:1px solid transparent}
+.cab-scenes button[aria-pressed="true"]{opacity:1;border-bottom-color:var(--ink-primary)}
+/* Shelves: the same cupboard, straight glass shelves, everything in view */
+.cab-scene.shelves .cabrail-wrap{cursor:default}
+.cab-shelf{position:absolute;left:0;right:0;height:9px;z-index:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.95) 0%,rgba(214,232,226,.85) 45%,rgba(150,190,180,.7) 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 3px 0 rgba(130,170,160,.35),0 12px 22px -6px rgba(67,48,46,.35)}
+.cab-shelf::after{content:"";position:absolute;left:6%;right:6%;top:-2px;height:3px;border-radius:2px;background:#FFFEF9;
+  box-shadow:0 0 8px 3px rgba(var(--glow),.9),0 6px 30px 10px rgba(var(--glow),.5)}
+/* Counter: plaster wall, window light, a stone top, and a tray */
+.cab-scene.counter{--stone:#EFEBE4;--stone-vein:#D9D2C6;--wood:#C9B79B}
+.cab-scene.counter .cabrail-wrap{height:340px;
+  background:linear-gradient(180deg,#F4EFE6 0%,#EDE7DC 58%,#EDE7DC 58%,var(--stone) 58.5%,#E6E0D6 100%)}
+.cab-scene.counter .cabrail-wrap::before{content:"";position:absolute;left:0;right:0;top:0;height:58%;
+  background:radial-gradient(60% 90% at 78% 10%,rgba(255,250,236,.95) 0%,rgba(255,250,236,0) 70%),
+  repeating-linear-gradient(90deg,rgba(67,48,46,.05) 0 1px,transparent 1px 64px),repeating-linear-gradient(180deg,rgba(67,48,46,.05) 0 1px,transparent 1px 40px);
+  box-shadow:inset 0 -18px 24px -18px rgba(67,48,46,.22)}
+.cab-scene.counter .cabrail-wrap::after{content:"";position:absolute;left:0;right:0;top:58%;bottom:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 0 30%,rgba(255,255,255,.5) 31%,transparent 33%,transparent 60%,rgba(217,210,198,.6) 61%,transparent 63%),
+  linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 30%)}
+.ct-tray{position:absolute;left:8%;right:8%;bottom:34px;height:78px;z-index:0;border-radius:6px;
+  background:linear-gradient(180deg,#B49A78 0%,var(--wood) 12%,#D8C8AC 14%,#CDBB9C 100%);
+  box-shadow:0 2px 0 rgba(255,255,255,.5) inset,0 -3px 0 #A88F6C inset,0 16px 24px -10px rgba(67,48,46,.45)}
+.ct-tray::before{content:"";position:absolute;inset:12px 8px 6px;border-radius:4px;background:linear-gradient(180deg,#E3D5BC,#D3C2A5);box-shadow:inset 0 2px 4px rgba(67,48,46,.25)}
+.ct-edge{margin:0 var(--s16);height:26px;background:linear-gradient(180deg,#E2DBD0 0%,#CFC6B8 60%,#B9AE9E 100%);
+  box-shadow:0 26px 40px -22px rgba(67,48,46,.5);border-radius:0 0 2px 2px}
+/* Vanity: a lit mirror above a lacquered table */
+.cab-scene.vanity .cabrail-wrap{height:380px;background:linear-gradient(180deg,#F3ECE8 0%,#EEE4DF 66%,#FBF8F3 66.5%,#F1EBE2 100%)}
+.vn-mirror{position:absolute;left:14%;right:14%;top:14px;height:210px;border-radius:110px 110px 12px 12px;z-index:0;
+  background:radial-gradient(90% 70% at 50% 30%,#FFFFFF 0%,#EFE9E4 55%,#DCD3CC 100%);
+  border:6px solid #E9E2DA;box-shadow:0 0 0 1px #CFC6BE,inset 0 0 30px rgba(67,48,46,.12),0 18px 30px -16px rgba(67,48,46,.35)}
+.vn-mirror::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.55) 46%,transparent 52%)}
+.vn-bulb{position:absolute;width:12px;height:12px;border-radius:50%;background:#FFFDF4;z-index:1;
+  box-shadow:0 0 6px 2px rgba(255,248,222,.95),0 0 22px 8px rgba(255,244,210,.55)}
+.vn-table{position:absolute;left:0;right:0;top:66%;bottom:0;z-index:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,0) 40%);box-shadow:inset 0 1px 0 #FFFFFF}
+.vn-edge{margin:0 var(--s16);height:22px;background:linear-gradient(180deg,#F6F1EA 0%,#E4DCD0 70%,#CFC5B8 100%);box-shadow:0 26px 40px -22px rgba(67,48,46,.45)}
+.cab-scene.counter .gallery.rail .gvisual svg,.cab-scene.counter .gallery.rail .gvisual img,
+.cab-scene.vanity .gallery.rail .gvisual svg,.cab-scene.vanity .gallery.rail .gvisual img{-webkit-box-reflect:none}
+.cab-scene.opening.counter .cab-led,.cab-scene.opening.vanity .vn-bulb{animation:cabled 900ms 200ms ease-out both}
 /* the menu under the cabinet */
 .cab-menu-under{margin:var(--s16) var(--margin) 0}
 .cab-menu-under .gmenu{position:static;width:auto;margin:0;background:var(--surface-raised)}
@@ -2338,20 +2383,48 @@ function viewDiscover(){
 
 /* The cabinet around the turntable. The doors, light strips, glass shelf,
    towels, and small jars are drawn here; none of them is a product record. */
-function cabinetSceneOpen(){
+var SCENES={cabinet:'turn',shelves:'grid',counter:'row',vanity:'row'};
+var GRID_COLS=4,GRID_ROW=170,GRID_TOP=22;
+function cabinetScene(){var v=S.prefs.cabinetScene;return SCENES[v]?v:'cabinet'}
+function gridRows(n){return Math.max(1,Math.ceil(n/GRID_COLS))}
+function cabinetSceneOpen(scene,n){
   var opening=!CabRail.opened&&!prefersReduced();
-  return '<div class="cab-scene'+(opening?' opening':'')+'" id="cabscene">'+
-    '<div class="cab-box"><div class="cab-int">'+
+  var h='<div class="cab-scene '+scene+(opening?' opening':'')+'" id="cabscene">';
+  if(scene==='cabinet'||scene==='shelves'){
+    h+='<div class="cab-box"><div class="cab-int">'+
       '<div class="cab-led top" aria-hidden="true"></div>'+
       '<div class="cab-upper" aria-hidden="true">'+upperShelfSvg()+'</div>'+
       '<div class="cab-glass" aria-hidden="true"></div>'+
-      '<div class="cab-lower"><div class="cab-led mid" aria-hidden="true"></div>';
+      '<div class="cab-lower">'+(scene==='cabinet'?'<div class="cab-led mid" aria-hidden="true"></div>':'');
+  }
+  return h;
 }
-function cabinetSceneClose(){
-  return '</div>'+
-    '<div class="cab-dim" aria-hidden="true"></div></div>'+
-    '<div class="cab-doors" aria-hidden="true"><div class="cab-door l"></div><div class="cab-door r"></div></div></div>'+
-    '<div class="cab-drawer" aria-hidden="true"><span class="cab-knob"></span></div></div>';
+function cabinetSceneClose(scene){
+  if(scene==='cabinet'||scene==='shelves'){
+    return '</div>'+
+      '<div class="cab-dim" aria-hidden="true"></div></div>'+
+      '<div class="cab-doors" aria-hidden="true"><div class="cab-door l"></div><div class="cab-door r"></div></div></div>'+
+      '<div class="cab-drawer" aria-hidden="true"><span class="cab-knob"></span></div></div>';
+  }
+  if(scene==='counter')return '<div class="ct-edge" aria-hidden="true"></div></div>';
+  return '<div class="vn-edge" aria-hidden="true"></div></div>';
+}
+/* What stands behind the products in each room, and the rail's height. */
+function sceneBack(scene,n){
+  if(scene==='cabinet')return '<div class="cab-tray" aria-hidden="true">'+traySvg(false)+'</div>';
+  if(scene==='shelves'){
+    var rows=gridRows(n),h='';
+    for(var r=0;r<rows;r++)h+='<div class="cab-shelf" aria-hidden="true" style="top:'+(GRID_TOP+r*GRID_ROW+150)+'px"></div>';
+    return h;
+  }
+  if(scene==='counter')return '<div class="ct-tray" aria-hidden="true"></div>';
+  var b='';
+  [[18,34],[30,14],[50,6],[70,14],[82,34],[84,60],[84,86],[16,60],[16,86]].forEach(function(pt){
+    b+='<span class="vn-bulb" style="left:calc('+pt[0]+'% - 6px);top:'+(14+pt[1]*2.1)+'px"></span>'});
+  return '<div class="vn-mirror" aria-hidden="true"></div>'+b+'<div class="vn-table" aria-hidden="true"></div>';
+}
+function sceneFront(scene){
+  return scene==='cabinet'?'<div class="cab-tray front" aria-hidden="true">'+traySvg(true)+'</div>':'';
 }
 function upperShelfSvg(){
   return '<svg viewBox="0 0 360 112" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">'+
@@ -2476,10 +2549,16 @@ function viewCabinet(){
   if(view==='gallery'){
     /* The rail: one object at a time, its group riding above it. Flick it,
        or use Prev / Next and the arrow keys. Tap the object to lift it. */
-    h+=cabinetSceneOpen()+
+    var scene=cabinetScene();
+    h+='<div class="cab-scenes" role="group" aria-label="Display"><span class="t-eyebrow">Display</span>'+
+       [['cabinet','Cabinet'],['shelves','Shelves'],['counter','Counter'],['vanity','Vanity']].map(function(o){
+         return '<button type="button" data-act="cab-scene" data-v="'+o[0]+'" aria-pressed="'+(scene===o[0])+'">'+o[1]+'</button>'}).join('')+'</div>';
+    h+=cabinetSceneOpen(scene,ids.length)+
        '<div class="cab-group"><p class="t-eyebrow" id="cabgroup" aria-live="polite"></p><span class="t-caption cabcount" id="cabgroupn"></span></div>'+
-       '<div class="cabrail-wrap" id="cabrail-wrap" tabindex="0" role="group" aria-label="Your products on a turntable, one at a time. Left and right arrows turn it.">'+
-       '<div class="cab-tray" aria-hidden="true">'+traySvg(false)+'</div>'+
+       '<div class="cabrail-wrap" id="cabrail-wrap" tabindex="0" role="group" aria-label="'+
+         (scene==='shelves'?'Your products on shelves. Left and right arrows choose one.':scene==='cabinet'?'Your products on a turntable, one at a time. Left and right arrows turn it.':'Your products in a row. Left and right arrows move along it.')+
+         '"'+(scene==='shelves'?' style="height:'+(GRID_TOP+gridRows(ids.length)*GRID_ROW+8)+'px"':'')+'>'+
+       sceneBack(scene,ids.length)+
        '<div class="cabrail" id="cabrail">';
   }
   ORDER.forEach(function(k){
@@ -2507,7 +2586,7 @@ function viewCabinet(){
   });
   if(view==='gallery'){
     var ci=Math.min(Math.max(0,S.ui.cabIndex||0),ids.length-1);
-    h+='</div><div class="cab-tray front" aria-hidden="true">'+traySvg(true)+'</div></div>'+cabinetSceneClose()+
+    h+='</div>'+sceneFront(scene)+'</div>'+cabinetSceneClose(scene)+
        '<div class="foot-line"><span id="cabpos">'+(ci+1)+' Of '+ids.length+'</span><span class="pn2">'+
        '<button type="button" data-act="cab-prev">Prev</button> / <button type="button" data-act="cab-next">Next</button></span></div>';
     if(S.ui.cardMenu&&PRODUCTS[S.ui.cardMenu]&&ids.indexOf(S.ui.cardMenu)>-1)h+='<div class="cab-menu-under">'+cardMenu(S.ui.cardMenu)+'</div>';
@@ -2537,13 +2616,15 @@ function viewProduct(id){
   var canAdd=!inToday&&ELIGIBLE_LIFE[p.status]&&ELIGIBLE_CONF[p.confidence];
   var cabAll=cabinetIds(),pos=cabAll.indexOf(id),prevId=pos>0?cabAll[pos-1]:null,nextId=pos>-1&&pos<cabAll.length-1?cabAll[pos+1]:null;
   h+='<p class="t-eyebrow" style="margin:var(--s8) var(--margin) 0">'+esc(cat(p.category))+(pos>-1?' · '+(pos+1)+' Of '+cabAll.length:'')+'</p>';
-  h+='<div class="lifted"><button type="button" class="detailthumb" id="detailthumb-btn" data-act="zoom" data-id="'+esc(id)+'" aria-label="See it larger">'+productVisual(id,Math.min(2,200/Math.max(1,p.h)),p.confidence==='UNKNOWN')+'</button></div>';
+  h+='<div class="lifted"><button type="button" class="detailthumb" id="detailthumb-btn" data-act="zoom" data-id="'+esc(id)+'" aria-label="See it larger">'+productVisual(id,Math.min(2.4,250/Math.max(1,p.h)),p.confidence==='UNKNOWN')+'</button><span class="lifted-hint" aria-hidden="true">Tap To Enlarge</span></div>';
   h+='<h1 class="t-section-heading lifted-name">'+esc(p.brand+' '+p.productName)+'</h1>';
   h+='<p class="t-caption lifted-fact">'+esc(CONF[p.confidence].label)+' · Added '+esc(monthYear(p.dateAdded))+' · '+statusWord(id)+'</p>';
   h+='<div class="thread" aria-hidden="true"></div>';
   h+='<div class="tag" role="group" aria-label="Label card">'+
      '<a class="tr" href="#step-editor" aria-label="Step: '+esc(cat(p.category))+'. Edit."><span class="k">STEP</span><span class="v">'+esc(cat(p.category))+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<a class="tr" href="#when-editor" aria-label="Time: '+esc(WHEN_LABEL[whenKey(p)])+'. Edit."><span class="k">TIME</span><span class="v">'+esc(WHEN_LABEL[whenKey(p)])+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
+     '<div class="tr"><span class="k">ROUTINES</span><span class="v">'+esc(membership(id)||'None')+'</span></div>'+
+     '<a class="tr" href="#mixing"><span class="k">MIXING</span><span class="v">Not Known Yet</span></a>'+
      '<div class="tr"><span class="k">SOURCE</span><span class="v">'+esc(CONF[p.confidence].label)+'</span></div>'+
      (canAdd?'<button type="button" class="btn btn-done" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>':
       inToday?'<p class="tnote t-caption">In Routine</p>':'')+'</div>';
@@ -2575,6 +2656,10 @@ function viewProduct(id){
      '<div><p class="t-meta" style="opacity:.7">Availability</p>'+
      '<p class="t-body">'+esc(LIFE[p.status].label)+'</p></div>'+
 
+     '<div id="mixing"><p class="t-meta" style="opacity:.7">Mixing With Other Products</p>'+
+     '<p class="t-body">Not Known Yet</p>'+
+     '<p class="t-caption" style="opacity:.75;margin-top:4px">Dewy has no verified ingredient data, so it will not guess what pairs with this. Ask about two specific products instead.</p>'+
+     '<p style="margin-top:var(--s8)"><button type="button" class="btn btn-done" data-act="ask-about" data-id="'+esc(id)+'">Can These Be Used Together?</button></p></div>'+
      '<div><p class="t-meta" style="opacity:.7">Ingredient Review</p>'+
      '<p class="t-body">Needs More Information</p>'+
      '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p></div>'+
@@ -3878,12 +3963,33 @@ var CabRail={
     var n=this.cards.length;if(!n)return;
     var ww=this.wrap?this.wrap.clientWidth:0,wh=this.wrap?this.wrap.clientHeight:0;
     if(!ww)ww=360;if(!wh)wh=330;
+    var mode=SCENES[cabinetScene()]||'turn',i,c;
+    var prog=-this.x/this.STEP;
+    if(mode==='grid'){
+      var cell=ww/GRID_COLS;
+      for(i=0;i<n;i++){
+        c=this.cards[i];
+        var gx=cell*((i%GRID_COLS)+.5),gy=GRID_TOP+Math.floor(i/GRID_COLS)*GRID_ROW+150;
+        c.style.transform='translate3d('+gx.toFixed(1)+'px,'+(gy-160)+'px,0) scale(.8)';
+        c.style.zIndex=String(10+(i===this.cur?50:0));c.style.opacity='1';
+      }
+      return;
+    }
+    if(mode==='row'){
+      var pitch=Math.max(96,Math.min(124,ww/3.2)),rcx=ww/2,rcy=wh-102;
+      for(i=0;i<n;i++){
+        c=this.cards[i];var d=i-prog,ad=Math.abs(d);
+        c.style.transform='translate3d('+(rcx+d*pitch).toFixed(1)+'px,'+(rcy-160)+'px,0) scale('+(1-Math.min(ad,2)*.05).toFixed(3)+')';
+        c.style.zIndex=String(10+Math.max(0,20-Math.round(ad*4)));
+        c.style.opacity=String(Math.max(0,1-Math.max(0,ad-1.4)*.6));
+      }
+      return;
+    }
     /* the disc: front of it a little above the bottom, radius to fit */
     var rx=Math.min(158,ww*.44),ry=rx*.29,cx=ww/2,cy=wh-102;
     var stepA=Math.PI*2/Math.max(n,8);
-    var prog=-this.x/this.STEP;
-    for(var i=0;i<n;i++){
-      var c=this.cards[i],th=(i-prog)*stepA;
+    for(i=0;i<n;i++){
+      c=this.cards[i];var th=(i-prog)*stepA;
       var cs=Math.cos(th),sn=Math.sin(th);
       var depth=(cs+1)/2;                     /* 1 in front, 0 at the back */
       var sc=.68+.32*depth;
@@ -3926,6 +4032,7 @@ var CabRail={
   go:function(){cancelAnimationFrame(this.raf);var self=this;this.raf=requestAnimationFrame(function(){self.tick()})},
   to:function(i,instant){
     i=Math.min(Math.max(0,i),this.cards.length-1);
+    if(SCENES[cabinetScene()]==='grid')instant=true;
     this.idx=i;S.ui.cabIndex=i;
     if(instant||prefersReduced()){this.x=-this.offsetOf(i);this.v=0;this.target=null;this.render();this.settle(i);return}
     this.settle(i);this.target=-this.offsetOf(i);this.go();
@@ -3935,7 +4042,7 @@ var CabRail={
     this.to(this.idx+d);
   },
   down:function(e){
-    if(!this.cards.length||e.button)return;
+    if(!this.cards.length||e.button||SCENES[cabinetScene()]==='grid')return;
     if(e.target.closest('.gmore,.gmenu'))return;
     this.drag={x0:e.clientX,y0:e.clientY,xs:this.x,moved:false,axis:null,last:[e.clientX,performance.now()]};
     this.target=null;this.wrap.classList.add('dragging');
@@ -4462,6 +4569,7 @@ var ACTS={
     logEvent('event','Moved To '+cat(v),p.brand+' '+p.productName+' moved from '+cat(was)+' to '+cat(v)+'.',true,{type:'cat',id:id,was:was});
     render();say(p.productName+' moved to '+cat(v)+'.');
   },
+  'ask-about':function(v,id){S.ask.sel=[id];S.ask.answer=null;S.ui.detail=null;S.tab='ask';render();window.scrollTo(0,0)},
   'home-start':function(){S.tab='routine';if(S.routineState==='NOT_STARTED'&&resolve().steps.length){begin()}else{render()}window.scrollTo(0,0)},
   'weather-set':function(){var i=el('wplace');WEATHER.set(i?i.value.trim():'')},
   'weather-clear':function(){WEATHER.clear()},
@@ -4474,6 +4582,8 @@ var ACTS={
   },
   'cab-prev':function(){CabRail.step(-1)},
   'cab-next':function(){CabRail.step(1)},
+  'cab-scene':function(v){if(!SCENES[v])return;S.prefs.cabinetScene=v;CabRail.opened=false;render();
+    say('Products shown '+(v==='cabinet'?'in the cabinet.':v==='shelves'?'on shelves.':v==='counter'?'on the counter.':'on the vanity.'))},
   'cab-view':function(v){S.prefs.cabinetView=(v==='list'?'list':'gallery');render();
     say(v==='list'?'Cabinet shown as a list.':'Cabinet shown as a gallery.')},
   'pref-mode':function(v){S.prefs.defaultMode=v;render()},
