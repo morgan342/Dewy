@@ -756,7 +756,7 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
   box-shadow:0 0 8px 3px rgba(var(--glow),.9),0 6px 30px 10px rgba(var(--glow),.5)}
 /* Counter: plaster wall, window light, a stone top, and a tray */
 .cab-scene.counter{--stone:#EFEBE4;--stone-vein:#D9D2C6;--wood:#C9B79B}
-.cab-scene.counter .cabrail-wrap{height:340px;
+.cab-scene.counter .cabrail-wrap{height:350px;
   background:linear-gradient(180deg,#F4EFE6 0%,#EDE7DC 58%,#EDE7DC 58%,var(--stone) 58.5%,#E6E0D6 100%)}
 .cab-scene.counter .cabrail-wrap::before{content:"";position:absolute;left:0;right:0;top:0;height:58%;
   background:radial-gradient(60% 90% at 78% 10%,rgba(255,250,236,.95) 0%,rgba(255,250,236,0) 70%),
@@ -765,12 +765,14 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 .cab-scene.counter .cabrail-wrap::after{content:"";position:absolute;left:0;right:0;top:58%;bottom:0;pointer-events:none;
   background:linear-gradient(115deg,transparent 0 30%,rgba(255,255,255,.5) 31%,transparent 33%,transparent 60%,rgba(217,210,198,.6) 61%,transparent 63%),
   linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 30%)}
-.ct-tray{position:absolute;left:8%;right:8%;bottom:34px;height:78px;z-index:0;border-radius:6px;
+.ct-tray{position:absolute;left:6%;right:6%;bottom:80px;height:72px;z-index:0;border-radius:6px;
   background:linear-gradient(180deg,#B49A78 0%,var(--wood) 12%,#D8C8AC 14%,#CDBB9C 100%);
   box-shadow:0 2px 0 rgba(255,255,255,.5) inset,0 -3px 0 #A88F6C inset,0 16px 24px -10px rgba(67,48,46,.45)}
 .ct-tray::before{content:"";position:absolute;inset:12px 8px 6px;border-radius:4px;background:linear-gradient(180deg,#E3D5BC,#D3C2A5);box-shadow:inset 0 2px 4px rgba(67,48,46,.25)}
 .ct-edge{margin:0 var(--s16);height:26px;background:linear-gradient(180deg,#E2DBD0 0%,#CFC6B8 60%,#B9AE9E 100%);
   box-shadow:0 26px 40px -22px rgba(67,48,46,.5);border-radius:0 0 2px 2px}
+.cab-scene.shelves .gallery.rail .gname{width:88px}
+.cab-scene.shelves .gallery.rail .gcard.lift .gvisual{transform:translateY(-10px)}
 /* Vanity: a lit mirror above a lacquered table */
 .cab-scene.vanity .cabrail-wrap{height:380px;background:linear-gradient(180deg,#F3ECE8 0%,#EEE4DF 66%,#FBF8F3 66.5%,#F1EBE2 100%)}
 .vn-mirror{position:absolute;left:14%;right:14%;top:14px;height:210px;border-radius:110px 110px 12px 12px;z-index:0;
@@ -829,6 +831,7 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 .cab-search .input{border:none;border-bottom:var(--rule) solid var(--structure-quiet);padding:var(--s8) 0;background:none}
 .cab-search .input:focus-visible{outline:none;border-bottom-color:var(--ink-primary)}
 .cab-row{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);margin:var(--s8) var(--margin) 0;border-bottom:var(--rule) solid var(--structure-quiet)}
+.cabfilters.groups button{font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .cabfilters{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;padding:0;gap:var(--s16);scrollbar-width:none}
 .cabfilters::-webkit-scrollbar{display:none}
 .cabfilters button{flex:0 0 auto;padding:0;border:none;border-radius:0;background:none;color:var(--ink-primary);opacity:.6;font-size:12px;line-height:16px;white-space:nowrap;border-bottom:var(--contour) solid transparent;margin-bottom:-1px}
@@ -2092,6 +2095,8 @@ function cabinetIds(){
     if(p.status==='ARCHIVED'&&!S.ui.showArchived)return false;
     var q=(S.ui.find||'').toLowerCase();
     if(q&&(p.brand+' '+p.productName).toLowerCase().indexOf(q)<0)return false;
+    var g=S.ui.cabGroup||'all';
+    if(g!=='all'&&p.category!==g)return false;
     var f=S.ui.cabFilter||'all';
     if(f!=='all'){
       var w=statusWord(id);
@@ -2525,6 +2530,10 @@ function viewCabinet(){
   }
   h+='<div class="cab-search"><label class="sr-only" for="find">Search Your Cabinet</label>'+
      '<input class="input t-body" id="find" data-act="find" value="'+esc(q)+'" placeholder="Search"></div>';
+  var g=S.ui.cabGroup||'all';
+  h+='<div class="cab-row"><div class="cabfilters groups" role="group" aria-label="Kind">'+
+     [['all','Everything']].concat(ORDER.map(function(c){return [c,cat(c)]})).map(function(o){
+       return '<button type="button" class="t-caption" data-act="cab-group" data-v="'+o[0]+'" aria-pressed="'+(g===o[0])+'">'+esc(o[1])+'</button>'}).join('')+'</div></div>';
   h+='<div class="cab-row"><div class="cabfilters" role="group" aria-label="Filter">'+
      [['all','All'],['routine','In Routine'],['low','Low'],['paused','Paused'],['finished','Finished'],['occasional','Every So Often']].map(function(o){
        return '<button type="button" class="t-caption" data-act="cab-filter" data-v="'+o[0]+'" aria-pressed="'+(f===o[0])+'">'+o[1]+'</button>'}).join('')+'</div>';
@@ -3976,7 +3985,7 @@ var CabRail={
       return;
     }
     if(mode==='row'){
-      var pitch=Math.max(96,Math.min(124,ww/3.2)),rcx=ww/2,rcy=wh-102;
+      var onCounter=cabinetScene()==='counter',pitch=Math.max(96,Math.min(124,ww/3.2)),rcx=ww/2,rcy=wh-(onCounter?92:102);
       for(i=0;i<n;i++){
         c=this.cards[i];var d=i-prog,ad=Math.abs(d);
         c.style.transform='translate3d('+(rcx+d*pitch).toFixed(1)+'px,'+(rcy-160)+'px,0) scale('+(1-Math.min(ad,2)*.05).toFixed(3)+')';
@@ -4531,7 +4540,8 @@ var ACTS={
   },
 
   /* profile */
-  'cab-filter':function(v){S.ui.cabFilter=v;S.ui.cardMenu=null;render();
+  'cab-group':function(v){S.ui.cabGroup=v;S.ui.cabIndex=0;S.ui.cardMenu=null;render();say(v==='all'?'Everything.':cat(v)+' only.')},
+  'cab-filter':function(v){S.ui.cabFilter=v;if(v==='all')S.ui.cabGroup='all';S.ui.cabIndex=0;S.ui.cardMenu=null;render();
     say(v==='all'?'Showing every product.':'Filtered to '+({routine:'products in a routine',low:'products running low',paused:'paused products',finished:'finished products',occasional:'products used every so often'}[v]||v)+'.')},
   'cab-clear-find':function(){S.ui.find='';S.ui.cardMenu=null;render();var n=el('find');if(n)n.focus()},
   'card-menu':function(v,id){
