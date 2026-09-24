@@ -2,6 +2,13 @@
 
 **Last updated:** 2026-09-23 (Claude Code session, Morgan: "gorgeous. i love it i love it i love it. please edit the ui")
 
+## Display choice (2026-09-24) — delivered, committed
+Morgan: "i want the user to be able to choose how they see their products … an actual cabinet … the turn table one … a kitchen counter with a tray … a vanity." In `design/dewy.html`:
+- **Display row** under the filters: Cabinet / Shelves / Counter / Vanity (`cab-scene`, saved as `S.prefs.cabinetScene`, default `cabinet`). Each switch replays the room's light-up unless Reduce Motion is on.
+- **Cabinet** the cupboard with the turntable (unchanged). **Shelves** the same cupboard with straight glass shelves, four products per shelf, everything in view, no dragging; Prev / Next and arrows choose one. **Counter** a tiled wall with window light, a stone top, and a wooden tray the products stand in; a straight row that flicks. **Vanity** a lit arched mirror with nine bulbs over a lacquered table; the same row.
+- `CabRail.render()` now has three layouts (`SCENES`: turn / grid / row); grid disables pointer drag and makes moves instant. Same `.gcard` DOM, tap-to-open, More menu, Move Left / Right, See All.
+Verified: `npm test` → **244 passed** (1 new); typecheck clean; in-app browser at 375×812: all four rooms, Prev / Next in each, tap opens Product; no console errors.
+
 ## The Cabinet scene (2026-09-23) — delivered, uncommitted
 Morgan sent a reference photo of a lit bathroom cabinet (glass shelf with towels and small bottles above, an acrylic turntable of bottles below, a drawer with a brass knob) and asked for it "the exact same but animated for an app, as real as possible", then: the lazy susan moves left and right, she can tap to choose products, see all of them, and move or organize them herself. All in `design/dewy.html`:
 - **Scene** `cabinetSceneOpen()/Close()`, `upperShelfSvg()`, `traySvg()`: greige box, warm interior with two LED strips (bloom via box-shadow), a decorative upper shelf drawn in SVG (towels, jar, two sprays, bronze tube, amber pump; none is a product record), a glass shelf, the acrylic turntable (back disc behind the products, front rim in front of their bases), a drawer with a knob, and two doors. The first time the Cabinet is shown in a session the doors swing open, the interior fades up from dark, and the strips warm on (`.cab-scene.opening`; `CabRail.opened` prevents replay on re-render; Reduce Motion skips it entirely).

@@ -203,3 +203,32 @@ describe('Arranging the turntable', () => {
     expect(app.find(`.gcard #gmenu-${id}`)).toBeNull();
   });
 });
+
+describe('Display choice', () => {
+  test('four rooms, each with its own furniture, saved and keeping every control', () => {
+    app = loadDewy();
+    app.tab('cabinet');
+    const n = app.all('.gcard').length;
+    const rooms: Array<[string, string]> = [
+      ['shelves', '.cab-shelf'], ['counter', '.ct-tray'], ['vanity', '.vn-mirror'], ['cabinet', '.cab-tray svg'],
+    ];
+    for (const [room, sel] of rooms) {
+      app.click({ act: 'cab-scene', v: room });
+      expect(app.find(`.cab-scene.${room}`)).not.toBeNull();
+      expect(app.find(`.cab-scene ${sel}`)).not.toBeNull();
+      expect(app.all('.gcard').length).toBe(n);
+      expect(app.find(`.cab-scenes [data-v="${room}"]`)!.getAttribute('aria-pressed')).toBe('true');
+      expect(app.storage().prefs.cabinetScene).toBe(room);
+      app.click({ act: 'cab-next' });
+      expect(app.api.S.ui.cabIndex).toBe(1);
+      app.click({ act: 'cab-prev' });
+      expect(app.api.S.ui.cabIndex).toBe(0);
+      expect(app.find('.gcard.lift')).not.toBeNull();
+      expect(app.announce()).toMatch(/\S/);
+    }
+    // shelves show one glass ledge per row of four, all products in view
+    app.click({ act: 'cab-scene', v: 'shelves' });
+    expect(app.all('.cab-shelf').length).toBe(Math.ceil(n / 4));
+    expect(app.find('.cab-doors')).not.toBeNull();
+  });
+});
