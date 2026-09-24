@@ -151,3 +151,55 @@ describe('Your Cabinet', () => {
     expect(calls).toBe(0);
   });
 });
+
+describe('Arranging the turntable', () => {
+  test('Move Left / Move Right reorders within a group, persists, and announces', () => {
+    app = loadDewy();
+    app.tab('cabinet');
+    const ids = app.all('.gcard .gmain').map((b) => b.getAttribute('data-id') || '');
+    const group = (id: string) => app!.api.PRODUCTS[id].category;
+    const i = ids.findIndex((id, k) => k > 0 && group(id) === group(ids[k - 1]));
+    expect(i).toBeGreaterThan(0);
+    const id = ids[i], left = ids[i - 1];
+    app.click({ act: 'card-menu', id });
+    expect(app.find(`#gmenu-${id}`)).not.toBeNull();
+    app.click({ act: 'cab-move', id, v: 'left' });
+    const after = app.all('.gcard .gmain').map((b) => b.getAttribute('data-id') || '');
+    expect(after.indexOf(id)).toBe(i - 1);
+    expect(after.indexOf(left)).toBe(i);
+    expect(app.api.S.ui.cabIndex).toBe(i - 1);
+    expect(app.announce()).toMatch(/moved left/);
+    expect(app.storage().prefs.cabOrder.indexOf(id)).toBeLessThan(app.storage().prefs.cabOrder.indexOf(left));
+    // the order survives a reload and shows in See All too
+    const again = app.reload();
+    app = again;
+    app.tab('cabinet');
+    app.click({ act: 'cab-view', v: 'list' });
+    const rows = app.all('.rowitem').map((b) => b.getAttribute('data-id') || '');
+    expect(rows.indexOf(id)).toBe(rows.indexOf(left) - 1);
+  });
+
+  test('a product at the edge of its group stays put and says so', () => {
+    app = loadDewy();
+    app.tab('cabinet');
+    const first = app.find('.gcard .gmain')!.getAttribute('data-id')!;
+    app.click({ act: 'card-menu', id: first });
+    app.click({ act: 'cab-move', id: first, v: 'left' });
+    expect(app.find('.gcard .gmain')!.getAttribute('data-id')).toBe(first);
+    expect(app.announce()).toMatch(/already at the start/);
+  });
+
+  test('the cabinet scene carries doors, light, a glass shelf, and a turntable, with the menu under it', () => {
+    app = loadDewy();
+    app.tab('cabinet');
+    expect(app.find('.cab-scene .cab-door.l')).not.toBeNull();
+    expect(app.find('.cab-scene .cab-led.top')).not.toBeNull();
+    expect(app.find('.cab-scene .cab-glass')).not.toBeNull();
+    expect(app.find('.cab-scene .cab-tray svg')).not.toBeNull();
+    expect(app.all('.cab-scene [aria-hidden="true"]').length).toBeGreaterThan(4);
+    const id = app.find('.gcard .gmain')!.getAttribute('data-id')!;
+    app.click({ act: 'card-menu', id });
+    expect(app.find(`.cab-menu-under #gmenu-${id}`)).not.toBeNull();
+    expect(app.find(`.gcard #gmenu-${id}`)).toBeNull();
+  });
+});

@@ -2,6 +2,13 @@
 
 **Last updated:** 2026-09-23 (Claude Code session, Morgan: "gorgeous. i love it i love it i love it. please edit the ui")
 
+## The Cabinet scene (2026-09-23) — delivered, uncommitted
+Morgan sent a reference photo of a lit bathroom cabinet (glass shelf with towels and small bottles above, an acrylic turntable of bottles below, a drawer with a brass knob) and asked for it "the exact same but animated for an app, as real as possible", then: the lazy susan moves left and right, she can tap to choose products, see all of them, and move or organize them herself. All in `design/dewy.html`:
+- **Scene** `cabinetSceneOpen()/Close()`, `upperShelfSvg()`, `traySvg()`: greige box, warm interior with two LED strips (bloom via box-shadow), a decorative upper shelf drawn in SVG (towels, jar, two sprays, bronze tube, amber pump; none is a product record), a glass shelf, the acrylic turntable (back disc behind the products, front rim in front of their bases), a drawer with a knob, and two doors. The first time the Cabinet is shown in a session the doors swing open, the interior fades up from dark, and the strips warm on (`.cab-scene.opening`; `CabRail.opened` prevents replay on re-render; Reduce Motion skips it entirely).
+- **Turntable** `CabRail.render()` now places every `.gcard` on an ellipse (`rx ≤ 158px`, `ry = .29·rx`), scaled and dimmed toward the back, z-sorted; one card is `STEP` 96px of travel, so the existing flick / drag physics, Prev / Next, arrow keys, tap-to-open, group label, "N Of M" are unchanged. Product photos gain a soft reflection on the acrylic (`-webkit-box-reflect`, WebKit only, cosmetic). Name, state, and More show only for the lifted front product. `mount()` now resets `cur` and cancels a running frame.
+- **Organize** `S.prefs.cabOrder` holds her order (`orderedIds()`, `moveInCabinet()`, `galleryIds()`); the card menu gains "Arrange: Move Left / Move Right" (`cab-move`), announced and persisted. On the turntable the open menu renders under the cabinet (`.cab-menu-under`) so nothing clips it. View toggle relabelled **Turntable / See All** (same `cab-view` values).
+Verified: `npm test` → 16 suites, **243 tests passed** (3 new in `__tests__/ui/cabinet.test.ts`); `npm run typecheck` clean; in-app browser at 375×812: doors opening, flick to the last product, Move Right reorders and survives reload, See All shows the same order, no console errors.
+
 ## Editorial grid sprint (2026-09-23) — delivered, uncommitted
 Morgan reviewed the Érra Atelier reference (docs/DESIGN_REF_ERRA_ATELIER.md), approved three Dewy screens built on its
 grid with Matas-style moves, and asked for the UI edit. All in `design/dewy.html`:

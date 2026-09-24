@@ -710,10 +710,10 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 .cab-lower{position:relative;padding-top:8px}
 .cab-group{display:flex;justify-content:space-between;align-items:baseline;margin:var(--s8) var(--s16) 0;min-height:16px;position:relative;z-index:5}
 .cab-group .cabcount{opacity:.55}
-.cabrail-wrap{position:relative;height:300px;overflow:hidden;cursor:grab;touch-action:pan-y;outline:none}
+.cabrail-wrap{position:relative;height:330px;overflow:hidden;cursor:grab;touch-action:pan-y;outline:none}
 .cabrail-wrap.dragging{cursor:grabbing}
 .cabrail-wrap:focus-visible{box-shadow:inset 0 0 0 2px var(--ink-primary)}
-.cab-tray{position:absolute;left:0;right:0;bottom:0;height:130px;pointer-events:none;z-index:0}
+.cab-tray{position:absolute;left:0;right:0;bottom:56px;height:130px;pointer-events:none;z-index:0}
 .cab-tray svg{width:100%;height:100%;display:block}
 .cab-tray.front{z-index:3;opacity:.55}
 .cabrail{position:absolute;inset:0;z-index:1}
@@ -740,6 +740,9 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 .gallery.rail .gmore{visibility:hidden;min-height:24px;line-height:24px}
 .gallery.rail .gcard.lift .gmore{visibility:visible}
 .gallery.rail .gmenu{position:absolute;left:0;right:0;top:100%;z-index:4;margin-top:var(--s8);width:220px;margin-left:-55px}
+/* the menu under the cabinet */
+.cab-menu-under{margin:var(--s16) var(--margin) 0}
+.cab-menu-under .gmenu{position:static;width:auto;margin:0;background:var(--surface-raised)}
 /* the drawer below, and the doors */
 .cab-drawer{position:relative;margin:0 var(--s16);height:64px;background:linear-gradient(180deg,var(--wall-lit) 0%,var(--wall) 30%,var(--wall) 85%,var(--wall-deep) 100%);
   border-top:1px solid rgba(255,255,255,.35);box-shadow:inset 0 -2px 0 rgba(67,48,46,.18),0 30px 50px -30px rgba(67,48,46,.55);border-radius:0 0 2px 2px}
@@ -2010,8 +2013,36 @@ function timingChip(id,r){
   if(p.eveningEligible)return '<span class="tchip time">Evening</span>';
   return '<span class="tchip occ">'+(p.occasional?'Every So Often':'Occasional')+'</span>';
 }
+/* Her own order, kept in prefs. Products she has never moved fall in after
+   the ones she has, in the order they were added. */
+function orderedIds(){
+  var order=(S.prefs&&S.prefs.cabOrder)||[],all=Object.keys(PRODUCTS);
+  var rank={};order.forEach(function(id,i){rank[id]=i});
+  return all.slice().sort(function(a,b){
+    var ra=rank[a]!==undefined?rank[a]:order.length+all.indexOf(a),rb=rank[b]!==undefined?rank[b]:order.length+all.indexOf(b);
+    return ra-rb;
+  });
+}
+/* Move a product one place left or right among its group. */
+function moveInCabinet(id,dir){
+  var p=PRODUCTS[id];if(!p)return false;
+  var list=orderedIds();
+  var group=list.filter(function(k){return PRODUCTS[k].category===p.category&&PRODUCTS[k].status!=='ARCHIVED'});
+  var gi=group.indexOf(id),gj=gi+dir;
+  if(gi<0||gj<0||gj>=group.length)return false;
+  var other=group[gj],ia=list.indexOf(id),ib=list.indexOf(other);
+  list[ia]=other;list[ib]=id;
+  S.prefs.cabOrder=list;
+  return true;
+}
+/* The turntable's order: her order, grouped the way the gallery groups it. */
+function galleryIds(){
+  var ids=cabinetIds(),out=[];
+  ORDER.forEach(function(k){ids.forEach(function(id){if(PRODUCTS[id].category===k)out.push(id)})});
+  return out;
+}
 function cabinetIds(){
-  return Object.keys(PRODUCTS).filter(function(id){
+  return orderedIds().filter(function(id){
     var p=PRODUCTS[id];
     if(p.status==='ARCHIVED'&&!S.ui.showArchived)return false;
     var q=(S.ui.find||'').toLowerCase();
@@ -2066,7 +2097,8 @@ function cabinetCard(id){
     '<span class="gstate">'+statusTag(id)+'</span></span></button>'+
     '<button type="button" class="t-caption gmore" data-act="card-menu" data-id="'+esc(id)+'" aria-expanded="'+open+'" aria-controls="gmenu-'+esc(id)+'" aria-label="More Actions For '+esc(name)+'">More</button>'+
     '</div>';
-  if(open)h+=cardMenu(id);
+  /* On the turntable the menu opens under the cabinet, where nothing clips it. */
+  if(open&&!(S.prefs.cabinetView!=='list'&&S.tab==='cabinet'&&!S.ui.detail))h+=cardMenu(id);
   return h;
 }
 function cardMenu(id){
@@ -2078,6 +2110,9 @@ function cardMenu(id){
     (p.confidence==='UNKNOWN'?'<p class="t-caption" style="padding:var(--s8) 0;opacity:.7">Not identified well enough to place in a routine.</p>':
       inToday?'<p class="t-body" style="padding:var(--s8) 0;opacity:.7">In '+todayWord+'’s Routine</p>':
       '<button type="button" class="textrow t-body" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>')+
+    '</div><p class="t-meta" style="margin-top:var(--s16);opacity:.7">Arrange</p><div class="catrow">'+
+    '<button type="button" class="t-caption" data-act="cab-move" data-id="'+esc(id)+'" data-v="left">Move Left</button>'+
+    '<button type="button" class="t-caption" data-act="cab-move" data-id="'+esc(id)+'" data-v="right">Move Right</button>'+
     '</div><p class="t-meta" style="margin-top:var(--s16);opacity:.7">Move To Group</p><div class="catrow">'+
     ['CLEANSE','TREAT','SEAL','PROTECT','FINISH','UNASSIGNED'].map(function(c){
       return '<button type="button" class="t-caption" data-act="set-cat" data-id="'+esc(id)+'" data-v="'+c+'" aria-pressed="'+(p.category===c)+'">'+esc(cat(c))+'</button>'}).join('')+
@@ -2425,8 +2460,8 @@ function viewCabinet(){
      is for, and its state as words, so nothing depends on colour alone. */
   var view=S.prefs.cabinetView==='list'?'list':'gallery';
   h+='<div class="cabtoggle t-caption" role="group" aria-label="Cabinet View">'+
-     '<button type="button" data-act="cab-view" data-v="gallery" aria-pressed="'+(view==='gallery')+'">Gallery</button>'+
-     '<button type="button" data-act="cab-view" data-v="list" aria-pressed="'+(view==='list')+'">List</button></div></div>';
+     '<button type="button" data-act="cab-view" data-v="gallery" aria-pressed="'+(view==='gallery')+'">Turntable</button>'+
+     '<button type="button" data-act="cab-view" data-v="list" aria-pressed="'+(view==='list')+'">See All</button></div></div>';
   if(!ids.length){
     if(q)h+=emptyState('Nothing Found','No product you own matches “'+q+'”.','Serum',
       '<button type="button" class="btn btn-done" data-act="cab-clear-find">Clear Search</button>');
@@ -2475,6 +2510,7 @@ function viewCabinet(){
     h+='</div><div class="cab-tray front" aria-hidden="true">'+traySvg(true)+'</div></div>'+cabinetSceneClose()+
        '<div class="foot-line"><span id="cabpos">'+(ci+1)+' Of '+ids.length+'</span><span class="pn2">'+
        '<button type="button" data-act="cab-prev">Prev</button> / <button type="button" data-act="cab-next">Next</button></span></div>';
+    if(S.ui.cardMenu&&PRODUCTS[S.ui.cardMenu]&&ids.indexOf(S.ui.cardMenu)>-1)h+='<div class="cab-menu-under">'+cardMenu(S.ui.cardMenu)+'</div>';
   }
   h+=footWord('Cabinet');
   if(S.ui.dialog)h+=dialogHTML();
@@ -3806,7 +3842,7 @@ var CabRail={
   wrap:null,rail:null,cards:[],x:0,v:0,target:null,drag:null,raf:0,idx:0,cur:-1,opened:false,
   mount:function(){
     var wrap=el('cabrail-wrap'),rail=el('cabrail');
-    this.wrap=wrap;this.rail=rail;this.cards=[];this.drag=null;this.target=null;this.v=0;
+    cancelAnimationFrame(this.raf);this.wrap=wrap;this.rail=rail;this.cards=[];this.drag=null;this.target=null;this.v=0;this.cur=-1;
     if(!wrap||!rail)return;
     var self=this;
     this.cards=Array.prototype.slice.call(rail.querySelectorAll('.gcard'));
@@ -3841,9 +3877,9 @@ var CabRail={
     if(!this.rail)return;
     var n=this.cards.length;if(!n)return;
     var ww=this.wrap?this.wrap.clientWidth:0,wh=this.wrap?this.wrap.clientHeight:0;
-    if(!ww)ww=360;if(!wh)wh=300;
+    if(!ww)ww=360;if(!wh)wh=330;
     /* the disc: front of it a little above the bottom, radius to fit */
-    var rx=Math.min(158,ww*.44),ry=rx*.29,cx=ww/2,cy=wh-46;
+    var rx=Math.min(158,ww*.44),ry=rx*.29,cx=ww/2,cy=wh-102;
     var stepA=Math.PI*2/Math.max(n,8);
     var prog=-this.x/this.STEP;
     for(var i=0;i<n;i++){
@@ -4429,6 +4465,13 @@ var ACTS={
   'home-start':function(){S.tab='routine';if(S.routineState==='NOT_STARTED'&&resolve().steps.length){begin()}else{render()}window.scrollTo(0,0)},
   'weather-set':function(){var i=el('wplace');WEATHER.set(i?i.value.trim():'')},
   'weather-clear':function(){WEATHER.clear()},
+  'cab-move':function(v,id){
+    var d=v==='left'?-1:1,p=PRODUCTS[id];if(!p)return;
+    if(!moveInCabinet(id,d)){say(p.productName+' is already at the '+(d<0?'start':'end')+' of '+cat(p.category)+'.');return}
+    S.ui.cabIndex=Math.max(0,galleryIds().indexOf(id));render();
+    var wrap=el('cabrail-wrap');if(wrap)wrap.focus();
+    say(p.productName+' moved '+v+'.');
+  },
   'cab-prev':function(){CabRail.step(-1)},
   'cab-next':function(){CabRail.step(1)},
   'cab-view':function(v){S.prefs.cabinetView=(v==='list'?'list':'gallery');render();
