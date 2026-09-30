@@ -5264,7 +5264,7 @@ function viewAdd(){
       '<div class="searchwrap">'+
       '<input class="input t-body" id="q" type="search" enterkeyhint="search" role="combobox" aria-autocomplete="list"'+
       ' aria-controls="results" aria-expanded="'+(hasHits?'true':'false')+'"'+(a.active>=0?' aria-activedescendant="opt-'+a.active+'"':'')+
-      ' value="'+esc(a.q||'')+'" placeholder="Dior" autocomplete="off" spellcheck="false">'+
+      ' value="'+esc(a.q||'')+'" placeholder="CeraVe Hydrating Facial Cleanser" autocomplete="off" spellcheck="false">'+
       (a.q?'<button type="button" class="qclear" data-act="add-clearq" aria-label="Clear Search">&times;</button>':'')+
       '</div>'+
       '<button type="button" class="btn-search t-meta" data-act="add-runsearch">Search</button>'+
@@ -5399,7 +5399,7 @@ function searchRows(a){
     return '<p class="t-body" style="padding:var(--s8) 0">Search is not working right now. You can add the product by hand below.</p>'+
       '<p><button type="button" class="t-body linkish" data-act="add-retry">Try Again</button></p>';
   if(!a.searched)
-    return '<p class="t-body" style="opacity:.7;padding:var(--s16) 0">Type a brand or product, like Dior or CeraVe Cleanser.</p>';
+    return '<p class="t-body" style="opacity:.7;padding:var(--s16) 0">Type the brand and the product name, the way it reads on the bottle. For example: CeraVe Hydrating Facial Cleanser.</p>';
   if(!a.hits || !a.hits.length)
     return '<p class="t-body" style="padding:var(--s8) 0">Nothing for “'+esc(a.ran||a.q||'')+'”. Try the brand alone.</p>';
   return a.hits.map(function(r,ri){
