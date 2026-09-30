@@ -203,3 +203,5 @@ At every phase end, return:
 7. The exact next phase I should run
 
 Then stop and wait.
+
+The Skin Chemist spec is in docs/SKIN_CHEMIST_SPEC.md. Re-read it before every phase.
