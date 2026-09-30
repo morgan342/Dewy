@@ -50,6 +50,12 @@ You build. Phil writes what to build next. Morgan only makes taste calls and rar
 - Adding a product from **Tonight/Routine** must be obvious — **do not** require hunting through Cabinet first.
 - Anything added is **saved to Cabinet automatically**.
 
+### Product close-up (permanent · Morgan 2026-09-30)
+
+- No matter the display, filter, or product: tapping a product opens a much larger view of it, and tapping the picture opens a near full-screen close-up.
+- Photos are drawn at their true resolution, never stretched past their pixels. Photos the user adds are kept at up to 1000 px tall.
+- Search examples never say "Dior". Use a real, full example such as "CeraVe Hydrating Facial Cleanser".
+
 ### Product search (must feel stupid-simple)
 
 - Search bar + **Search** button (and Return/Enter).

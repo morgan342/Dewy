@@ -39,6 +39,7 @@ Dewy helps people use skincare products they already own in an appropriate, edit
 - Do not make medical diagnoses, treatment claims, or definitive safety claims. Describe product information as educational guidance, preserve user control, and provide an appropriate clinician/escalation boundary.
 - AI-generated or inferred product information must be visibly labeled, editable, reviewable, and reversible.
 - Do not add external APIs, paid services, analytics, authentication providers, or product databases without asking for approval first.
+- Every product, in every display, filter, or list, opens on tap to a much larger view, then to a near full-screen close-up. Photos are shown at their true resolution, never stretched. (Morgan · 2026-09-30, permanent.)
 
 ## Visual Direction
 
