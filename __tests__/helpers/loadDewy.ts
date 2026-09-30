@@ -65,11 +65,12 @@ function parts(): { markup: string; script: string } {
   if (!cache) {
     const html = fs.readFileSync(DEWY_HTML, 'utf8');
     const markup = html.match(/<\/style>\s*([\s\S]*?)\s*<script>\n/);
-    const script = html.match(/<script>\n([\s\S]*?)\n<\/script>/);
-    if (!markup || !script) {
+    // Every inline script block, in order: the Skin Chemist bundle comes before the app.
+    const blocks = Array.from(html.matchAll(/<script>\n([\s\S]*?)\n<\/script>/g)).map((m) => m[1]);
+    if (!markup || !blocks.length) {
       throw new Error('design/dewy.html: could not find the page markup or the script block');
     }
-    cache = { markup: markup[1], script: script[1] };
+    cache = { markup: markup[1], script: blocks.join('\n;\n') };
   }
   return cache;
 }

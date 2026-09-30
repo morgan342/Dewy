@@ -88,3 +88,13 @@ is a transform or opacity, geometry is measured once on touch-down, and no layou
 ## Founder lock
 
 iOS first · US only · freemium · cosmetic routine (no medical claims)
+
+## Skin Chemist (Phase 1A, invisible)
+
+Spec: `docs/SKIN_CHEMIST_SPEC.md`. Progress: `docs/SKIN_CHEMIST_PROGRESS.md`. Open questions for the expert: `docs/SKIN_CHEMIST_NEEDS_AN_EXPERT.md`.
+
+- Source of truth: `src/chemist/` (dictionary, normalize, actives, rules, golden, engine, review, index). Plain CommonJS; Node tests and the browser read the same files.
+- The app stays one HTML file. `node scripts/build-chemist.js` inlines the modules into `design/dewy.html` between the `CHEMIST:START` and `CHEMIST:END` markers. Edit `src/chemist`, not the inlined copy, then run the script.
+- Tests: `npx jest __tests__/chemist` (engine) and `npx jest __tests__/ui/chemist.test.ts` (in-app). `npm test` runs everything.
+- Normal mode shows nothing from the Skin Chemist: every rule is a draft. Developer mode: Profile, tap the version line five times, then the Developer row.
+- Rules are approved only by importing an expert's completed review sheet (`review.importCsv`, then `review.apply` after Morgan confirms).

@@ -79,9 +79,9 @@
   /* ---------- predicates over one product view ---------- */
   function matchProduct(v, spec) {
     if (!spec) return true;
-    if (!v._m) v._m = [];
-    for (var c = 0; c < v._m.length; c++) if (v._m[c][0] === spec) return v._m[c][1];
-    var res = matchProductRaw(v, spec); v._m.push([spec, res]); return res;
+    if (!v._m) v._m = (typeof Map === 'function') ? new Map() : null;
+    if (v._m) { var hit = v._m.get(spec); if (hit !== undefined) return hit; var res = matchProductRaw(v, spec); v._m.set(spec, res); return res; }
+    return matchProductRaw(v, spec);
   }
   function matchProductRaw(v, spec) {
     if (spec.active && !spec.active.some(function (f) { return v.activeFamilies.indexOf(f) > -1; })) return false;
@@ -130,8 +130,9 @@
     /* identical days evaluate once; only weekly-frequency and same-day rules need every day */
     var needAllDays = w.kind === 'week' || (w.kind === 'pair' && w.sameDay && !w.sameRoutine);
     var allSessions = ctx.sessions;
-    if (!needAllDays && ctx.uniqueSessions) ctx = { views: ctx.views, sessions: ctx.uniqueSessions, profile: ctx.profile, weather: ctx.weather, today: ctx.today, rules: ctx.rules };
-    if (needAllDays) ctx = { views: ctx.views, sessions: allSessions, profile: ctx.profile, weather: ctx.weather, today: ctx.today, rules: ctx.rules };
+    var everySession = ctx.allSessions || allSessions;
+    if (!needAllDays && ctx.uniqueSessions) ctx = { views: ctx.views, sessions: ctx.uniqueSessions, allSessions: everySession, profile: ctx.profile, weather: ctx.weather, today: ctx.today, rules: ctx.rules };
+    if (needAllDays) ctx = { views: ctx.views, sessions: allSessions, allSessions: everySession, profile: ctx.profile, weather: ctx.weather, today: ctx.today, rules: ctx.rules };
     var views = ctx.views.filter(function (v) { return v.checkable; });
     function note(products, extra) {
       out.push({ ruleId: rule.id, tier: rule.tier, type: rule.type, evidence: rule.evidence, positive: !!(w.positive), products: products.map(function (v) { return v.id; }),
@@ -213,6 +214,8 @@
         var uses = {}, hasMissing = false;
         ctx.sessions.forEach(function (ses) {
           ses.steps.forEach(function (v) { if (matchProduct(v, w.product)) uses[v.id] = v; });
+        });
+        (ctx.allSessions || ctx.sessions).forEach(function (ses) {
           if (ses.session === w.session && ses.steps.some(function (v) { return matchProduct(v, w.missing); })) hasMissing = true;
         });
         var list = Object.keys(uses).map(function (k) { return uses[k]; });
@@ -425,10 +428,15 @@
 
   /* ---------- core run ---------- */
   function runCore(views, routines, profile, weather, rulesToRun, today, rulesObj) {
-    var sessions = buildWeek(routines, views);
+    /* Not-checkable products are excluded from every rule. The one exception
+       is presence: a sunscreen with no ingredient list still counts as a
+       sunscreen for the "no sunscreen in the morning" check. */
+    var checkable = views.filter(function (v) { return v.checkable; });
+    var sessions = buildWeek(routines, checkable);
+    var allSessions = buildWeek(routines, views);
     var uniq = [], sig = {};
     sessions.forEach(function (s) { var k = s.session + '|' + s.steps.map(function (v) { return v.id; }).join(','); if (!sig[k]) { sig[k] = 1; uniq.push(s); } });
-    var ctx = { views: views, sessions: sessions, uniqueSessions: uniq, profile: profile || {}, weather: weather || null, today: today || null, rules: rulesObj || rulesMod };
+    var ctx = { views: views, sessions: sessions, allSessions: allSessions, uniqueSessions: uniq, profile: profile || {}, weather: weather || null, today: today || null, rules: rulesObj || rulesMod };
     var notes = [];
     rulesToRun.forEach(function (rule) { evaluateRule(rule, ctx).forEach(function (n) { notes.push(n); }); });
     return notes;

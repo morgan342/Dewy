@@ -1,5 +1,19 @@
 # Dewy — Live Status
 
+## Skin Chemist Phase 1A (2026-09-30) — delivered, committed
+Morgan pasted the Skin Chemist Master Prompt V2 and said "do each thing at 120%". Phase 1A, the invisible engine, is complete. Nothing new shows in normal mode.
+- Spec saved word for word (`docs/SKIN_CHEMIST_SPEC.md`), progress checklist (`docs/SKIN_CHEMIST_PROGRESS.md`), CLAUDE.md pointer, Needs An Expert list (`docs/SKIN_CHEMIST_NEEDS_AN_EXPERT.md`).
+- Runtime: the app stays one HTML file. Source lives in `src/chemist/` (8 plain CommonJS modules, 129 KB) and `node scripts/build-chemist.js` inlines them between `CHEMIST:START/END` markers before the app script. Tests run with Node (jest); the harness now evaluates every inline script block.
+- Ingredient dictionary (170 entries, families per spec, roles, synonyms, OCR variants), normalization (slashes, parentheses, May Contain, nano, percentages, Drug Facts panels, match rate, trust levels), confirmed actives (Drug Facts, name or front label, user answer, printed percent), formula type guess.
+- Product records gained the Section 7 fields with "no data" defaults; they persist with the record.
+- Rules file: 32 drafts (PILL 4, IRR 5, WEAK 2, TIME 3, ORDER 4, SAFE 3, STORE 2, CLIM 2, TIP 5, MYTH 2), each `when` as data, fix operations, alternates, sources opened on 2026-09-30 with exact quotes (verified) or marked unverified, evidence grade, expert notes. Validator enforces the spec's rules.
+- Engine: pure, no network, week of sessions from `useSchedule`, pairs / adjacent / counts / order / missing / weekly / profile / weather / storage / symptom kinds, duplicate merge, tier priority, can't-check notes, fix test (also blocks any new irritation or safety note), prescription policy, 40 products in about 12 ms of CPU.
+- Golden set: 42 fictional routines with expected notes; agreement 100%, safety misses 0, false all-clear 0, average warnings 0.55 per routine.
+- Review loop: CSV export (rules, plain-English conditions, sources with quotes, blank decision columns; golden sheet too), import with plain summary and separate apply; approval requires reviewer, credential, a verified source, and evidence D only as a tip; expiry after 12 months.
+- Developer mode: Profile → tap the version line five times → Developer. Shows drafts, this routine's notes and why, match rates, golden results, Copy Debug Report / Review Sheet / Golden Sheet. Everything escaped.
+- Tests: `npx jest` → 20 suites, **318 passed** (36 engine, 5 in-app, all previous suites). `node --check` SYNTAX_OK; typecheck clean; in-app browser: normal screens unchanged, developer panel works, no console errors.
+Open: expert review (28 rules ready once sources are accepted; WEAK-002, TIP-001, SAFE-003 need sources), IRR-005 and CLIM-001 thresholds, Morgan's three decisions (see Phase Report).
+
 ## What Mike would do (2026-09-30) — delivered, committed
 Morgan asked "why would this app fail?" then "what would Mike do?" and said "all three":
 - **Add By Photo**: the + on the cupboard's top shelf is now a camera control (`#quick-photo`, capture=environment). One photo becomes a product at once (`quickAddFromPhoto`: MANUAL, "New Product", Unsorted, `photoUser`), lands lifted on the turntable with the "Added To Your Cabinet" notice; name, brand, and step can be filled later. Photos are downscaled to 480px (`shrinkPhoto`), 400 KB cap.
