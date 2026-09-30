@@ -14,6 +14,7 @@ describe('Your Cabinet', () => {
   test('loads as a gallery grouped in routine order with words for state', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     expect(app.text()).toContain('Your Cabinet');
     const headings = app.all('.cabsection h2').map((h) => h.textContent || '');
     expect(headings.length).toBeGreaterThan(1);
@@ -43,6 +44,7 @@ describe('Your Cabinet', () => {
     jest.useFakeTimers();
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const total = app.all('.gcard').length;
     app.type('find', 'cera');
     jest.advanceTimersByTime(150);
@@ -63,6 +65,7 @@ describe('Your Cabinet', () => {
     const id = visibleIds(app)[0];
     app.api.PRODUCTS[id].status = 'NEARLY_EMPTY';
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     app.click({ act: 'cab-filter', v: 'low' });
     const cards = app.all('.gcard .gmain');
     expect(cards.length).toBe(1);
@@ -77,6 +80,7 @@ describe('Your Cabinet', () => {
   test('list mode is grouped too, persists, and shows the same status words', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     app.click({ act: 'cab-view', v: 'list' });
     expect(app.all('.cabsection h2').length).toBeGreaterThan(1);
     expect(app.all('.rowitem').length).toBe(visibleIds(app).length);
@@ -87,6 +91,7 @@ describe('Your Cabinet', () => {
   test('tapping a card opens Product Detail', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const first = app.find('.gcard .gmain')!;
     const id = first.getAttribute('data-id');
     app.click('.gcard .gmain');
@@ -98,6 +103,7 @@ describe('Your Cabinet', () => {
     app = loadDewy();
     app.api.S.tod = 'pm';
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const notIn = visibleIds(app).find((k) => !/In Routine/.test(app!.find(`.gmain[data-id="${k}"]`)!.getAttribute('aria-label') || ''));
     expect(notIn).toBeTruthy();
     app.click({ act: 'card-menu', id: notIn });
@@ -124,6 +130,7 @@ describe('Your Cabinet', () => {
   test('Move To Group changes the category, moves the card, and can be undone', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const id = visibleIds(app)[0];
     const was = app.api.PRODUCTS[id].category;
     const target = was === 'PROTECT' ? 'SEAL' : 'PROTECT';
@@ -143,6 +150,7 @@ describe('Your Cabinet', () => {
     const original = app.api.resolve;
     // membershipMap calls the closure-scoped resolve, so count through a render of the gallery
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const t0 = Date.now();
     for (let i = 0; i < 5; i++) app.api.render();
     const elapsed = Date.now() - t0;
@@ -156,6 +164,7 @@ describe('Arranging the turntable', () => {
   test('Move Left / Move Right reorders within a group, persists, and announces', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const ids = app.all('.gcard .gmain').map((b) => b.getAttribute('data-id') || '');
     const group = (id: string) => app!.api.PRODUCTS[id].category;
     const i = ids.findIndex((id, k) => k > 0 && group(id) === group(ids[k - 1]));
@@ -174,6 +183,7 @@ describe('Arranging the turntable', () => {
     const again = app.reload();
     app = again;
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     app.click({ act: 'cab-view', v: 'list' });
     const rows = app.all('.rowitem').map((b) => b.getAttribute('data-id') || '');
     expect(rows.indexOf(id)).toBe(rows.indexOf(left) - 1);
@@ -182,6 +192,7 @@ describe('Arranging the turntable', () => {
   test('a product at the edge of its group stays put and says so', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const first = app.find('.gcard .gmain')!.getAttribute('data-id')!;
     app.click({ act: 'card-menu', id: first });
     app.click({ act: 'cab-move', id: first, v: 'left' });
@@ -192,6 +203,7 @@ describe('Arranging the turntable', () => {
   test('the cabinet scene carries doors, light, a glass shelf, and a turntable, with the menu under it', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     expect(app.find('.cab-scene .cab-door.l')).not.toBeNull();
     expect(app.find('.cab-scene .cab-led.top')).not.toBeNull();
     expect(app.find('.cab-scene .cab-glass')).not.toBeNull();
@@ -208,9 +220,10 @@ describe('Display choice', () => {
   test('four rooms, each with its own furniture, saved and keeping every control', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     const n = app.all('.gcard').length;
     const rooms: Array<[string, string]> = [
-      ['shelves', '.cab-shelf'], ['counter', '.ct-tray'], ['vanity', '.vn-mirror'], ['cabinet', '.cab-tray svg'],
+      ['shelves', '.cab-shelf'], ['arched', '.ar-niche .ar-shelf'], ['walnut', '.wn-shelf'], ['counter', '.ct-tray'], ['vanity', '.vn-mirror'], ['cabinet', '.cab-tray svg'],
     ];
     for (const [room, sel] of rooms) {
       app.click({ act: 'cab-scene', v: room });
@@ -230,5 +243,7 @@ describe('Display choice', () => {
     app.click({ act: 'cab-scene', v: 'shelves' });
     expect(app.all('.cab-shelf').length).toBe(Math.ceil(n / 4));
     expect(app.find('.cab-doors')).not.toBeNull();
+    app.click({ act: 'cab-scene', v: 'arched' });
+    expect(app.all('.ar-niche').length).toBe(3);
   });
 });

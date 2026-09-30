@@ -92,7 +92,7 @@ describe('TactileCardStack — the routine step card', () => {
     expect(app.all('.stack-hero').length).toBe(1);
     expect(app.find('.stack-next')!.textContent).toContain(app.api.PRODUCTS[steps[1]].productName);
     expect(app.find('.stack-rail.right')!.textContent).toBe('Mark Complete');
-    expect(app.find('.stack-rail.left')!.textContent).toBe('Not Now');
+    expect(app.find('.stack-rail.left')!.textContent).toBe('Skip');
     expect(app.find('.stack-hero')!.getAttribute('tabindex')).toBe('0');
     expect(app.find('.stack-hero')!.getAttribute('aria-label')).toMatch(/Current step 1 of/);
   });
@@ -194,7 +194,7 @@ describe('TactileCardStack — the routine step card', () => {
     expect(app.api.S.steps[first]).toBe('SKIPPED');
     expect(Object.keys(app.api.PRODUCTS).length).toBe(before);
     expect(app.api.PRODUCTS[first].status).not.toBe('ARCHIVED');
-    expect(app.text()).toContain('set aside for now.');
+    expect(app.text()).toContain(' skipped.');
     app.click({ act: 'stack-undo' });
     expect(app.api.S.steps[first]).toBe('PENDING');
   });

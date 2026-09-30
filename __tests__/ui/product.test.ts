@@ -135,12 +135,12 @@ describe('Product Detail', () => {
     expect(app.api.PRODUCTS[id].confidence).toBe('MANUAL');
   });
 
-  test('saving an unchanged name does not downgrade a confirmed product', () => {
+  test('saving an unchanged name does not change a sample product source', () => {
     app = loadDewy();
-    const id = Object.keys(app.api.PRODUCTS).find((k) => app!.api.PRODUCTS[k].confidence === 'CONFIRMED' && app!.api.PRODUCTS[k].status === 'ACTIVE')!;
+    const id = Object.keys(app.api.PRODUCTS).find((k) => app!.api.PRODUCTS[k].confidence === 'SAMPLE' && app!.api.PRODUCTS[k].status === 'ACTIVE')!;
     openFromCabinet(app, id);
     app.click({ act: 'edit-name', id });
     app.click({ act: 'save-name', id });
-    expect(app.api.PRODUCTS[id].confidence).toBe('CONFIRMED');
+    expect(app.api.PRODUCTS[id].confidence).toBe('SAMPLE');
   });
 });

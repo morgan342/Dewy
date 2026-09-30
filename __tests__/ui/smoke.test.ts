@@ -31,6 +31,7 @@ describe('design/dewy.html boots in jsdom', () => {
   test('preferences persist across a reload', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     app.click({ act: 'cab-view', v: 'list' });
     expect(app.storage().prefs.cabinetView).toBe('list');
     app = app.reload();

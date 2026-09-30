@@ -36,8 +36,9 @@ describe('information architecture', () => {
     app.tab('profile');
     app.click({ act: 'tab', v: 'ask' });
     expect(app.text()).toContain('Review Your Products');
-    expect(app.text()).toContain('Back To Discover');
+    expect(app.text()).toContain('Back To Profile');
     expect(app.find('#nav [data-tab="profile"]')!.getAttribute('aria-current')).toBe('page');
+    app.click({ act: 'tab', v: 'profile' });
     app.click({ act: 'tab', v: 'discover' });
     expect(app.find('#nav [data-tab="profile"]')!.getAttribute('aria-current')).toBe('page');
     app.click({ act: 'tab', v: 'journal' });

@@ -4,7 +4,7 @@ import { loadDewy, DewyApp } from '../helpers/loadDewy';
 let app: DewyApp | null = null;
 afterEach(() => { if (app) { app.destroy(); app = null; } });
 
-const STATES = ['Safe To Use', 'Use With Caution', 'Do Not Combine Yet', 'Best For Morning', 'Best For Evening',
+const STATES = ['Same Step', 'Can Wait', 'Best For Morning', 'Best For Evening',
   'Travel Optional', 'Routine Essential', 'Needs More Information', 'Check Product Directions', 'Consider Professional Advice'];
 
 function visible(a: DewyApp): string[] {
@@ -116,7 +116,7 @@ describe('One Smart Recommendation', () => {
     const Advisor = app.api.Advisor;
     expect(Advisor).toBeTruthy();
     Advisor.provider = { name: 'Stub', generated: false, suggest: () => ({ id: 'stub:1', title: 'Stub Title', rationale: 'Stub reason.',
-      why: 'Because a test said so.', state: 'Safe To Use', action: { label: 'Open Cabinet', act: 'tab', v: 'cabinet' }, dismissLabel: 'Not Now' }) };
+      why: 'Because a test said so.', state: 'Routine Essential', action: { label: 'Open Cabinet', act: 'tab', v: 'cabinet' }, dismissLabel: 'Not Now' }) };
     app.api.render();
     expect(app.text()).toContain('Stub Title');
     Advisor.provider = null;

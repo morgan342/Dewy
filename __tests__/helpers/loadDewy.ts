@@ -137,7 +137,7 @@ export function loadDewy(opts: LoadOptions = {}): DewyApp {
   const app: DewyApp = {
     api,
     view: () => el('view') as HTMLElement,
-    text: () => (el('view') as HTMLElement).textContent || '',
+    text: () => ((el('view') as HTMLElement).textContent || '') + ((el('dlg') as HTMLElement | null)?.textContent || ''),
     announce: () => (el('live') as HTMLElement).textContent || '',
     find: (sel) => doc.querySelector(sel) as HTMLElement | null,
     all: (sel) => Array.from(doc.querySelectorAll(sel)) as HTMLElement[],

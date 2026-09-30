@@ -32,7 +32,7 @@ describe('Routine sequence and completion', () => {
     expect(app.text()).toContain('Evening Routine');
     app.click({ act: 'begin' });
     expect(app.text()).toContain('Step 1 Of 1');
-    expect(app.text()).toContain('Last Step');
+    expect(app.text()).toContain('This is the last step.');
     markComplete(app);
     expect(app.api.S.routineState).toBe('COMPLETED');
     expect(app.text()).toContain('Evening Routine Complete');

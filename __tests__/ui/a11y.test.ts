@@ -22,7 +22,7 @@ function fieldHasVisibleLabel(el: Element): boolean {
 }
 
 function checkScreen(a: DewyApp, name: string) {
-  for (const b of a.all('#view button, #nav button')) {
+  for (const b of a.all('#view button, #nav button, #dlg button')) {
     expect({ screen: name, button: b.outerHTML.slice(0, 80), name: accessibleName(b) }.name).not.toBe('');
   }
   for (const f of a.all('#view input, #view textarea, #view select')) {
@@ -53,6 +53,9 @@ describe('accessibility and alternative controls', () => {
     app.type('an', 'Named'); app.click({ act: 'add-cat', v: 'TREAT' }); app.click({ act: 'add-save' });
     checkScreen(app, 'add: confirm');
     app.tab('routine');
+    // leaving an unsaved product asks first
+    checkScreen(app, 'add: discard dialog');
+    app.click({ act: 'dlg-yes' });
     app.click({ act: 'routine-edit' });
     checkScreen(app, 'edit routine');
   });
@@ -94,6 +97,7 @@ describe('accessibility and alternative controls', () => {
   test('repeating the same announcement still changes the live region', () => {
     app = loadDewy();
     app.tab('cabinet');
+    app.click({ act: 'toggle', key: 'cabTools' });
     app.click({ act: 'cab-filter', v: 'all' });
     const first = app.announce();
     app.click({ act: 'cab-filter', v: 'all' });
@@ -126,7 +130,7 @@ describe('accessibility and alternative controls', () => {
     expect(dlg).not.toBeNull();
     expect(dlg.getAttribute('aria-labelledby')).toBe('dlg-head');
     expect(dlg.getAttribute('aria-describedby')).toBe('dlg-body');
-    expect(document.activeElement && document.activeElement.id).toBe('dlg-yes');
+    expect(document.activeElement && document.activeElement.id).toBe('dlg-no');
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
     expect(app.find('[role="alertdialog"]')).toBeNull();
   });

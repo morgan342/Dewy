@@ -1,6 +1,33 @@
 # Dewy — Live Status
 
-**Last updated:** 2026-09-23 (Claude Code session, Morgan: "gorgeous. i love it i love it i love it. please edit the ui")
+## What Mike would do (2026-09-30) — delivered, committed
+Morgan asked "why would this app fail?" then "what would Mike do?" and said "all three":
+- **Add By Photo**: the + on the cupboard's top shelf is now a camera control (`#quick-photo`, capture=environment). One photo becomes a product at once (`quickAddFromPhoto`: MANUAL, "New Product", Unsorted, `photoUser`), lands lifted on the turntable with the "Added To Your Cabinet" notice; name, brand, and step can be filled later. Photos are downscaled to 480px (`shrinkPhoto`), 400 KB cap.
+- **Tonight Only**: Profile → Products → "Tonight Only" (`S.prefs.simple`). Hides the tab bar (`body.simple`), opens on Routine; Cabinet and Profile stay in the top corners. Off again with the same switch.
+- **Committed**: this week's uncommitted work (mist layer, whole-app workflow pass, cupboard drawer removed, Display choice always visible, turntable back row visible, top shelf holds her occasional/travel products, filter by kind) is in git as of this entry. Artifact 71Tev8… republished.
+Verified: `npx jest` → 261 passed; `node --check` → SYNTAX_OK; in-app browser at 390×844: + present on the shelf, Tonight Only hides the nav and returns.
+
+**Last updated:** 2026-09-24 (Claude Code session, Morgan: "gorgeous. i love it i love it i love it. please edit the ui")
+
+## Mist look + whole-app workflow pass (2026-09-24) — delivered, uncommitted
+Morgan approved the "mist" references ("it's perfect"), then asked for a whole-app interaction review; she chose **keep mist, apply the brief to workflow/copy/states/a11y, drop only the button glow**. All in `design/dewy.html` unless noted:
+- **Mist layer** (CSS block `MIST (Morgan · 2026-09-24)`): fixed blush/stone haze, frosted white-edged surfaces, Plex 300 display type, Plex Mono eyebrows, flat plum primary pill, white secondary pill; Reduce Transparency and no-backdrop-filter fallbacks; wide screens keep a 560px column.
+- **Honest provenance**: seeded products are `SAMPLE` ("Sample Product"), list picks are `CATALOG` ("From Dewy's List · Not Verified"); "Checked By You" only after "I Checked This Against My Label" (undoable). Older stores migrate. Search rows name their source; duplicates warn ("Already In Your Cabinet"). Sample Cabinet notice with Clear Sample Products (confirm + Undo).
+- **Routine**: Paused has a visible "Resume At Step N" + "Start Over"; outcome labels ("Mark Step 2 Complete", "Finish Tonight", "Skip This Step", "Pause Routine", "Routine Options"); button path gets the same Undo as the card; focus stays on the step action; completion sits above the list and takes focus; "Run This Routine Again" replaces the silent reset; restart dialog says what is lost ("Start Over?" / "Keep My Place"); inline Undo for removed steps; Home names state and step ("Paused · 1 Of 4 Done" / "Resume At Step Two").
+- **Confirmations** are a modal sheet in `#dlg` (page inert, safe choice focused, Escape runs the cancel path, focus returns). Per-action copy for Hide / Optional / Remove; Pause / Finish announce and offer Undo in place.
+- **Leaving work**: tabs ask before discarding an unsaved Add; product notes save on leave; focus is restored by control address after every render; tab changes scroll to top and focus the screen heading.
+- **Review Your Products** never gives a pairing verdict (removed "Safe To Use" / "Do Not Combine Yet"; new states "Same Step", "Can Wait"); lists every product; honest back link.
+- **Journal** can delete (with Undo); Save needs content; "A Pattern" only for a repeated observation, with clinician boundary. **Profile** hides disabled Location, labels Reminders "Coming later", states storage honestly. **History** uses headings + "Show Details" buttons; Undo paths agree.
+- **Storage**: app-wide "Changes Aren't Being Saved" notice; unreadable saved data is copied to `dewy.v3.unreadable` and announced.
+- **Your Cabinet**: Filter / view / Display fold under "Filter And Arrange" with a live summary; filters wrap; card "Actions" is a 44px target.
+Tests: new `__tests__/ui/workflow.test.ts` (17); updated copy expectations in 8 existing UI tests and the harness (`text()` includes `#dlg`). `npx jest` → **261 passed**; `npx tsc --noEmit` clean; browser check at 375×812, 768×1024, 1280×800.
+
+## Arched and Walnut rooms (2026-09-24) — delivered, uncommitted
+Morgan sent three more cabinets she likes (oak arched niches with lit shelves, dark walnut open shelves, pale oak shelving). Added to the Display row in `design/dewy.html`:
+- **Arched** warm oak cupboard, three arched niches (`.ar-niche`), a lit oak ledge per row (`.ar-shelf`), three products across, everything in view.
+- **Walnut** dark walnut open shelving, thick planks (`.wn-shelf`), four across, light ink for names, group, and chips.
+- `GRID` now carries columns and top offset per grid room; `SCENES` has six rooms; the Display row scrolls. Inside every room the mist layer's frosted plinth is switched off so bottles stand straight on the shelf (`.cab-scene .gallery.rail .gvisual`). The summary line's `SCENE_NAMES` gained the two names.
+Verified: `npm test` → **261 passed**; typecheck clean; in-app browser at 375×1500: both rooms, Prev / Next, no console errors. Not committed: the working tree also holds the other session's uncommitted mist layer, so a commit of `design/dewy.html` would sweep that in.
 
 ## Display choice (2026-09-24) — delivered, committed
 Morgan: "i want the user to be able to choose how they see their products … an actual cabinet … the turn table one … a kitchen counter with a tray … a vanity." In `design/dewy.html`:
