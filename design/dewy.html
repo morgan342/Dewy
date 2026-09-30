@@ -599,10 +599,10 @@ footer p{opacity:.65;max-width:38em}
 .page-head .t-screen-title{margin-top:var(--s8);margin-bottom:var(--s8)}
 .cabinet-eyebrow{margin:var(--s24) var(--margin) 0}
 /* the lifted product and its label card */
-.lifted{margin:var(--s16) var(--margin) 0;height:300px;background:var(--surface-raised);display:flex;align-items:flex-end;justify-content:center;
+.lifted{margin:var(--s16) var(--margin) 0;height:min(62vh,560px);background:var(--surface-raised);display:flex;align-items:flex-end;justify-content:center;
   padding-bottom:var(--s16);box-sizing:border-box;box-shadow:0 26px 48px -16px rgba(67,48,46,.40);animation:liftin var(--t-enlarge) var(--e-out)}
 @keyframes liftin{from{transform:translateY(12px);box-shadow:none}to{transform:none}}
-.lifted .detailthumb svg,.lifted .detailthumb img{max-height:250px;width:auto}
+.lifted .detailthumb svg,.lifted .detailthumb img{max-height:calc(min(62vh,560px) - 56px);width:auto}
 .lifted-hint{position:absolute;right:var(--s16);bottom:var(--s8);font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;pointer-events:none}
 .lifted{position:relative}
 .lifted-name{margin:var(--s24) var(--margin) 0}
@@ -4621,7 +4621,7 @@ function viewProduct(id){
   var canAdd=!inToday&&ELIGIBLE_LIFE[p.status]&&ELIGIBLE_CONF[p.confidence];
   var cabAll=cabinetIds(),pos=cabAll.indexOf(id),prevId=pos>0?cabAll[pos-1]:null,nextId=pos>-1&&pos<cabAll.length-1?cabAll[pos+1]:null;
   h+='<p class="t-eyebrow" style="margin:var(--s8) var(--margin) 0">'+esc(cat(p.category))+(pos>-1?' · '+(pos+1)+' Of '+cabAll.length:'')+'</p>';
-  h+='<div class="lifted"><button type="button" class="detailthumb" id="detailthumb-btn" data-act="zoom" data-id="'+esc(id)+'" aria-label="See it larger">'+productVisual(id,Math.min(2.4,250/Math.max(1,p.h)),p.confidence==='UNKNOWN')+'</button><span class="lifted-hint" aria-hidden="true">Tap To Enlarge</span></div>';
+  h+='<div class="lifted"><button type="button" class="detailthumb" id="detailthumb-btn" data-act="zoom" data-id="'+esc(id)+'" aria-label="See it larger">'+productVisual(id,Math.min(4,Math.max(200,Math.min(window.innerHeight*0.62,560)-56)/Math.max(1,p.h)),p.confidence==='UNKNOWN')+'</button><span class="lifted-hint" aria-hidden="true">Tap To Enlarge</span></div>';
   h+='<h1 class="t-section-heading lifted-name">'+esc(p.brand+' '+p.productName)+'</h1>';
   h+='<p class="t-caption lifted-fact">'+esc(CONF[p.confidence].label)+' · Added '+esc(monthYear(p.dateAdded))+' · '+statusWord(id)+'</p>';
   h+='<div class="thread" aria-hidden="true"></div>';
@@ -5351,7 +5351,7 @@ function attachPhoto(a,src){
   var done=false;
   var finish=function(finalSrc,ar){
     if(done)return;done=true;
-    if(finalSrc.length>400000){a.photoError='That Photo Is Too Large. Try a smaller one, or continue without it.';a.photo=null;render();return}
+    if(finalSrc.length>900000){a.photoError='That Photo Is Too Large. Try a smaller one, or continue without it.';a.photo=null;render();return}
     a.photo={ar:ar||0.5,src:finalSrc};a.photoError=null;render();
   };
   try{
@@ -5359,7 +5359,7 @@ function attachPhoto(a,src){
     img.onload=function(){
       var ar=(img.naturalWidth&&img.naturalHeight)?img.naturalWidth/img.naturalHeight:0.5;
       try{
-        var maxH=480,scale=Math.min(1,maxH/(img.naturalHeight||maxH));
+        var maxH=1000,scale=Math.min(1,maxH/(img.naturalHeight||maxH));
         var c=document.createElement('canvas'),ctx=c.getContext?c.getContext('2d'):null;
         if(ctx&&scale<1){
           c.width=Math.round(img.naturalWidth*scale);c.height=Math.round(img.naturalHeight*scale);
@@ -6397,7 +6397,7 @@ var ACTS={
 
   zoom:function(v,id){
     var pr=PRODUCTS[id];if(!pr)return;
-    var scale=Math.min((window.innerHeight*0.55)/pr.h,(window.innerWidth*0.8)/pr.w);
+    var scale=Math.min((window.innerHeight*0.78)/pr.h,(window.innerWidth*0.92)/pr.w);
     var z=el('zoom');
     z.innerHTML=productVisual(id,scale,pr.confidence==='UNKNOWN')+
       '<div class="zcap"><p class="t-meta" style="opacity:.7">'+esc(pr.kind)+'</p>'+
@@ -6910,7 +6910,7 @@ function shrinkPhoto(src,cb){
     img.onload=function(){
       var ar=(img.naturalWidth&&img.naturalHeight)?img.naturalWidth/img.naturalHeight:0.5;
       try{
-        var maxH=480,scale=Math.min(1,maxH/(img.naturalHeight||maxH));
+        var maxH=1000,scale=Math.min(1,maxH/(img.naturalHeight||maxH));
         var c=document.createElement('canvas'),ctx=c.getContext?c.getContext('2d'):null;
         if(ctx&&scale<1){c.width=Math.round(img.naturalWidth*scale);c.height=Math.round(img.naturalHeight*scale);
           ctx.drawImage(img,0,0,c.width,c.height);finish(c.toDataURL('image/jpeg',.82),ar);return}
@@ -6924,7 +6924,7 @@ function shrinkPhoto(src,cb){
 }
 function quickAddFromPhoto(src,ar){
   if(!src||src.indexOf('data:image')!==0){say('That photo could not be read.');return}
-  if(src.length>400000){say('That photo is too large. Try a smaller one.');return}
+  if(src.length>900000){say('That photo is too large. Try a smaller one.');return}
   var id='p'+(Object.keys(PRODUCTS).length+1);
   while(PRODUCTS[id])id+='x';
   PRODUCTS[id]=rec({id:id,brand:'',productName:'New Product',category:'UNASSIGNED',kind:'Product',
