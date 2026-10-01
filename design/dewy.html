@@ -146,6 +146,9 @@ h1,h2,h3{margin:0}
   text-decoration:underline;text-underline-offset:3px;color:var(--ink-primary)}
 .detailthumb{display:inline-flex;background:none;border:none;padding:0;cursor:pointer}
 .searchwrap{position:relative}
+/* Dewy draws its own clear control; the browser's built-in one would double it. */
+.searchwrap input[type="search"]::-webkit-search-cancel-button,
+.searchwrap input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;appearance:none}
 .qclear{position:absolute;right:0;top:50%;transform:translateY(-50%);width:var(--touch-min);height:var(--touch-min);
   display:flex;align-items:center;justify-content:center;color:var(--ink-primary);opacity:.6;font-size:22px;line-height:1}
 .searchrow{display:flex;gap:var(--s8);align-items:stretch}
@@ -4777,6 +4780,9 @@ var KINDS={
   'Lip Color':['FINISH','am'],'Lip Gloss':['FINISH','am'],
   'Sunscreen':['PROTECT','am'],'Lip Sunscreen':['PROTECT','am']
 };
+/* Kinds whose routine step is a weak guess. For these Dewy asks instead of
+   pre-selecting — mirrors the low-confidence rules in src/search/routineSuggestion.ts. */
+var KINDS_UNSURE={'Exfoliant':1,'Acne Treatment':1,'Sleeping Mask':1,'Body Lotion':1};
 /* [brand, product name, kind, extra search words] */
 var CATALOG=[
 ["Dior","Capture Youth Moisturizer","Moisturizer",""],
@@ -5009,7 +5015,11 @@ var SYN={sunblock:['sunscreen'],suncream:['sunscreen'],spf:['sunscreen'],sunscre
 var PHRASE_SYN={'skin cream':['moisturizer'],'face cream':['moisturizer'],'night cream':['moisturizer'],
   'facial oil':['face','oil'],'beauty oil':['face','oil'],'facial essence':['essence'],
   'sodium hyaluronate':['hyaluronic'],'ascorbic acid':['vitamin','c'],
-  'make up':['makeup'],'sun screen':['sunscreen'],'sun block':['sunscreen'],'vit c':['vitamin','c'],'makeup remover':['makeup remover','make up remover','remover'],'makeup wipes':['makeup wipes','cleansing wipes','remover wipes'],'lash serum':['lash serum','eyelash serum'],'vitamin c':['vitamin c','vit c','ascorbic'],'hyaluronic acid':['hyaluronic acid','sodium hyaluronate'],'lip mask':['lip mask','lip sleeping mask'],'face wash':['cleanser','face wash']};
+  'make up':['makeup'],'sun screen':['sunscreen'],'sun block':['sunscreen'],'vit c':['vitamin','c'],
+  /* Replacement tokens must be single words: the index holds one word per
+     token, so a spaced value can never match and silently kills the query. */
+  'makeup remover':['makeup','remover'],'makeup wipes':['makeup','wipes'],
+  'lash serum':['lash','serum'],'face wash':['cleanser']};
 /* Short brand nicknames people actually type. */
 var BRAND_NICKS={elf:'e.l.f.',lrp:'La Roche-Posay',cdp:'Cle de Peau',boj:'Beauty of Joseon',
   abh:'Anastasia Beverly Hills',ct:'Charlotte Tilbury',sk2:'SK-II',skii:'SK-II',
@@ -5286,6 +5296,7 @@ function viewAdd(){
       '<div><label class="t-meta field-label" for="ab">Brand</label>'+
       '<input class="input t-body" id="ab" value="'+esc(a.brand||'')+'" placeholder="Optional"></div>'+
       '<div><p class="t-meta field-label" id="cat-label">Category</p>'+
+      (a.unsure&&!a.cat?'<p class="t-caption" style="opacity:.75;margin:0 0 var(--s8)">Dewy is not sure which step fits this one, so nothing is chosen for you. Pick what fits your routine.</p>':'')+
       '<div class="rowlist" role="group" aria-labelledby="cat-label"'+(a.error==='cat'?' aria-describedby="err-cat"':'')+'>'+
       ['CLEANSE','TREAT','SEAL','PROTECT','FINISH','UNASSIGNED'].map(function(c){
         return '<button type="button" class="selrow t-body" data-act="add-cat" data-v="'+c+'" aria-pressed="'+(a.cat===c)+'">'+
@@ -6636,9 +6647,11 @@ var ACTS={
   'add-pick':function(v){
     var i=parseInt(v,10),e=CATALOG[i];if(!e)return;
     var kd=KINDS[e[2]]||['UNASSIGNED','both'];
-    S.ui.add={step:'photo',cat:kd[0],tod:kd[1],brand:e[0]||'',name:e[1],kind:e[2],photo:null,
-      fromCatalog:true,catId:i,q:(S.ui.add||{}).q||''};
-    render();say('Details filled in. Add a photo if you like, then check them.');
+    var unsure=!!KINDS_UNSURE[e[2]];
+    S.ui.add={step:'photo',cat:unsure?null:kd[0],tod:unsure?null:kd[1],brand:e[0]||'',name:e[1],kind:e[2],photo:null,
+      fromCatalog:true,catId:i,unsure:unsure,q:(S.ui.add||{}).q||''};
+    render();say(unsure?'Details filled in. Dewy is not sure which step fits, so you will choose it.':
+      'Details filled in. Add a photo if you like, then check them.');
   },
   'add-cat':function(v){S.ui.add.cat=v;if(S.ui.add.error==='cat')S.ui.add.error=null;render()},
   'add-tod':function(v){S.ui.add.tod=v;render()},
@@ -6988,7 +7001,7 @@ document.addEventListener('keydown',function(e){
   var open=['asidewhy','routinewhy','modewhy','stepwhy'].filter(function(k){return S.ui[k]})[0];
   if(open){S.ui[open]=false;render();var b=el('why-'+open);if(b)b.focus()}
 });
-var rt,qsayT,findT;
+var rt,findT;
 window.addEventListener('resize',function(){window.clearTimeout(rt);rt=window.setTimeout(render,120)});
 
 load();
@@ -6999,7 +7012,8 @@ render();
    which nothing in production sets, so real users never see it. */
 if(document.documentElement.getAttribute('data-test')==='1'){
   window.__dewy={S:S,PRODUCTS:PRODUCTS,ACTS:ACTS,render:render,resolve:resolve,save:save,load:load,Advisor:Advisor,
-    TactileCardStack:TactileCardStack,stackDecide:stackDecide,resistPull:resistPull,Haptics:Haptics,STACK_TOKENS:STACK_TOKENS,SPRINGS:SPRINGS};
+    TactileCardStack:TactileCardStack,stackDecide:stackDecide,resistPull:resistPull,Haptics:Haptics,STACK_TOKENS:STACK_TOKENS,SPRINGS:SPRINGS,
+    searchCatalog:searchCatalog,CATALOG:CATALOG,KINDS:KINDS,KINDS_UNSURE:KINDS_UNSURE,normText:normText};
 }
 
 /* Deep link: #add-search or ?go=add-search opens catalog search. */

@@ -1,5 +1,15 @@
 # Dewy — Live Status
 
+## Intelligent Product Search protocol run (2026-10-01) — delivered
+Morgan: "Run the intelligent product search protocol… you never have to wait for me to name the phase explicitly. If you have ideas to improve the app please do it. Always." Phases 4–9 verified or completed in one run; provider phases 6–7 stay gated on an approval.
+- **Bug fixed in the live app**: "makeup wipes" and "lash serum" returned nothing in `design/dewy.html` — `PHRASE_SYN` values containing spaces could never match the one-word token index. Values are now single-word lists; the constraint is commented in the file.
+- **Canonical queries locked by tests on both surfaces**: new `__tests__/ui/search.test.ts` (29 tests) drives the real HTML app — all 13 protocol queries, ranking invariants, robustness, keyboard, states, a11y. `src/` suites already covered them.
+- **Low-confidence kinds now ask**: `KINDS_UNSURE` (Exfoliant, Acne Treatment, Sleeping Mask, Body Lotion) no longer auto-assigns a step or time; the details screen says Dewy is not sure and the person chooses. Mirrors `src/search/routineSuggestion.ts`, which got its own 12-test suite.
+- **Polish**: browser's native search-clear button hidden (the box showed two ×); dead `qsayT` removed.
+- **Phase 5 evaluation written** (`docs/app-workflow/PHASE5_LIVE_SOURCES_EVALUATION.md`): recommendation is local + manual as the product of record; Open Beauty Facts is the only live source worth a trial (server-side, ODbL review required). Section 4G holds the exact decision Morgan must approve; until then phases 6–7 stay blocked.
+- Reports: PHASE4, PHASE8, PHASE9 final QA in `docs/app-workflow/`.
+- Verified: `npx jest` → 22 suites, **359 passed**; `npx tsc --noEmit` clean; `node --check` both script blocks OK; chemist build idempotent; real-browser flow at 390×844 and 1280×800 with screenshots sent to Morgan. `npm audit`: 18 pre-existing dev-toolchain findings, nothing shipped (needs approval to touch the lockfile).
+
 ## Skin Chemist Phase 1A (2026-09-30) — delivered, committed
 Morgan pasted the Skin Chemist Master Prompt V2 and said "do each thing at 120%". Phase 1A, the invisible engine, is complete. Nothing new shows in normal mode.
 - Spec saved word for word (`docs/SKIN_CHEMIST_SPEC.md`), progress checklist (`docs/SKIN_CHEMIST_PROGRESS.md`), CLAUDE.md pointer, Needs An Expert list (`docs/SKIN_CHEMIST_NEEDS_AN_EXPERT.md`).
