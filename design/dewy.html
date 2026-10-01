@@ -2839,9 +2839,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
    ================================================================ */
 var CONF={
   CONFIRMED:{label:'Checked By You',text:'You checked this against your own label.'},
-  CATALOG:{label:'From Dewy\'s List · Not Verified',text:'Picked from Dewy\'s product list. Not verified; check your label before relying on these details.'},
-  SAMPLE:{label:'Sample Product',text:'One of Dewy\'s sample products. Check your own label before relying on these details.'},
-  INFERRED:{label:'Inferred',text:'This match was inferred, not confirmed. Check the label before relying on it.'},
+  CATALOG:{label:'From Dewy\'s List · Not Verified',text:'From Dewy\'s list, not verified. Check your own label.'},
+  SAMPLE:{label:'Sample Product',text:'A sample product. Check your own label.'},
+  INFERRED:{label:'Inferred',text:'Inferred, not confirmed. Check your own label.'},
   MANUAL:{label:'Added by Hand',text:'You entered this product yourself.'},
   UNKNOWN:{label:'Not Identified',text:'This bottle is not identified well enough to place in a routine.'}
 };
@@ -2918,7 +2918,7 @@ function directionsHTML(p,compact){
          p.directionsConflict.map(function(l){return '<p class="t-body line">'+esc(l)+'</p>'}).join(''));
   }else{
     h+='<p class="t-body dstate">Check Product Directions</p>'+
-       '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p>';
+       '<p class="t-caption" style="opacity:.75;margin-top:4px">The label is the source.</p>';
   }
   return h;
 }
@@ -3544,7 +3544,7 @@ function viewRoutine(){
   h+='<header class="field" data-tod="'+S.tod+'">'+
      brandBar('Cabinet','cabinet')+
      '<div class="field-top">'+
-       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+(r.minutes==='30 SECONDS'?' · 30 Seconds':' · About '+r.minutes+(r.minutes===1?' Minute':' Minutes'))+'</p>'+
+       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+(r.minutes==='30 SECONDS'?' · 30 Seconds':' · '+r.minutes+' Min')+'</p>'+
        '<nav class="tod t-meta" aria-label="Time Of Day">'+
          '<button type="button" data-act="tod" data-v="am" aria-pressed="'+(S.tod==='am')+'">Morning</button>'+
          '<button type="button" data-act="tod" data-v="pm" aria-pressed="'+(S.tod==='pm')+'">Evening</button>'+
@@ -3560,7 +3560,7 @@ function viewRoutine(){
      One line, drawn from the routine in force: a reported skin state first,
      then a product held back, then a treatment step, then the plain plan. */
   if(S.routineState!=='COMPLETED'){
-    var focusTitle,focusLine;
+    var focusTitle,focusLine,focusEmpty=false;
     var activeSteps=steps.filter(function(x){return PRODUCTS[x].active});
     var treat=activeSteps.filter(function(x){return PRODUCTS[x].kind==='Retinoid'})[0]||activeSteps[0];
     if(S.skin&&SKIN[S.skin].recovery){
@@ -3577,6 +3577,7 @@ function viewRoutine(){
     } else {
       focusTitle=(S.tod==='am'?'This morning':'Tonight')+', in short';
       focusLine=Word(steps.length)+(steps.length===1?' step':' steps')+'. Nothing to work around.';
+      focusEmpty=true;
     }
     /* a second line when the record or the clock has something to add */
     var focusLine2=null;
@@ -3592,13 +3593,15 @@ function viewRoutine(){
     if(S.tod==='pm'&&hr>=22&&steps.length>2&&r.mode!=='thirty'&&r.mode!=='recovery'){
       focusLine2='It is late. A shorter version is under Routine Options.';
     }
+    /* A suggestion card appears only when there is something to suggest. */
+    if(!focusEmpty||focusLine2){
     focusHTML+='<button type="button" class="focus" data-act="toggle" data-key="focusOpen" '+
        'aria-expanded="'+(S.ui.focusOpen?'true':'false')+'">'+
-       '<span class="fbody"><span class="t-eyebrow line">One Suggestion</span>'+
-       '<span class="t-body line fl">'+esc(focusLine)+'</span>'+
+       '<span class="fbody"><span class="t-body line fl">'+esc(focusLine)+'</span>'+
        '<span class="t-caption line" style="opacity:.75">'+esc(focusLine2||'Show Why')+'</span>'+
        '</span></button>';
-    if(S.ui.focusOpen){
+    }
+    if((!focusEmpty||focusLine2)&&S.ui.focusOpen){
       var whyRows=r.reasons.slice(0,2).map(function(t){var rr=REASONS[t];
         return rr?'<p class="t-meta line" style="opacity:.7">'+esc(rr.head)+'</p><p class="t-body line">'+esc(rr.text)+'</p>':''}).join('');
       focusHTML+='<section class="focuspanel">'+whyRows+
@@ -3756,7 +3759,7 @@ function viewRoutine(){
     var ci=steps.indexOf(S.current),nx=null,nxName='';
     for(var k=ci+1;k<steps.length;k++){if(S.steps[steps[k]]==='PENDING'){nx=steps[k];break}}
     if(nx)nxName=PRODUCTS[nx].brand+' '+PRODUCTS[nx].productName;
-    h+='<button type="button" class="btn btn-begin" id="step-primary" data-act="done">'+(nx?'Mark Step '+(ci+1)+' Complete':'Finish '+(S.tod==='am'?'This Morning':'Tonight'))+'</button>'+
+    h+='<button type="button" class="btn btn-begin" id="step-primary" data-act="done">'+(nx?'Mark Complete':'Finish '+(S.tod==='am'?'This Morning':'Tonight'))+'</button>'+
        '<p class="t-caption nextup" style="margin-top:var(--s8);opacity:.7">'+(nxName?'Next: '+esc(nxName):'This is the last step.')+'</p>'+
        '<div class="quiet-row">'+
        (ci>0?'<button type="button" class="t-body linkish" data-act="back-step">Previous Step</button>':'')+
@@ -3858,8 +3861,7 @@ function viewRoutine(){
 
   /* --- dialogs --- */
 
-  h+='<footer><p class="t-caption">Guidance, not a rule. Not medical advice.</p>'+
-     '<p class="t-caption">If skin reacts, stop and see a clinician.</p></footer>'+
+  h+='<footer><p class="t-caption">Guidance, not medical advice. If skin reacts, stop and see a clinician.</p></footer>'+
      footWord(S.tod==='am'?'Morning':'Tonight')+
      '<div class="foot-line"><button type="button" data-act="go-add-search">Add A Product</button>'+
      '<button type="button" data-act="routine-edit">Edit Routine</button></div></main>';
@@ -4629,8 +4631,6 @@ function viewProduct(id){
      '<a class="tr" href="#step-editor" aria-label="Step: '+esc(cat(p.category))+'. Edit."><span class="k">STEP</span><span class="v">'+esc(cat(p.category))+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<a class="tr" href="#when-editor" aria-label="Time: '+esc(WHEN_LABEL[whenKey(p)])+'. Edit."><span class="k">TIME</span><span class="v">'+esc(WHEN_LABEL[whenKey(p)])+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<div class="tr"><span class="k">ROUTINES</span><span class="v">'+esc(membership(id)||'None')+'</span></div>'+
-     '<a class="tr" href="#mixing"><span class="k">MIXING</span><span class="v">Not Known Yet</span></a>'+
-     '<div class="tr"><span class="k">SOURCE</span><span class="v">'+esc(CONF[p.confidence].label)+'</span></div>'+
      (canAdd?'<button type="button" class="btn btn-done" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>':
       inToday?'<p class="tnote t-caption">In Routine</p>':'')+'</div>';
   h+='<div class="foot-line"><span></span><span class="pn2">'+
@@ -4643,31 +4643,21 @@ function viewProduct(id){
        esc(S.ui.notesDraftId===id&&S.ui.notesDraft!=null?S.ui.notesDraft:p.notes)+'</textarea>'+
      '<p style="margin-top:var(--s8)"><button type="button" class="t-body linkish" data-act="save-notes" data-id="'+esc(id)+'">Save Notes</button></p></div>'+
 
-     '<div><p class="t-meta" style="opacity:.7">Routine Placement</p>'+
-     '<p class="t-body">'+esc(placementLine(id))+'</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">This is guidance, not a rule.</p>'+
+     '<div><p class="t-body">'+esc(placementLine(id))+'</p>'+
      '<p class="t-meta" id="step-editor" style="margin-top:var(--s8);opacity:.7">Step</p><div class="catrow">'+
      ['CLEANSE','TREAT','SEAL','PROTECT','FINISH','UNASSIGNED'].map(function(c){
        return '<button type="button" class="t-caption" data-act="set-cat" data-id="'+esc(id)+'" data-v="'+c+'" aria-pressed="'+(p.category===c)+'">'+esc(cat(c))+'</button>'}).join('')+
      '</div><p class="t-meta" id="when-editor" style="margin-top:var(--s8);opacity:.7">When Do You Use It?</p><div class="catrow">'+
      [['am','Morning'],['pm','Evening'],['both','Both'],['occ','Every So Often']].map(function(w){
        return '<button type="button" class="t-caption" data-act="set-when" data-id="'+esc(id)+'" data-v="'+w[0]+'" aria-pressed="'+(whenKey(p)===w[0])+'">'+w[1]+'</button>'}).join('')+
-     '</div><p class="t-body" style="opacity:.8;margin-top:var(--s8)">In your routines: '+esc(membership(id))+'</p></div>'+
-
-     '<div><p class="t-meta" style="opacity:.7">Identification</p>'+
-     '<p class="t-body">'+esc(CONF[p.confidence].label)+'</p>'+
-     (p.confidence==='CONFIRMED'||p.confidence==='MANUAL'?'':'<p class="t-body" style="opacity:.8">'+esc(p.confidenceReason)+'</p>')+'</div>'+
-
-     '<div><p class="t-meta" style="opacity:.7">Availability</p>'+
-     '<p class="t-body">'+esc(LIFE[p.status].label)+'</p></div>'+
+     '</div></div>'+
 
      '<div id="mixing"><p class="t-meta" style="opacity:.7">Mixing With Other Products</p>'+
      '<p class="t-body">Not Known Yet</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">Dewy has no verified ingredient data, so it will not guess what pairs with this. Ask about two specific products instead.</p>'+
+     '<p class="t-caption" style="opacity:.75;margin-top:4px">No verified ingredient data, so Dewy will not guess.</p>'+
      '<p style="margin-top:var(--s8)"><button type="button" class="btn btn-done" data-act="ask-about" data-id="'+esc(id)+'">Can These Be Used Together?</button></p></div>'+
      '<div><p class="t-meta" style="opacity:.7">Ingredient Review</p>'+
-     '<p class="t-body">Needs More Information</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p></div>'+
+     '<p class="t-body">Needs More Information</p></div>'+
 
      '<div><p class="t-meta" style="opacity:.7">How To Use</p>'+directionsHTML(p,false)+'</div>'+
 
@@ -4678,14 +4668,12 @@ function viewProduct(id){
 
   /* confidence actions */
   if(p.confidence==='UNKNOWN'||p.confidence==='INFERRED'||p.confidence==='SAMPLE'||p.confidence==='CATALOG'){
-    h+='<div class="page-head"><p class="t-meta">Identification</p></div><div class="rowlist">'+
+    h+='<div class="rowlist">'+
       '<button type="button" class="textrow t-meta" data-act="conf" data-v="CONFIRMED" data-id="'+esc(id)+'">I Checked This Against My Label</button>'+
-      '<button type="button" class="textrow t-meta" data-act="edit-name" data-id="'+esc(id)+'">Edit Details</button>'+
       '<button type="button" class="textrow t-meta" data-act="retake" data-id="'+esc(id)+'">Take A Photo</button>'+
       '<button type="button" class="textrow t-meta" data-act="keep-out" data-id="'+esc(id)+'">Keep Out Of Routines</button></div>';
   } else {
-    h+='<div class="page-head"><p class="t-meta">Identification</p></div><div class="rowlist">'+
-      '<button type="button" class="textrow t-meta" data-act="edit-name" data-id="'+esc(id)+'">Edit Details</button>'+
+    h+='<div class="rowlist">'+
       '<button type="button" class="textrow t-meta" data-act="retake" data-id="'+esc(id)+'">Replace Photo</button></div>';
   }
   if(S.ui.editName===id){
@@ -4701,15 +4689,13 @@ function viewProduct(id){
   var inToday=resolve().steps.indexOf(id)>-1,todayWord=S.tod==='am'?'This Morning':'Tonight';
   var paused=p.status==='UNAVAILABLE',finished=(p.status==='EMPTY'||p.status==='REPLACED');
   h+='<div class="page-head"><p class="t-meta">Product Actions</p></div><div class="rowlist">'+
-    (p.confidence==='UNKNOWN'?'':(inToday?'<p class="t-body textrow" style="text-decoration:none;opacity:.7">In '+todayWord+'’s Routine</p>':
-      '<button type="button" class="textrow t-body" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>'))+
+    (p.confidence==='UNKNOWN'||inToday?'':
+      '<button type="button" class="textrow t-body" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>')+
     '<button type="button" class="textrow t-body" data-act="edit-name" data-id="'+esc(id)+'">Edit Product</button>'+
     (p.status==='ARCHIVED'?
       '<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Restore Product</button>':
-      (paused?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Resume Product</button>':
-              '<button type="button" class="textrow t-body" data-act="life" data-v="UNAVAILABLE" data-id="'+esc(id)+'">Pause Product</button>')+
-      (finished?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Mark As In Use</button>':
-                '<button type="button" class="textrow t-body" data-act="life" data-v="EMPTY" data-id="'+esc(id)+'">Mark As Finished</button>')+
+      (paused?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Resume Product</button>':'')+
+      (finished?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Mark As In Use</button>':'')+
       '<button type="button" class="textrow t-body" data-act="remove" data-id="'+esc(id)+'" style="color:var(--action-current)">Delete Product</button>')+
     '</div>';
   var lu=S.ui.lifeUndo;
@@ -4742,11 +4728,9 @@ function viewProduct(id){
     '<button type="button" class="textrow t-meta" data-act="pair" data-id="'+esc(id)+'">Keep Apart From This Step</button></div>';
   }
 
-  /* per product history */
-  h+='<div class="page-head"><p class="t-meta">Routine History</p></div>';
-  if(!p.routineHistory.length){
-    h+='<div class="page"><p class="t-body" style="opacity:.8">No routines recorded with this product yet.</p></div>';
-  } else {
+  /* per product history: shown only once there is one */
+  if(p.routineHistory.length){
+    h+='<div class="page-head"><p class="t-meta">Routine History</p></div>';
     h+='<div class="rowlist">'+p.routineHistory.slice(0,8).map(function(e){
       return '<div class="entry"><p class="t-meta">'+esc(e.date+' / '+e.tod+' / '+e.mode)+'</p>'+
              '<p class="t-body obs">'+esc(e.result==='SKIPPED'?'Step skipped.':'Step completed.')+'</p></div>';
@@ -5625,8 +5609,8 @@ function viewProfile(){
      '<button type="button" class="textrow t-meta" data-act="tab" data-v="discover">Why Steps Are Ordered</button>'+
      (S.prefs.devMode?'<button type="button" class="textrow t-meta" data-act="tab" data-v="chemist">Developer</button>':'')+'</div>';
   h+='<div class="page" style="padding-bottom:0"><button type="button" class="t-caption" data-act="dev-tap" aria-label="Version" style="opacity:.45">Dewy '+esc(window.DewyChemist?window.DewyChemist.VERSION:'1')+'</button></div>';
-  h+='<div class="page"><p class="t-caption" style="opacity:.6">'+(STORAGE_OK?'Everything stays in this browser, on this device. Nothing is sent anywhere.':'Nothing is being saved right now: this browser is not storing changes.')+'</p>'+
-     '<p class="t-caption" style="opacity:.6;margin-top:var(--s8)">Dewy offers general guidance, not medical advice. If skin reacts, stop using the product and see a clinician.</p></div>'+footWord('Profile');
+  h+='<div class="page"><p class="t-caption" style="opacity:.6">'+(STORAGE_OK?'Stays in this browser, on this device. Nothing is sent anywhere.':'Nothing is being saved right now: this browser is not storing changes.')+'</p>'+
+     '<p class="t-caption" style="opacity:.6;margin-top:var(--s8)">General guidance, not medical advice. If skin reacts, stop and see a clinician.</p></div>'+footWord('Profile');
   return h;
 }
 /* ================================================================
@@ -5789,7 +5773,7 @@ function sampleNotice(){
     '<p style="margin-top:4px"><button type="button" class="t-body linkish" data-act="samples-undo">Undo</button></p></div>';
   if(S.prefs.samplesAck||!samplesLive().length)return '';
   return '<div class="caution sample-note" role="note"><p class="t-meta">Sample Cabinet</p>'+
-    '<p class="t-caption" style="opacity:.8;margin-top:2px">These are example products so you can try Dewy. Their details are not verified and they are not yours.</p>'+
+    '<p class="t-caption" style="opacity:.8;margin-top:2px">Example products so you can try Dewy. Not verified, and not yours.</p>'+
     '<p style="margin-top:4px;display:flex;gap:var(--s16);flex-wrap:wrap"><button type="button" class="t-body linkish" data-act="samples-clear">Clear Sample Products</button>'+
     '<button type="button" class="t-caption linkish" data-act="samples-ack">Keep Exploring</button></p></div>';
 }
@@ -6281,7 +6265,7 @@ function findStepPartner(id){
 var ACTS={
   tab:function(v){
     if(S.ui.add&&addDirty(S.ui.add)){
-      ask('Discard This Product?','Nothing has been saved yet. Leaving now loses what you entered.','Discard And Leave','Keep Editing',function(){S.ui.add=null;ACTS.tab(v)});
+      ask('Discard This Product?','Leaving now loses what you entered.','Discard And Leave','Keep Editing',function(){S.ui.add=null;ACTS.tab(v)});
       return;
     }
     if(S.ui.detail&&S.ui.notesDraft!=null&&S.ui.notesDraftId===S.ui.detail)ACTS['save-notes'](null,S.ui.detail,true);
@@ -6300,7 +6284,7 @@ var ACTS={
   done:function(){stackCommit('COMPLETED')},
   skip:function(){
     if(!S.prefs.confirmSkip){stackCommit('SKIPPED');return}
-    ask('Skip This Step?','It will be noted as skipped. Nothing else changes.','Skip This Step','Keep It',function(){stackCommit('SKIPPED')});
+    ask('Skip This Step?','Noted as skipped. Nothing else changes.','Skip This Step','Keep It',function(){stackCommit('SKIPPED')});
   },
   'stack-peek-clear':function(){S.ui.peek=null;render();var hh=document.querySelector('.stack-hero');if(hh)hh.focus()},
   /* Undo for a card gesture: the step comes back as the current one, and
@@ -6476,7 +6460,7 @@ var ACTS={
   },
   'dismiss-deleted':function(){S.ui.lastDeleted=null;render()},
   'load-note-ok':function(){LOAD_NOTE=false;render()},
-  'samples-ack':function(){S.prefs.samplesAck=true;render();say('Sample products stay. You can clear them from Your Cabinet later by deleting them.')},
+  'samples-ack':function(){S.prefs.samplesAck=true;render();say('Sample products stay. Delete them from Your Cabinet anytime.')},
   'samples-clear':function(){
     var ids=samplesLive();if(!ids.length)return;
     ask('Clear Sample Products?',ids.length+' example products leave Your Cabinet and today\'s routines. Products you added stay. You can undo this.','Clear Samples','Keep Them',function(){
@@ -6533,8 +6517,8 @@ var ACTS={
       logEvent('override','Your Choice',PRODUCTS[id].productName+' is used despite its status.',true,{type:'useAnyway',id:id});
       render();say(PRODUCTS[id].productName+' will be used despite its status. Undo is under Your Choices.');return}
     var OVC={
-      hidden:['Hide For Now?','It stays out of every routine until you show it again. It stays in Your Cabinet.','Hide Product'],
-      optional:['Mark As Optional?','It stays in the routine, marked as a step you can skip.','Mark Optional'],
+      hidden:['Hide For Now?','Out of every routine until you show it again.','Hide Product'],
+      optional:['Mark As Optional?','Marked as a step you can skip.','Mark Optional'],
       removed:['Remove From This Routine?','It leaves '+(S.tod==='am'?'this morning\'s':'tonight\'s')+' routine. It stays in Your Cabinet.','Remove From Routine']
     }[v]||['Change This Product?','You can undo this in History.','Change It'];
     ask(OVC[0],OVC[1],OVC[2],'Keep As Is',function(){
@@ -6563,7 +6547,7 @@ var ACTS={
   },
   remove:function(v,id){
     var p=PRODUCTS[id];if(!p)return;
-    ask('Delete This Product?','It leaves your Cabinet. Its history stays, and you can undo this.','Delete','Keep',function(){
+    ask('Delete This Product?','Its history stays, and you can undo this.','Delete','Keep',function(){
       var was=p.status;
       p.status='ARCHIVED';
       logEvent('event','Product Deleted',p.brand+' '+p.productName+' was deleted from your Cabinet. Its record remains.',true,{type:'life',id:id,was:was});
