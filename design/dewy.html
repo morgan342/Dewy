@@ -65,8 +65,8 @@
   --radius-pill:999px;
   --surface-raised:#FBF9F5;   /* porcelain ivory lifted toward white */
   --plinth:#ECE5D8;           /* warm stone for product plinths */           /* buttermilk softened for product plinths */
-  --shadow-card:0 2px 14px rgba(67,48,46,.10);
-  --shadow-soft:0 1px 6px rgba(67,48,46,.08);
+  --shadow-card:0 1px 2px rgba(58,44,48,.07),0 10px 28px rgba(58,44,48,.08);
+  --shadow-soft:0 1px 2px rgba(58,44,48,.05),0 5px 14px rgba(58,44,48,.06);
   --touch-min:44px;
   --action-height:52px;
   --rule:1px;
@@ -92,8 +92,8 @@
 .t-body{font-family:var(--sans);font-size:16px;line-height:24px;font-weight:400;margin:0}
 .t-caption{font-family:var(--sans);font-size:13px;line-height:18px;font-weight:400;margin:0}
 .t-meta{font-family:var(--sans);font-size:13px;line-height:18px;font-weight:500;letter-spacing:0;margin:0}
-.t-screen-title{font-family:var(--sans);font-size:48px;line-height:44px;font-weight:500;margin:0;letter-spacing:-.02em;text-wrap:balance}
-.t-button{font-family:var(--sans);font-size:16px;line-height:20px;font-weight:600;letter-spacing:.01em}
+.t-screen-title{font-family:var(--sans);font-size:48px;line-height:52px;font-weight:300;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.t-button{font-family:var(--sans);font-size:16px;line-height:20px;font-weight:500;letter-spacing:.01em}
 
 /* ============================================================
    BASE
@@ -107,11 +107,13 @@ body{
   font-family:var(--sans);
   font-size:15px;line-height:21px;
   -webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
 }
 button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;background:none;padding:0;text-align:left}
-button:active{opacity:.6;transition:opacity var(--t-press) linear}
+button:active{opacity:.82;transition:opacity var(--t-press) linear}
+.btn:active,.homecard:active,.chip:active{opacity:1;transform:scale(.985);transition:transform var(--t-press) var(--e-out)}
 :focus-visible{outline:var(--contour) solid var(--ink-primary);outline-offset:2px}
 h1,h2,h3{margin:0}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -143,7 +145,7 @@ h1,h2,h3{margin:0}
   gap:var(--s16);padding:var(--s24);animation:fadein var(--t-enlarge) var(--e-out)}
 #zoom .zcap{text-align:center}
 #zoom .zclose{min-height:var(--touch-min);display:inline-flex;align-items:center;
-  text-decoration:underline;text-underline-offset:3px;color:var(--ink-primary)}
+  text-decoration:none;font-weight:500;color:var(--ink-primary)}
 .detailthumb{display:inline-flex;background:none;border:none;padding:0;cursor:pointer}
 .searchwrap{position:relative}
 .qclear{position:absolute;right:0;top:50%;transform:translateY(-50%);width:var(--touch-min);height:var(--touch-min);
@@ -164,7 +166,7 @@ h1,h2,h3{margin:0}
 .optrow .rthumb{flex:0 0 auto;width:26px;display:flex;align-items:flex-end;justify-content:center}
 .optrow .rtext{flex:1 1 auto;min-width:0}
 .optrow .raddicon{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:24px;opacity:.55}
-.brandname{font-family:var(--sans);font-size:24px;line-height:28px;font-weight:600;letter-spacing:-.01em;margin:0}
+.brandname{font-family:var(--sans);font-size:24px;line-height:28px;font-weight:500;letter-spacing:-.01em;margin:0}
 .brandbar button{display:flex;align-items:center;justify-content:center;width:var(--touch-min);height:var(--touch-min);color:var(--ink-primary)}
 .icon{display:block}
 .field-top{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);flex-wrap:wrap;min-height:var(--touch-min)}
@@ -187,10 +189,10 @@ h1,h2,h3{margin:0}
 .modeline{padding:0 var(--s16) var(--s8)}
 .modeline .row{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);min-height:var(--touch-min)}
 .modeline .change{flex:0 0 auto;min-height:var(--touch-min);display:flex;align-items:center;opacity:.7;
-  text-decoration:underline;text-underline-offset:3px;color:var(--ink-primary)}
+  text-decoration:none;font-weight:500;color:var(--ink-primary)}
 .modeopts{display:flex;flex-direction:column;animation:reveal var(--t-step) var(--e-out)}
 .modeopts button{min-height:var(--touch-min);display:flex;align-items:center;color:var(--ink-primary);
-  opacity:.6;border-bottom:var(--rule) solid var(--structure-quiet)}
+  opacity:.6;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .modeopts button:last-child{border-bottom:none}
 .modeopts button[aria-pressed="true"]{opacity:1;font-weight:500}
 
@@ -206,21 +208,21 @@ h1,h2,h3{margin:0}
 .focuspanel .line{margin-top:2px}
 .focuspanel .quiet-row{justify-content:flex-start;margin-top:var(--s8)}
 .routine-state{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);flex-wrap:wrap;
-  padding:var(--s8) var(--s16);border-bottom:var(--rule) solid var(--structure-quiet)}
-.routine-state .back{min-height:var(--touch-min);display:flex;align-items:center;text-decoration:underline;text-underline-offset:3px}
+  padding:var(--s8) var(--s16);border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
+.routine-state .back{min-height:var(--touch-min);display:flex;align-items:center;text-decoration:none;font-weight:500}
 
 /* ============================================================
    SKIN STATE
    ============================================================ */
-.skin{padding:0 var(--s16);border-bottom:var(--rule) solid var(--structure-quiet)}
-.skin-q{min-height:var(--touch-min);display:flex;align-items:center;text-decoration:underline;text-underline-offset:3px;color:var(--ink-primary)}
+.skin{padding:0 var(--s16);border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
+.skin-q{min-height:var(--touch-min);display:flex;align-items:center;text-decoration:none;font-weight:500;color:var(--ink-primary)}
 .skin-opts{padding-bottom:var(--s8)}
 .skin-opts{display:flex;flex-wrap:wrap;gap:0 var(--s16)}
 .skin-opts button{min-height:var(--touch-min);display:flex;align-items:center;color:var(--ink-primary);opacity:.6;border-bottom:var(--contour) solid transparent}
 .skin-opts button[aria-pressed="true"]{opacity:1;border-bottom-color:var(--ink-primary)}
 .skin-status{background:var(--state-personal);color:var(--ink-on-personal);padding:var(--s8) var(--s16);border-radius:var(--radius-card);box-shadow:var(--shadow-soft);margin:var(--s8) 0}
 .skin-status .row{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);min-height:var(--touch-min)}
-.skin-status .change{min-height:var(--touch-min);display:flex;align-items:center;text-decoration:underline;text-underline-offset:3px;color:var(--ink-on-personal)}
+.skin-status .change{min-height:var(--touch-min);display:flex;align-items:center;text-decoration:none;font-weight:500;color:var(--ink-on-personal)}
 .skin-status .line{margin-top:2px}
 .skin-status .care{margin-top:var(--s8);opacity:.85}
 
@@ -276,10 +278,10 @@ h1,h2,h3{margin:0}
 /* ============================================================
    SET ASIDE NOTE
    ============================================================ */
-.setaside{border-top:var(--rule) solid var(--structure-quiet);margin:var(--s24) var(--s16) 0;padding-top:var(--s16)}
+.setaside{border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);margin:var(--s24) var(--s16) 0;padding-top:var(--s16)}
 .setaside .label{margin-bottom:var(--s8)}
-.linkish{min-height:var(--touch-min);display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:3px;color:var(--ink-primary)}
-.disclosure{border-top:var(--rule) solid var(--structure-quiet);margin-top:var(--s16);padding-top:var(--s16);
+.linkish{min-height:var(--touch-min);display:inline-flex;align-items:center;text-decoration:none;font-weight:500;color:var(--ink-primary)}
+.disclosure{border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);margin-top:var(--s16);padding-top:var(--s16);
   animation:reveal var(--t-step) var(--e-out)}
 @keyframes reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 
@@ -295,8 +297,8 @@ h1,h2,h3{margin:0}
 .actions{padding:var(--s16) var(--s16) 0;display:flex;flex-direction:column;gap:var(--s8)}
 .btn{height:var(--action-height);display:flex;align-items:center;justify-content:center;gap:10px;
      border-radius:var(--radius-pill);box-shadow:var(--shadow-soft);
-     font-family:var(--sans);font-size:16px;line-height:20px;font-weight:600;letter-spacing:.01em;width:100%}
-.btn-begin{background:var(--action-current);color:var(--surface-primary)}
+     font-family:var(--sans);font-size:16px;line-height:20px;font-weight:500;letter-spacing:.01em;width:100%}
+.btn-begin{background:linear-gradient(180deg,#95555A 0%,var(--action-current) 100%);color:var(--surface-primary);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(58,44,48,.16),0 8px 20px rgba(138,74,78,.24)}
 .btn-done{background:none;color:var(--ink-primary);border:var(--contour) solid var(--ink-primary)}
 .quiet-row{display:flex;flex-wrap:wrap;gap:0 var(--s24);justify-content:center}
 .complete-state{padding:var(--s32) var(--s16) 0;animation:fadein var(--t-complete) var(--e-out)}
@@ -317,12 +319,12 @@ h1,h2,h3{margin:0}
 /* ============================================================
    CONFIRMATIONS AND DEFENSIVE STATES
    ============================================================ */
-.confirm{border-top:var(--rule) solid var(--structure-quiet);margin:var(--s24) var(--s16) 0;padding-top:var(--s16)}
+.confirm{border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);margin:var(--s24) var(--s16) 0;padding-top:var(--s16)}
 .confirm .line{margin-top:var(--s8)}
 .confirm .row{display:flex;gap:var(--s24);margin-top:var(--s8);flex-wrap:wrap}
 .confirm .row button{min-height:var(--touch-min);display:flex;align-items:center;padding:0 var(--s8);font-family:var(--sans);font-size:13px;line-height:18px;font-weight:500;letter-spacing:.1em}
 .confirm .row .secondary{opacity:.6}
-.notice{border-top:var(--rule) solid var(--structure-quiet);margin:var(--s24) var(--s16) 0;padding-top:var(--s16)}
+.notice{border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);margin:var(--s24) var(--s16) 0;padding-top:var(--s16)}
 .notice .line{margin-top:var(--s8)}
 
 /* ============================================================
@@ -332,7 +334,7 @@ h1,h2,h3{margin:0}
 .page-head{padding:var(--s16) var(--s16) var(--s8)}
 .rowlist{display:flex;flex-direction:column}
 .rowitem{display:flex;gap:var(--s16);align-items:flex-end;width:100%;
-  padding:var(--s16) var(--s16);border-bottom:var(--rule) solid var(--structure-quiet);min-height:var(--touch-min)}
+  padding:var(--s16) var(--s16);border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);min-height:var(--touch-min)}
 .rowitem .thumb{flex:0 0 auto;display:flex;align-items:flex-end;justify-content:center;width:52px}
 .rowitem .meta{flex:1 1 auto;min-width:0}
 .rowitem .brand{opacity:.7}
@@ -347,15 +349,17 @@ h1,h2,h3{margin:0}
 .tchip.occ{background:var(--surface-raised);box-shadow:var(--shadow-soft)}
 .textrow .needs,.selrow .needs{display:block;opacity:.6;margin-top:2px;text-decoration:none}
 .textrow{display:flex;align-items:center;min-height:var(--touch-min);padding:var(--s8) var(--s16);
-  border-bottom:var(--rule) solid var(--structure-quiet);width:100%;text-decoration:underline;text-underline-offset:3px}
+  border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);width:100%;text-decoration:none;font-weight:500}
 .selrow{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);min-height:var(--touch-min);
-  padding:var(--s8) var(--s16);border-bottom:var(--rule) solid var(--structure-quiet);width:100%}
+  padding:var(--s8) var(--s16);border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);width:100%}
 .selrow .box{flex:0 0 auto;width:18px;height:18px;border:var(--rule) solid var(--ink-primary);border-radius:0}
 .selrow[aria-pressed="true"] .box{background:var(--ink-primary)}
 .selrow[aria-pressed="true"]{font-weight:500}
 .field-label{display:block;margin-bottom:var(--s8)}
-.input{width:100%;box-sizing:border-box;min-height:var(--touch-min);padding:var(--s8);
-  border:var(--rule) solid var(--ink-primary);border-radius:0;background:var(--surface-primary);color:var(--ink-primary)}
+.input{width:100%;box-sizing:border-box;min-height:var(--touch-min);padding:12px 14px;
+  border:none;border-radius:12px;background:var(--surface-raised);color:var(--ink-primary);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--structure-quiet) 70%,transparent)}
+textarea{resize:none}
 .stack{display:flex;flex-direction:column;gap:var(--s16)}
 /* ============================================================
    CABINET GALLERY
@@ -373,7 +377,7 @@ h1,h2,h3{margin:0}
   color:inherit;font:inherit;font-family:var(--sans);text-align:left;border-radius:var(--radius-card) var(--radius-card) 0 0}
 .gcard .gmain:active{opacity:.92}
 .gcard .gmore{min-height:var(--touch-min);display:flex;align-items:center;padding:0 12px 6px;color:var(--ink-primary);
-  opacity:.7;text-decoration:underline;text-underline-offset:3px}
+  opacity:.7;text-decoration:none;font-weight:500}
 .gcard .gmore[aria-expanded="true"]{opacity:1}
 /* The action panel for one product spans the grid row beneath its card. */
 .gmenu{grid-column:1/-1;background:var(--surface-raised);border-radius:var(--radius-card);box-shadow:var(--shadow-soft);
@@ -401,12 +405,12 @@ h1,h2,h3{margin:0}
 .caution{margin:0 var(--margin) var(--s8);padding:var(--s8) var(--s16);background:var(--cue-helpful);border-radius:var(--radius-card)}
 /* Edit Routine and the step inspector: structured, buttons only. */
 .editroutine{margin:var(--s16) var(--s16) 0;padding:var(--s16);background:var(--surface-raised);border-radius:var(--radius-card);box-shadow:var(--shadow-soft)}
-.erow{display:flex;flex-direction:column;gap:6px;padding:var(--s8) 0;border-bottom:var(--rule) solid var(--structure-quiet)}
+.erow{display:flex;flex-direction:column;gap:6px;padding:var(--s8) 0;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .erbtns{display:flex;flex-wrap:wrap;gap:var(--s8)}
 .erbtns button{min-height:var(--touch-min);padding:0 12px;border-radius:var(--radius-pill);border:var(--rule) solid var(--ink-primary);color:var(--ink-primary)}
 .erbtns button[disabled]{opacity:.35;cursor:default}
 .steplist{list-style:none;margin:0;padding:0 var(--margin)}
-.steplist li{display:flex;justify-content:space-between;gap:var(--s16);padding:var(--s8) 0;border-bottom:var(--rule) solid var(--structure-quiet)}
+.steplist li{display:flex;justify-content:space-between;gap:var(--s16);padding:var(--s8) 0;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .confirm .row button{letter-spacing:0;font-weight:500}
 /* Validation is words next to the field, never a red border alone. */
 .field-error{margin-top:6px;padding-left:12px;border-left:var(--contour) solid var(--ink-primary)}
@@ -438,7 +442,7 @@ input.sr-only:focus-visible+label.btn{outline:var(--contour) solid var(--ink-pri
 .answer .expl{margin-top:var(--s8)}
 .answer .rec{margin-top:var(--s16)}
 .answer .src{margin-top:var(--s16);opacity:.65}
-.entry{padding:var(--s16);border-bottom:var(--rule) solid var(--structure-quiet)}
+.entry{padding:var(--s16);border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .entry.memory{background:var(--state-personal)}
 .entry .obs{margin-top:var(--s8)}
 .entry .note{margin-top:var(--s8);opacity:.8}
@@ -447,11 +451,11 @@ input.sr-only:focus-visible+label.btn{outline:var(--contour) solid var(--ink-pri
    BOTTOM NAVIGATION
    ============================================================ */
 .nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--state-morning);
-  border-top:var(--rule) solid var(--structure-quiet);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+  border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
 .nav{border-radius:var(--radius-card) var(--radius-card) 0 0;box-shadow:0 -2px 14px rgba(67,48,46,.10)}
 .nav button{flex:1 1 0;min-width:0;min-height:var(--touch-min);display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:3px;padding:10px 2px calc(10px);color:var(--ink-primary);opacity:.55;text-align:center}
-.nav button[aria-current="page"]{opacity:1;font-weight:600}
+.nav button[aria-current="page"]{opacity:1;font-weight:500}
 
 /* ============================================================
    FOOTER
@@ -528,6 +532,7 @@ footer p{opacity:.65;max-width:38em}
 @media (prefers-reduced-motion:reduce){
   .stack-hero.enter{animation:none}
   .stack-hero.pressed{transform:none;opacity:.85}
+  .btn:active,.homecard:active,.chip:active{transform:none;opacity:.85}
   .stack-hero{transition:opacity 120ms linear}
   .stack-next{transform:none}
 }
@@ -539,12 +544,12 @@ footer p{opacity:.65;max-width:38em}
    ============================================================ */
 :root{--margin:24px;--col:80px;--gutter:16px;--content:272px}
 .m{padding-left:var(--margin);padding-right:var(--margin)}
-.t-eyebrow{font-family:var(--sans);font-size:11px;line-height:16px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--dried-plum);margin:0}
-.t-display{font-family:var(--sans);font-size:56px;line-height:48px;font-weight:500;letter-spacing:-.02em;margin:0;white-space:nowrap}
+.t-eyebrow{font-family:var(--sans);font-size:11px;line-height:16px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--dried-plum);opacity:.7;font-variant-numeric:tabular-nums;margin:0}
+.t-display{font-family:var(--sans);font-size:56px;line-height:60px;font-weight:300;letter-spacing:-.02em;margin:0;white-space:nowrap}
 .t-foot{font-family:var(--sans);font-size:40px;line-height:40px;font-weight:500;letter-spacing:-.02em;margin:0;color:var(--dried-plum)}
 /* the hairline nav: three cells, wordmark truly centred */
 .topnav{display:grid;grid-template-columns:var(--col) 1fr var(--col);align-items:center;height:56px;
-  margin:0 var(--margin);border-bottom:var(--rule) solid var(--structure-quiet)}
+  margin:0 var(--margin);border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .topnav .brandname-btn{justify-self:center}
 .topnav .brandname{font-size:13px;line-height:16px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--dried-plum)}
 .topnav .navlink{min-height:var(--touch-min);display:inline-flex;align-items:center;color:var(--ink-primary);font-family:var(--sans);font-size:13px;line-height:16px}
@@ -568,13 +573,13 @@ footer p{opacity:.65;max-width:38em}
 .plinth.blank .pv{background:var(--finish-clear)}
 /* the bottom rule shared by every screen */
 .foot-line{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);margin:var(--s24) var(--margin) 0;
-  padding-top:var(--s8);border-top:var(--rule) solid var(--structure-quiet);font-size:12px;line-height:16px;opacity:.85}
+  padding-top:var(--s8);border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);font-size:12px;line-height:16px;opacity:.85}
 .foot-line span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.foot-line button{min-height:var(--touch-min);display:inline-flex;align-items:center;color:var(--ink-primary);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.foot-line button{min-height:var(--touch-min);display:inline-flex;align-items:center;color:var(--ink-primary);text-decoration:none;font-weight:500;white-space:nowrap}
 .foot-word{margin:var(--s48) var(--margin) var(--s24)}
 /* Home actions become quiet rows on the margin */
 .home-actions{padding:var(--s24) var(--margin) 0;gap:0}
-.homecard{background:none;border-radius:0;padding:var(--s16) 0;border-bottom:var(--rule) solid var(--structure-quiet)}
+.homecard{background:none;border-radius:0;padding:var(--s16) 0;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .homecard.primary{background:none;color:var(--ink-primary)}
 .homecard.primary .hc-label,.homecard.primary .hc-sub{color:var(--ink-primary);opacity:.62}
 .homecard .hc-title{font-size:16px;line-height:24px}
@@ -603,7 +608,7 @@ footer p{opacity:.65;max-width:38em}
   padding-bottom:var(--s16);box-sizing:border-box;box-shadow:0 26px 48px -16px rgba(67,48,46,.40);animation:liftin var(--t-enlarge) var(--e-out)}
 @keyframes liftin{from{transform:translateY(12px);box-shadow:none}to{transform:none}}
 .lifted .detailthumb svg,.lifted .detailthumb img{max-height:calc(min(62vh,560px) - 56px);width:auto}
-.lifted-hint{position:absolute;right:var(--s16);bottom:var(--s8);font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;pointer-events:none}
+.lifted-hint{display:block;text-align:center;margin-top:6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.4;pointer-events:none}
 .lifted{position:relative}
 .lifted-name{margin:var(--s24) var(--margin) 0}
 .lifted-fact{margin:0 var(--margin);opacity:.7}
@@ -613,11 +618,11 @@ footer p{opacity:.65;max-width:38em}
   transform-origin:50% 0;animation:tagin 480ms var(--e-out)}
 @keyframes tagin{from{opacity:0;transform:rotateX(-70deg)}to{opacity:1;transform:none}}
 .tag .tb{font-family:var(--sans);font-weight:500;letter-spacing:.18em;text-transform:uppercase;text-align:center;
-  padding-bottom:8px;margin-bottom:8px;border-bottom:var(--rule) solid var(--structure-quiet);color:var(--dried-plum)}
+  padding-bottom:8px;margin-bottom:8px;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);color:var(--dried-plum)}
 .tag .tr{display:flex;justify-content:space-between;gap:var(--s8);color:var(--ink-primary);text-decoration:none;min-height:16px}
 .tag .tr .k{opacity:.55;letter-spacing:.06em}
 .tag .tr .v{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tag a.tr .v{text-decoration:underline;text-underline-offset:3px}
+.tag a.tr .v{text-decoration:none;font-weight:500}
 .tag .btn{margin-top:12px;min-height:32px;height:32px;font-size:12px;line-height:32px;padding:0;border-radius:var(--radius-pill)}
 .tag .tnote{margin-top:8px;opacity:.65;font-family:var(--sans)}
 .field{padding-left:var(--margin);padding-right:var(--margin)}
@@ -673,9 +678,9 @@ footer p{font-size:12px;line-height:16px}
 .entry .t-meta{font-size:11px;line-height:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--dried-plum)}
 .entry .obs{margin-top:var(--s8);font-size:15px;line-height:22px}
 .field-label.t-meta{font-size:11px;line-height:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--dried-plum)}
-.input{border:none;border-bottom:var(--rule) solid var(--structure-quiet);padding:var(--s8) 0;background:none;font-size:15px}
+.input{border:none;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);padding:var(--s8) 0;background:none;font-size:15px}
 .input:focus-visible{outline:none;border-bottom-color:var(--ink-primary)}
-textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)}
+textarea.input{padding:12px 14px}
 .btn-done{border-width:1px;box-shadow:none;font-weight:500;font-size:14px;height:48px}
 /* ============================================================
    THE CABINET
@@ -869,15 +874,15 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 /* Product photos shot on white sink into the plinth instead of sitting on a white box */
 .plinth .pv img,.gcard .gvisual img,.steprow .sw img,.lifted img,.hero-photo img,.glyphbox img,.stack-hero img{mix-blend-mode:multiply}
 /* Bottom nav: ivory, hairline, no shadow. It belongs to the same page now. */
-.nav{background:var(--surface-primary);border-radius:0;box-shadow:none;border-top:var(--rule) solid var(--structure-quiet)}
+.nav{background:var(--surface-primary);border-radius:0;box-shadow:none;border-top:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .nav button{opacity:.5;font-size:11px;line-height:14px;font-weight:500;letter-spacing:.02em}
 .nav button[aria-current="page"]{opacity:1;font-weight:500}
 /* Cabinet top: one eyebrow row, one search line, text filters */
 .cab-top{display:flex;justify-content:space-between;align-items:center;margin:var(--s24) var(--margin) 0;min-height:32px}
 .cab-search{margin:var(--s8) var(--margin) 0}
-.cab-search .input{border:none;border-bottom:var(--rule) solid var(--structure-quiet);padding:var(--s8) 0;background:none}
+.cab-search .input{border:none;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);padding:var(--s8) 0;background:none}
 .cab-search .input:focus-visible{outline:none;border-bottom-color:var(--ink-primary)}
-.cab-row{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);margin:var(--s8) var(--margin) 0;border-bottom:var(--rule) solid var(--structure-quiet)}
+.cab-row{display:flex;justify-content:space-between;align-items:center;gap:var(--s16);margin:var(--s8) var(--margin) 0;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent)}
 .cabfilters.groups button{font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .cabfilters{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;padding:0;gap:var(--s16);scrollbar-width:none}
 .cabfilters::-webkit-scrollbar{display:none}
@@ -930,7 +935,7 @@ textarea.input{border:var(--rule) solid var(--structure-quiet);padding:var(--s8)
 .tod button{min-height:32px;font-size:12px;line-height:16px}
 .steprows{list-style:none;margin:var(--s8) var(--margin) 0;padding:0}
 .steprow{display:grid;grid-template-columns:48px minmax(0,1fr) 24px;align-items:center;gap:var(--gutter);width:100%;
-  min-height:72px;padding:var(--s8) 0;border-bottom:var(--rule) solid var(--structure-quiet);color:var(--ink-primary);text-align:left}
+  min-height:72px;padding:var(--s8) 0;border-bottom:var(--rule) solid color-mix(in srgb,var(--structure-quiet) 60%,transparent);color:var(--ink-primary);text-align:left}
 .steprow .sw{width:48px;height:48px;background:var(--plinth);display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;box-sizing:border-box;overflow:hidden}
 .steprow .sw svg,.steprow .sw img{max-height:36px;width:auto}
 .steprow .stx{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -2839,9 +2844,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
    ================================================================ */
 var CONF={
   CONFIRMED:{label:'Checked By You',text:'You checked this against your own label.'},
-  CATALOG:{label:'From Dewy\'s List · Not Verified',text:'Picked from Dewy\'s product list. Not verified; check your label before relying on these details.'},
-  SAMPLE:{label:'Sample Product',text:'One of Dewy\'s sample products. Check your own label before relying on these details.'},
-  INFERRED:{label:'Inferred',text:'This match was inferred, not confirmed. Check the label before relying on it.'},
+  CATALOG:{label:'From Dewy\'s List · Not Verified',text:'From Dewy\'s list, not verified. Check your own label.'},
+  SAMPLE:{label:'Sample Product',text:'A sample product. Check your own label.'},
+  INFERRED:{label:'Inferred',text:'Inferred, not confirmed. Check your own label.'},
   MANUAL:{label:'Added by Hand',text:'You entered this product yourself.'},
   UNKNOWN:{label:'Not Identified',text:'This bottle is not identified well enough to place in a routine.'}
 };
@@ -2918,7 +2923,7 @@ function directionsHTML(p,compact){
          p.directionsConflict.map(function(l){return '<p class="t-body line">'+esc(l)+'</p>'}).join(''));
   }else{
     h+='<p class="t-body dstate">Check Product Directions</p>'+
-       '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p>';
+       '<p class="t-caption" style="opacity:.75;margin-top:4px">The label is the source.</p>';
   }
   return h;
 }
@@ -3544,7 +3549,7 @@ function viewRoutine(){
   h+='<header class="field" data-tod="'+S.tod+'">'+
      brandBar('Cabinet','cabinet')+
      '<div class="field-top">'+
-       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+(r.minutes==='30 SECONDS'?' · 30 Seconds':' · About '+r.minutes+(r.minutes===1?' Minute':' Minutes'))+'</p>'+
+       '<p class="t-eyebrow">'+steps.length+(steps.length===1?' Step':' Steps')+(r.minutes==='30 SECONDS'?' · 30 Seconds':' · '+r.minutes+' Min')+'</p>'+
        '<nav class="tod t-meta" aria-label="Time Of Day">'+
          '<button type="button" data-act="tod" data-v="am" aria-pressed="'+(S.tod==='am')+'">Morning</button>'+
          '<button type="button" data-act="tod" data-v="pm" aria-pressed="'+(S.tod==='pm')+'">Evening</button>'+
@@ -3560,7 +3565,7 @@ function viewRoutine(){
      One line, drawn from the routine in force: a reported skin state first,
      then a product held back, then a treatment step, then the plain plan. */
   if(S.routineState!=='COMPLETED'){
-    var focusTitle,focusLine;
+    var focusTitle,focusLine,focusEmpty=false;
     var activeSteps=steps.filter(function(x){return PRODUCTS[x].active});
     var treat=activeSteps.filter(function(x){return PRODUCTS[x].kind==='Retinoid'})[0]||activeSteps[0];
     if(S.skin&&SKIN[S.skin].recovery){
@@ -3577,6 +3582,7 @@ function viewRoutine(){
     } else {
       focusTitle=(S.tod==='am'?'This morning':'Tonight')+', in short';
       focusLine=Word(steps.length)+(steps.length===1?' step':' steps')+'. Nothing to work around.';
+      focusEmpty=true;
     }
     /* a second line when the record or the clock has something to add */
     var focusLine2=null;
@@ -3592,13 +3598,15 @@ function viewRoutine(){
     if(S.tod==='pm'&&hr>=22&&steps.length>2&&r.mode!=='thirty'&&r.mode!=='recovery'){
       focusLine2='It is late. A shorter version is under Routine Options.';
     }
+    /* A suggestion card appears only when there is something to suggest. */
+    if(!focusEmpty||focusLine2){
     focusHTML+='<button type="button" class="focus" data-act="toggle" data-key="focusOpen" '+
        'aria-expanded="'+(S.ui.focusOpen?'true':'false')+'">'+
-       '<span class="fbody"><span class="t-eyebrow line">One Suggestion</span>'+
-       '<span class="t-body line fl">'+esc(focusLine)+'</span>'+
+       '<span class="fbody"><span class="t-body line fl">'+esc(focusLine)+'</span>'+
        '<span class="t-caption line" style="opacity:.75">'+esc(focusLine2||'Show Why')+'</span>'+
        '</span></button>';
-    if(S.ui.focusOpen){
+    }
+    if((!focusEmpty||focusLine2)&&S.ui.focusOpen){
       var whyRows=r.reasons.slice(0,2).map(function(t){var rr=REASONS[t];
         return rr?'<p class="t-meta line" style="opacity:.7">'+esc(rr.head)+'</p><p class="t-body line">'+esc(rr.text)+'</p>':''}).join('');
       focusHTML+='<section class="focuspanel">'+whyRows+
@@ -3756,7 +3764,7 @@ function viewRoutine(){
     var ci=steps.indexOf(S.current),nx=null,nxName='';
     for(var k=ci+1;k<steps.length;k++){if(S.steps[steps[k]]==='PENDING'){nx=steps[k];break}}
     if(nx)nxName=PRODUCTS[nx].brand+' '+PRODUCTS[nx].productName;
-    h+='<button type="button" class="btn btn-begin" id="step-primary" data-act="done">'+(nx?'Mark Step '+(ci+1)+' Complete':'Finish '+(S.tod==='am'?'This Morning':'Tonight'))+'</button>'+
+    h+='<button type="button" class="btn btn-begin" id="step-primary" data-act="done">'+(nx?'Mark Complete':'Finish '+(S.tod==='am'?'This Morning':'Tonight'))+'</button>'+
        '<p class="t-caption nextup" style="margin-top:var(--s8);opacity:.7">'+(nxName?'Next: '+esc(nxName):'This is the last step.')+'</p>'+
        '<div class="quiet-row">'+
        (ci>0?'<button type="button" class="t-body linkish" data-act="back-step">Previous Step</button>':'')+
@@ -3858,8 +3866,7 @@ function viewRoutine(){
 
   /* --- dialogs --- */
 
-  h+='<footer><p class="t-caption">Guidance, not a rule. Not medical advice.</p>'+
-     '<p class="t-caption">If skin reacts, stop and see a clinician.</p></footer>'+
+  h+='<footer><p class="t-caption">Guidance, not medical advice. If skin reacts, stop and see a clinician.</p></footer>'+
      footWord(S.tod==='am'?'Morning':'Tonight')+
      '<div class="foot-line"><button type="button" data-act="go-add-search">Add A Product</button>'+
      '<button type="button" data-act="routine-edit">Edit Routine</button></div></main>';
@@ -4629,8 +4636,6 @@ function viewProduct(id){
      '<a class="tr" href="#step-editor" aria-label="Step: '+esc(cat(p.category))+'. Edit."><span class="k">STEP</span><span class="v">'+esc(cat(p.category))+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<a class="tr" href="#when-editor" aria-label="Time: '+esc(WHEN_LABEL[whenKey(p)])+'. Edit."><span class="k">TIME</span><span class="v">'+esc(WHEN_LABEL[whenKey(p)])+' <span class="pen" aria-hidden="true">&#9998;</span></span></a>'+
      '<div class="tr"><span class="k">ROUTINES</span><span class="v">'+esc(membership(id)||'None')+'</span></div>'+
-     '<a class="tr" href="#mixing"><span class="k">MIXING</span><span class="v">Not Known Yet</span></a>'+
-     '<div class="tr"><span class="k">SOURCE</span><span class="v">'+esc(CONF[p.confidence].label)+'</span></div>'+
      (canAdd?'<button type="button" class="btn btn-done" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>':
       inToday?'<p class="tnote t-caption">In Routine</p>':'')+'</div>';
   h+='<div class="foot-line"><span></span><span class="pn2">'+
@@ -4643,31 +4648,21 @@ function viewProduct(id){
        esc(S.ui.notesDraftId===id&&S.ui.notesDraft!=null?S.ui.notesDraft:p.notes)+'</textarea>'+
      '<p style="margin-top:var(--s8)"><button type="button" class="t-body linkish" data-act="save-notes" data-id="'+esc(id)+'">Save Notes</button></p></div>'+
 
-     '<div><p class="t-meta" style="opacity:.7">Routine Placement</p>'+
-     '<p class="t-body">'+esc(placementLine(id))+'</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">This is guidance, not a rule.</p>'+
+     '<div><p class="t-body">'+esc(placementLine(id))+'</p>'+
      '<p class="t-meta" id="step-editor" style="margin-top:var(--s8);opacity:.7">Step</p><div class="catrow">'+
      ['CLEANSE','TREAT','SEAL','PROTECT','FINISH','UNASSIGNED'].map(function(c){
        return '<button type="button" class="t-caption" data-act="set-cat" data-id="'+esc(id)+'" data-v="'+c+'" aria-pressed="'+(p.category===c)+'">'+esc(cat(c))+'</button>'}).join('')+
      '</div><p class="t-meta" id="when-editor" style="margin-top:var(--s8);opacity:.7">When Do You Use It?</p><div class="catrow">'+
      [['am','Morning'],['pm','Evening'],['both','Both'],['occ','Every So Often']].map(function(w){
        return '<button type="button" class="t-caption" data-act="set-when" data-id="'+esc(id)+'" data-v="'+w[0]+'" aria-pressed="'+(whenKey(p)===w[0])+'">'+w[1]+'</button>'}).join('')+
-     '</div><p class="t-body" style="opacity:.8;margin-top:var(--s8)">In your routines: '+esc(membership(id))+'</p></div>'+
-
-     '<div><p class="t-meta" style="opacity:.7">Identification</p>'+
-     '<p class="t-body">'+esc(CONF[p.confidence].label)+'</p>'+
-     (p.confidence==='CONFIRMED'||p.confidence==='MANUAL'?'':'<p class="t-body" style="opacity:.8">'+esc(p.confidenceReason)+'</p>')+'</div>'+
-
-     '<div><p class="t-meta" style="opacity:.7">Availability</p>'+
-     '<p class="t-body">'+esc(LIFE[p.status].label)+'</p></div>'+
+     '</div></div>'+
 
      '<div id="mixing"><p class="t-meta" style="opacity:.7">Mixing With Other Products</p>'+
      '<p class="t-body">Not Known Yet</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">Dewy has no verified ingredient data, so it will not guess what pairs with this. Ask about two specific products instead.</p>'+
+     '<p class="t-caption" style="opacity:.75;margin-top:4px">No verified ingredient data, so Dewy will not guess.</p>'+
      '<p style="margin-top:var(--s8)"><button type="button" class="btn btn-done" data-act="ask-about" data-id="'+esc(id)+'">Can These Be Used Together?</button></p></div>'+
      '<div><p class="t-meta" style="opacity:.7">Ingredient Review</p>'+
-     '<p class="t-body">Needs More Information</p>'+
-     '<p class="t-caption" style="opacity:.75;margin-top:4px">None on record. The label is the source.</p></div>'+
+     '<p class="t-body">Needs More Information</p></div>'+
 
      '<div><p class="t-meta" style="opacity:.7">How To Use</p>'+directionsHTML(p,false)+'</div>'+
 
@@ -4678,14 +4673,12 @@ function viewProduct(id){
 
   /* confidence actions */
   if(p.confidence==='UNKNOWN'||p.confidence==='INFERRED'||p.confidence==='SAMPLE'||p.confidence==='CATALOG'){
-    h+='<div class="page-head"><p class="t-meta">Identification</p></div><div class="rowlist">'+
+    h+='<div class="rowlist">'+
       '<button type="button" class="textrow t-meta" data-act="conf" data-v="CONFIRMED" data-id="'+esc(id)+'">I Checked This Against My Label</button>'+
-      '<button type="button" class="textrow t-meta" data-act="edit-name" data-id="'+esc(id)+'">Edit Details</button>'+
       '<button type="button" class="textrow t-meta" data-act="retake" data-id="'+esc(id)+'">Take A Photo</button>'+
       '<button type="button" class="textrow t-meta" data-act="keep-out" data-id="'+esc(id)+'">Keep Out Of Routines</button></div>';
   } else {
-    h+='<div class="page-head"><p class="t-meta">Identification</p></div><div class="rowlist">'+
-      '<button type="button" class="textrow t-meta" data-act="edit-name" data-id="'+esc(id)+'">Edit Details</button>'+
+    h+='<div class="rowlist">'+
       '<button type="button" class="textrow t-meta" data-act="retake" data-id="'+esc(id)+'">Replace Photo</button></div>';
   }
   if(S.ui.editName===id){
@@ -4701,15 +4694,13 @@ function viewProduct(id){
   var inToday=resolve().steps.indexOf(id)>-1,todayWord=S.tod==='am'?'This Morning':'Tonight';
   var paused=p.status==='UNAVAILABLE',finished=(p.status==='EMPTY'||p.status==='REPLACED');
   h+='<div class="page-head"><p class="t-meta">Product Actions</p></div><div class="rowlist">'+
-    (p.confidence==='UNKNOWN'?'':(inToday?'<p class="t-body textrow" style="text-decoration:none;opacity:.7">In '+todayWord+'’s Routine</p>':
-      '<button type="button" class="textrow t-body" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>'))+
+    (p.confidence==='UNKNOWN'||inToday?'':
+      '<button type="button" class="textrow t-body" data-act="routine-add" data-id="'+esc(id)+'">Add To '+todayWord+'</button>')+
     '<button type="button" class="textrow t-body" data-act="edit-name" data-id="'+esc(id)+'">Edit Product</button>'+
     (p.status==='ARCHIVED'?
       '<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Restore Product</button>':
-      (paused?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Resume Product</button>':
-              '<button type="button" class="textrow t-body" data-act="life" data-v="UNAVAILABLE" data-id="'+esc(id)+'">Pause Product</button>')+
-      (finished?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Mark As In Use</button>':
-                '<button type="button" class="textrow t-body" data-act="life" data-v="EMPTY" data-id="'+esc(id)+'">Mark As Finished</button>')+
+      (paused?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Resume Product</button>':'')+
+      (finished?'<button type="button" class="textrow t-body" data-act="life" data-v="ACTIVE" data-id="'+esc(id)+'">Mark As In Use</button>':'')+
       '<button type="button" class="textrow t-body" data-act="remove" data-id="'+esc(id)+'" style="color:var(--action-current)">Delete Product</button>')+
     '</div>';
   var lu=S.ui.lifeUndo;
@@ -4742,11 +4733,9 @@ function viewProduct(id){
     '<button type="button" class="textrow t-meta" data-act="pair" data-id="'+esc(id)+'">Keep Apart From This Step</button></div>';
   }
 
-  /* per product history */
-  h+='<div class="page-head"><p class="t-meta">Routine History</p></div>';
-  if(!p.routineHistory.length){
-    h+='<div class="page"><p class="t-body" style="opacity:.8">No routines recorded with this product yet.</p></div>';
-  } else {
+  /* per product history: shown only once there is one */
+  if(p.routineHistory.length){
+    h+='<div class="page-head"><p class="t-meta">Routine History</p></div>';
     h+='<div class="rowlist">'+p.routineHistory.slice(0,8).map(function(e){
       return '<div class="entry"><p class="t-meta">'+esc(e.date+' / '+e.tod+' / '+e.mode)+'</p>'+
              '<p class="t-body obs">'+esc(e.result==='SKIPPED'?'Step skipped.':'Step completed.')+'</p></div>';
@@ -5625,8 +5614,8 @@ function viewProfile(){
      '<button type="button" class="textrow t-meta" data-act="tab" data-v="discover">Why Steps Are Ordered</button>'+
      (S.prefs.devMode?'<button type="button" class="textrow t-meta" data-act="tab" data-v="chemist">Developer</button>':'')+'</div>';
   h+='<div class="page" style="padding-bottom:0"><button type="button" class="t-caption" data-act="dev-tap" aria-label="Version" style="opacity:.45">Dewy '+esc(window.DewyChemist?window.DewyChemist.VERSION:'1')+'</button></div>';
-  h+='<div class="page"><p class="t-caption" style="opacity:.6">'+(STORAGE_OK?'Everything stays in this browser, on this device. Nothing is sent anywhere.':'Nothing is being saved right now: this browser is not storing changes.')+'</p>'+
-     '<p class="t-caption" style="opacity:.6;margin-top:var(--s8)">Dewy offers general guidance, not medical advice. If skin reacts, stop using the product and see a clinician.</p></div>'+footWord('Profile');
+  h+='<div class="page"><p class="t-caption" style="opacity:.6">'+(STORAGE_OK?'Stays in this browser, on this device. Nothing is sent anywhere.':'Nothing is being saved right now: this browser is not storing changes.')+'</p>'+
+     '<p class="t-caption" style="opacity:.6;margin-top:var(--s8)">General guidance, not medical advice. If skin reacts, stop and see a clinician.</p></div>'+footWord('Profile');
   return h;
 }
 /* ================================================================
@@ -5789,7 +5778,7 @@ function sampleNotice(){
     '<p style="margin-top:4px"><button type="button" class="t-body linkish" data-act="samples-undo">Undo</button></p></div>';
   if(S.prefs.samplesAck||!samplesLive().length)return '';
   return '<div class="caution sample-note" role="note"><p class="t-meta">Sample Cabinet</p>'+
-    '<p class="t-caption" style="opacity:.8;margin-top:2px">These are example products so you can try Dewy. Their details are not verified and they are not yours.</p>'+
+    '<p class="t-caption" style="opacity:.8;margin-top:2px">Example products so you can try Dewy. Not verified, and not yours.</p>'+
     '<p style="margin-top:4px;display:flex;gap:var(--s16);flex-wrap:wrap"><button type="button" class="t-body linkish" data-act="samples-clear">Clear Sample Products</button>'+
     '<button type="button" class="t-caption linkish" data-act="samples-ack">Keep Exploring</button></p></div>';
 }
@@ -6281,7 +6270,7 @@ function findStepPartner(id){
 var ACTS={
   tab:function(v){
     if(S.ui.add&&addDirty(S.ui.add)){
-      ask('Discard This Product?','Nothing has been saved yet. Leaving now loses what you entered.','Discard And Leave','Keep Editing',function(){S.ui.add=null;ACTS.tab(v)});
+      ask('Discard This Product?','Leaving now loses what you entered.','Discard And Leave','Keep Editing',function(){S.ui.add=null;ACTS.tab(v)});
       return;
     }
     if(S.ui.detail&&S.ui.notesDraft!=null&&S.ui.notesDraftId===S.ui.detail)ACTS['save-notes'](null,S.ui.detail,true);
@@ -6300,7 +6289,7 @@ var ACTS={
   done:function(){stackCommit('COMPLETED')},
   skip:function(){
     if(!S.prefs.confirmSkip){stackCommit('SKIPPED');return}
-    ask('Skip This Step?','It will be noted as skipped. Nothing else changes.','Skip This Step','Keep It',function(){stackCommit('SKIPPED')});
+    ask('Skip This Step?','Noted as skipped. Nothing else changes.','Skip This Step','Keep It',function(){stackCommit('SKIPPED')});
   },
   'stack-peek-clear':function(){S.ui.peek=null;render();var hh=document.querySelector('.stack-hero');if(hh)hh.focus()},
   /* Undo for a card gesture: the step comes back as the current one, and
@@ -6476,7 +6465,7 @@ var ACTS={
   },
   'dismiss-deleted':function(){S.ui.lastDeleted=null;render()},
   'load-note-ok':function(){LOAD_NOTE=false;render()},
-  'samples-ack':function(){S.prefs.samplesAck=true;render();say('Sample products stay. You can clear them from Your Cabinet later by deleting them.')},
+  'samples-ack':function(){S.prefs.samplesAck=true;render();say('Sample products stay. Delete them from Your Cabinet anytime.')},
   'samples-clear':function(){
     var ids=samplesLive();if(!ids.length)return;
     ask('Clear Sample Products?',ids.length+' example products leave Your Cabinet and today\'s routines. Products you added stay. You can undo this.','Clear Samples','Keep Them',function(){
@@ -6533,8 +6522,8 @@ var ACTS={
       logEvent('override','Your Choice',PRODUCTS[id].productName+' is used despite its status.',true,{type:'useAnyway',id:id});
       render();say(PRODUCTS[id].productName+' will be used despite its status. Undo is under Your Choices.');return}
     var OVC={
-      hidden:['Hide For Now?','It stays out of every routine until you show it again. It stays in Your Cabinet.','Hide Product'],
-      optional:['Mark As Optional?','It stays in the routine, marked as a step you can skip.','Mark Optional'],
+      hidden:['Hide For Now?','Out of every routine until you show it again.','Hide Product'],
+      optional:['Mark As Optional?','Marked as a step you can skip.','Mark Optional'],
       removed:['Remove From This Routine?','It leaves '+(S.tod==='am'?'this morning\'s':'tonight\'s')+' routine. It stays in Your Cabinet.','Remove From Routine']
     }[v]||['Change This Product?','You can undo this in History.','Change It'];
     ask(OVC[0],OVC[1],OVC[2],'Keep As Is',function(){
@@ -6563,7 +6552,7 @@ var ACTS={
   },
   remove:function(v,id){
     var p=PRODUCTS[id];if(!p)return;
-    ask('Delete This Product?','It leaves your Cabinet. Its history stays, and you can undo this.','Delete','Keep',function(){
+    ask('Delete This Product?','Its history stays, and you can undo this.','Delete','Keep',function(){
       var was=p.status;
       p.status='ARCHIVED';
       logEvent('event','Product Deleted',p.brand+' '+p.productName+' was deleted from your Cabinet. Its record remains.',true,{type:'life',id:id,was:was});
